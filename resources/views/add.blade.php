@@ -13,7 +13,7 @@
                             <form class="p-5 bg-white rounded-xl shadow-xl" method="post" action="/addSutras" enctype="multipart/form-data">
                             @csrf
                             
-                                <p class="text-lg text-gray-800 font-medium pb-4">Customer information</p>
+                                <p class="text-lg text-gray-800 font-medium pb-4">Customer informations</p>
                                 <div class="pb-5">
                                     <label class="block text-sm text-gray-600" for="cus_name">Sutra Name</label>
                                     <input class="w-full px-5 py-1 text-gray-700 bg-gray-200 rounded" id="cus_name" name="name" type="text"  placeholder="Sutra Name" >

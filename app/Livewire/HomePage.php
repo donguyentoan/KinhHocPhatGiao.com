@@ -13,19 +13,33 @@ use Livewire\Component;
 #[Layout('components.layouts.home')]
 class HomePage extends Component
 {
+    public int $visibleScriptures = 8;
+    public int $scripturesPerLoad = 8;
+
+    public function loadMoreScriptures(): void
+    {
+        $this->visibleScriptures += $this->scripturesPerLoad;
+    }
+
     public function render()
     {
-        $popularScriptures = Scripture::query()->with('category')->latest()->take(4)->get()
-            ->map(function (Scripture $scripture) {
-                $scripture->image_url = $this->resolveImageUrl($scripture->image_url);
+        $popularScriptures = Scripture::query()
+            ->with('category')
+            ->latest()
+            ->take($this->visibleScriptures)
+            ->get();
 
-                return $scripture;
-            });
+        $hasMoreScriptures = Scripture::query()->count() > $popularScriptures->count();
+
+        foreach ($popularScriptures as $scripture) {
+            $scripture->image_url = $this->resolveImageUrl($scripture->image_url);
+        }
 
         return view('livewire.home-page', [
             'utilities' => Utility::query()->where('is_active', true)->orderBy('sort_order')->get(),
             'categories' => ScriptureCategory::query()->withCount('scriptures')->get(),
             'popularScriptures' => $popularScriptures,
+            'hasMoreScriptures' => $hasMoreScriptures,
             'popularPosts' => Post::query()->latest('published_at')->take(4)->get(),
         ]);
     }

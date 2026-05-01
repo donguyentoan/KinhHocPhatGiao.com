@@ -63,6 +63,20 @@
                 <div class="flex items-center gap-3"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài tụng phổ biến</h3></div>
             </div>
             <x-popular-scriptures :scriptures="$popularScriptures" />
+            @if($hasMoreScriptures)
+                <div class="mt-8 flex justify-center">
+                    <button
+                        type="button"
+                        wire:click="loadMoreScriptures"
+                        class="px-6 py-3 rounded-2xl bg-[#8b5e34] text-white font-semibold hover:bg-[#6f4a2b] transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+                        wire:loading.attr="disabled"
+                        wire:target="loadMoreScriptures"
+                    >
+                        <span wire:loading.remove wire:target="loadMoreScriptures">Xem thêm</span>
+                        <span wire:loading wire:target="loadMoreScriptures">Đang tải...</span>
+                    </button>
+                </div>
+            @endif
         </section>
 
         <section class="py-8">

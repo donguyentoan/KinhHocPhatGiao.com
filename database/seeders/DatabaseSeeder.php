@@ -16,6 +16,8 @@ class DatabaseSeeder extends Seeder
             BuddhistContentSeeder::class,
             DiaTangKinhSeeder::class,
             PhapHoaSamHoiNguoiAoTrangSeeder::class,
+            ThemNhieuKinhSeeder::class,
+            Them50KinhMoiSeeder::class,
         ]);
     }
 }

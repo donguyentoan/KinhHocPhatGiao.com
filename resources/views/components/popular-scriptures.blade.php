@@ -3,7 +3,7 @@
 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
     @foreach($scriptures as $scripture)
         <div class="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
-            <div class="relative h-44 overflow-hidden">
+            <div class="relative aspect-video overflow-hidden">
                 <img src="{{ $scripture->image_url }}" alt="{{ $scripture->title }}" class="w-full h-full object-cover transition-transform duration-700 hover:scale-110">
             </div>
             <div class="p-6">

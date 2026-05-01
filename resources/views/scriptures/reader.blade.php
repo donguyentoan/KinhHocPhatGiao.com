@@ -36,6 +36,42 @@
         }
         .book-wrap { width: 905px; margin: 0 auto; position: relative; }
         #mybook { width: 900px; height: 607px; margin: 0 auto; display: none; }
+        .reader-loading {
+            position: absolute;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            background: rgba(255, 250, 242, 0.92);
+            border-radius: 12px;
+        }
+        .reader-loading.is-active {
+            display: flex;
+        }
+        .reader-loading-card {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 999px;
+            border: 1px solid #d9b68e;
+            background: #fff8ee;
+            color: #6d4621;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(109, 70, 33, 0.18);
+        }
+        .reader-loading-spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e7cfb4;
+            border-top-color: #8b5e34;
+            border-radius: 50%;
+            animation: readerSpin 0.8s linear infinite;
+        }
+        @keyframes readerSpin {
+            to { transform: rotate(360deg); }
+        }
         #mybook .book { padding: 10px 16px 6px; height: 100%; box-sizing: border-box; }
         .pdf-mode #mybook .book { padding: 0; }
         #mybook .b-next,
@@ -54,6 +90,9 @@
             object-fit: fill; /* Đã cập nhật thành fill để tràn viền */
             background: #fff;
             display: block;
+        }
+        .pdf-page.is-loading {
+            background: linear-gradient(90deg, #f5eee4 0%, #ffffff 50%, #f5eee4 100%);
         }
     </style>
 </head>
@@ -75,6 +114,12 @@
         </div>
         <div id="jump_message" class="jump-message"></div>
         <div class="book-wrap">
+            <div id="reader_loading" class="reader-loading">
+                <div class="reader-loading-card">
+                    <span class="reader-loading-spinner" aria-hidden="true"></span>
+                    <span id="reader_loading_text">Đang tải dữ liệu kinh...</span>
+                </div>
+            </div>
             <div id="mybook">
                 <div class="b-load">
                     @if($pdfUrl)
@@ -101,12 +146,41 @@
             let bookletInitialized = false;
             let totalPages = 1;
             let currentPage = 1;
+            let prioritizeVisiblePages = function () {};
+            let isPageReady = function () { return true; };
+            let waitForPageReady = function () { return Promise.resolve(); };
             const $jumpInput = $('#jump_to_page');
             const $jumpButton = $('#jump_to_page_button');
             const $totalPagesLabel = $('#total_pages_label');
             const $jumpMessage = $('#jump_message');
             const $prevButton = $('#prev_page_button');
             const $nextButton = $('#next_page_button');
+            const $readerLoading = $('#reader_loading');
+            const $readerLoadingText = $('#reader_loading_text');
+            const loadingTasks = new Set();
+
+            function setReaderLoading(active, message) {
+                if (message) {
+                    $readerLoadingText.text(message);
+                }
+                if (active) {
+                    $readerLoading.addClass('is-active');
+                } else {
+                    $readerLoading.removeClass('is-active');
+                }
+            }
+
+            function beginLoadingTask(taskKey, message) {
+                loadingTasks.add(taskKey);
+                setReaderLoading(true, message);
+            }
+
+            function endLoadingTask(taskKey) {
+                loadingTasks.delete(taskKey);
+                if (!loadingTasks.size) {
+                    setReaderLoading(false);
+                }
+            }
 
             function normalizePage(value) {
                 const parsed = parseInt(value, 10);
@@ -137,6 +211,7 @@
                 } else {
                     $jumpMessage.text('');
                 }
+                prioritizeVisiblePages(currentPage);
                 return true;
             }
 
@@ -149,6 +224,12 @@
                 setCurrentPage(normalized, showClampNotice);
                 // Booklet uses zero-based internal index; convert from human page number.
                 $book.booklet(normalized - 1);
+                if (!isPageReady(normalized)) {
+                    beginLoadingTask('goto-page', 'Đang tải trang ' + normalized + '...');
+                    waitForPageReady(normalized).finally(function () {
+                        endLoadingTask('goto-page');
+                    });
+                }
             }
 
             function initBooklet() {
@@ -206,6 +287,7 @@
             }
 
             function renderTextFallback() {
+                beginLoadingTask('initial-load', 'Đang tải dữ liệu kinh...');
                 const textPages = @json($pages);
                 const fallbackHtml = [];
 
@@ -229,6 +311,7 @@
                 $book.find('.b-load').html(fallbackHtml.join(''));
                 setTotalPages(Array.isArray(textPages) && textPages.length ? textPages.length : 1);
                 initBooklet();
+                endLoadingTask('initial-load');
             }
 
             @if($pdfUrl)
@@ -276,6 +359,7 @@
                     if (typeof pdfjsLib === 'undefined') {
                         return Promise.reject(new Error('pdfjsLib not found'));
                     }
+                    beginLoadingTask('initial-load', 'Đang tải PDF...');
 
                     // Use the same CDN family for worker when possible.
                     const libSrc = (document.querySelector('script[src*="pdf.min.js"]') || {}).src || '';
@@ -285,10 +369,34 @@
                     pdfjsLib.GlobalWorkerOptions.workerSrc = workerSrc;
 
                     return pdfjsLib.getDocument(pdfUrl).promise.then(async function (pdfDoc) {
+                        const originalPageCount = pdfDoc.numPages;
+                        const eagerPageCount = Math.min(10, originalPageCount);
+                        const tinyPlaceholder = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==';
                         const pagesHtml = [];
+                        const renderedPages = {};
+                        const pageWaiters = {};
+                        const queuedPages = {};
+                        const pendingPages = [];
+                        let pumpScheduled = false;
+                        let renderInProgress = false;
 
-                        for (let i = 1; i <= pdfDoc.numPages; i++) {
-                            const page = await pdfDoc.getPage(i);
+                        for (let i = 1; i <= originalPageCount; i++) {
+                            pagesHtml.push(
+                                '<div class="book"><img class="pdf-page is-loading" data-page="' + i + '" src="' + tinyPlaceholder + '" alt="Trang ' + i + '"></div>'
+                            );
+                        }
+
+                        if (pagesHtml.length % 2 !== 0) {
+                            pagesHtml.push('<div class="book"><p></p></div>');
+                        }
+
+                        $load.html(pagesHtml.join(''));
+                        setTotalPages(originalPageCount);
+
+                        async function renderPageToImage(pageNumber) {
+                            if (renderedPages[pageNumber]) return;
+
+                            const page = await pdfDoc.getPage(pageNumber);
                             const viewport = page.getViewport({ scale: 1 });
                             const fitScale = Math.min(targetWidth / viewport.width, targetHeight / viewport.height);
                             const renderScale = fitScale * zoomFactor;
@@ -311,17 +419,118 @@
                             }).promise;
 
                             const pageImage = canvas.toDataURL('image/jpeg', 0.92);
-                            pagesHtml.push('<div class="book"><img class="pdf-page" src="' + pageImage + '" alt="Trang ' + i + '"></div>');
+                            const $img = $load.find('img[data-page="' + pageNumber + '"]');
+                            if ($img.length) {
+                                $img.attr('src', pageImage).removeClass('is-loading');
+                            }
+                            renderedPages[pageNumber] = true;
+                            const waiters = pageWaiters[pageNumber] || [];
+                            waiters.forEach(function (resolve) { resolve(); });
+                            pageWaiters[pageNumber] = [];
+                        }
+                        function settlePageWaitersAsDone(pageNumber) {
+                            const waiters = pageWaiters[pageNumber] || [];
+                            waiters.forEach(function (resolve) { resolve(); });
+                            pageWaiters[pageNumber] = [];
                         }
 
-                        const originalPageCount = pagesHtml.length;
-                        if (pagesHtml.length % 2 !== 0) {
-                            pagesHtml.push('<div class="book"><p></p></div>');
+
+                        function enqueuePage(pageNumber, highPriority) {
+                            if (pageNumber < 1 || pageNumber > originalPageCount) return;
+                            if (renderedPages[pageNumber] || queuedPages[pageNumber]) return;
+                            queuedPages[pageNumber] = true;
+                            if (highPriority) {
+                                pendingPages.unshift(pageNumber);
+                            } else {
+                                pendingPages.push(pageNumber);
+                            }
                         }
 
-                        $load.html(pagesHtml.join(''));
-                        setTotalPages(originalPageCount);
+                        async function pumpRenderQueue() {
+                            if (renderInProgress) return;
+                            const nextPage = pendingPages.shift();
+                            if (!nextPage) return;
+                            delete queuedPages[nextPage];
+                            renderInProgress = true;
+                            try {
+                                await renderPageToImage(nextPage);
+                            } catch (error) {
+                                // Keep placeholder if a page fails to render.
+                                settlePageWaitersAsDone(nextPage);
+                            } finally {
+                                renderInProgress = false;
+                                schedulePump();
+                            }
+                        }
+
+                        function schedulePump() {
+                            if (pumpScheduled) return;
+                            if (!pendingPages.length) return;
+                            pumpScheduled = true;
+                            const kick = function () {
+                                pumpScheduled = false;
+                                pumpRenderQueue();
+                            };
+                            if (typeof window.requestIdleCallback === 'function') {
+                                window.requestIdleCallback(function () {
+                                    kick();
+                                }, { timeout: 1200 });
+                            } else {
+                                window.setTimeout(kick, 0);
+                            }
+                        }
+
+                        function boostAroundPage(centerPage) {
+                            const safeCenter = normalizePage(centerPage);
+                            if (safeCenter === null) return;
+                            const windowRadius = 4;
+                            const nearby = [];
+                            for (let offset = 0; offset <= windowRadius; offset++) {
+                                const right = safeCenter + offset;
+                                const left = safeCenter - offset;
+                                if (offset === 0) {
+                                    nearby.push(safeCenter);
+                                } else {
+                                    nearby.push(right, left);
+                                }
+                            }
+                            for (let i = 0; i < nearby.length; i++) {
+                                enqueuePage(nearby[i], true);
+                            }
+                            schedulePump();
+                        }
+
+                        isPageReady = function (pageNumber) {
+                            return !!renderedPages[pageNumber];
+                        };
+
+                        waitForPageReady = function (pageNumber) {
+                            if (renderedPages[pageNumber]) {
+                                return Promise.resolve();
+                            }
+                            return new Promise(function (resolve) {
+                                if (!pageWaiters[pageNumber]) {
+                                    pageWaiters[pageNumber] = [];
+                                }
+                                pageWaiters[pageNumber].push(resolve);
+                                enqueuePage(pageNumber, true);
+                                schedulePump();
+                            });
+                        };
+
+                        for (let i = 1; i <= eagerPageCount; i++) {
+                            await renderPageToImage(i);
+                        }
+
                         initBooklet();
+                        endLoadingTask('initial-load');
+                        prioritizeVisiblePages = boostAroundPage;
+                        prioritizeVisiblePages(1);
+
+                        for (let i = eagerPageCount + 1; i <= originalPageCount; i++) {
+                            enqueuePage(i, false);
+                        }
+                        schedulePump();
                     });
                 }
 
@@ -333,8 +542,10 @@
                         renderTextFallback();
                     });
             @else
+                beginLoadingTask('initial-load', 'Đang tải dữ liệu kinh...');
                 setTotalPages(@json(count($pages)));
                 initBooklet();
+                endLoadingTask('initial-load');
             @endif
             bindJumpControls();
         });

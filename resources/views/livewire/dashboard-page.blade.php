@@ -172,13 +172,22 @@
 
             @if($activeSection === 'tien-ich')
                 <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                        <h2 class="text-xl font-serif font-bold text-[#4a2c11]">Tiện ích trang chủ</h2>
+                        <button type="button" wire:click="openUtilityModal" class="bg-[#4a2c11] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#8b5e34] transition-all shadow-lg w-fit">Thêm tiện ích</button>
+                    </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
                         @foreach($utilities as $utility)
                             <div class="bg-white/40 border border-[#8b5e34]/5 p-6 rounded-[2rem] flex flex-col items-center hover:shadow-xl transition-all">
                                 <div class="w-14 h-14 mb-4 bg-orange-50 rounded-2xl flex items-center justify-center">
                                     <img src="{{ $utility->icon_url }}" alt="{{ $utility->name }}" class="w-10 h-10 object-contain">
                                 </div>
-                                <span class="text-xs font-bold text-center mb-5">{{ $utility->name }}</span>
+                                <span class="text-xs font-bold text-center mb-2">{{ $utility->name }}</span>
+                                @if(filled($utility->link_url))
+                                    <span class="text-[10px] text-[#8b5e34]/70 text-center mb-3 break-all line-clamp-2" title="{{ $utility->link_url }}">{{ $utility->link_url }}</span>
+                                @else
+                                    <span class="text-[10px] text-gray-400 text-center mb-3">Chưa có liên kết</span>
+                                @endif
                                 <label class="relative inline-flex items-center cursor-pointer mb-3">
                                     <input wire:change="toggleUtility({{ $utility->id }})" type="checkbox" @checked($utility->is_active) class="sr-only peer">
                                     <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#8b5e34] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
@@ -395,6 +404,53 @@
                         @error('postForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
                         @error('postImageFile') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
                         <button type="submit" class="w-full py-4 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-xl shadow-[#4a2c11]/20 transition-all">Xuất bản bài viết</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    @if($showUtilityModal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+            <div class="glass w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif font-bold">{{ $editingUtilityId ? 'Cập nhật tiện ích' : 'Tiện ích mới' }}</h2>
+                    <button type="button" wire:click="closeUtilityModal" class="p-2 hover:bg-[#8b5e34]/10 rounded-full" aria-label="Đóng modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/>
+                        </svg>
+                    </button>
+                </div>
+                <form wire:submit="saveUtility" class="space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Tên hiển thị</label>
+                        <input wire:model="utilityForm.name" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none" placeholder="VD: Máy niệm phật">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">URL icon (ảnh)</label>
+                        <input wire:model="utilityForm.icon_url" type="url" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none" placeholder="https://...">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Liên kết khi click</label>
+                        <input wire:model="utilityForm.link_url" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none" placeholder="/tien-ich/may-niem-phat hoặc /#mục-trên-trang-chủ">
+                        <p class="text-[10px] text-[#8b5e34]/60 mt-2 px-1">Có thể dùng đường dẫn tương đối: <code class="text-[11px]">/tien-ich/...</code> hoặc neo trang chủ <code class="text-[11px]">/#thu-vien-kinh-dien</code>.</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Thứ tự</label>
+                            <input wire:model="utilityForm.sort_order" type="number" min="1" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 outline-none">
+                        </div>
+                        <div class="flex items-end pb-1">
+                            <label class="inline-flex items-center gap-3 cursor-pointer">
+                                <input wire:model="utilityForm.is_active" type="checkbox" class="rounded border-[#8b5e34]/30 text-[#8b5e34] focus:ring-[#8b5e34]">
+                                <span class="text-sm font-semibold text-[#4a2c11]">Hiển thị trên trang chủ</span>
+                            </label>
+                        </div>
+                    </div>
+                    @error('utilityForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" wire:click="closeUtilityModal" class="flex-1 py-3 rounded-full font-bold border border-[#8b5e34]/20 hover:bg-white transition-all text-sm">Hủy</button>
+                        <button type="submit" class="flex-1 py-3 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-lg transition-all text-sm">Lưu</button>
                     </div>
                 </form>
             </div>

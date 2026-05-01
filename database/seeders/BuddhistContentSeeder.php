@@ -93,24 +93,27 @@ class BuddhistContentSeeder extends Seeder
             ],
         ]);
 
-        $utilityNames = [
-            'Máy niệm phật',
-            'Đọc kinh',
-            'Ngồi thiền',
-            'Chuông mõ',
-            'Lần chuỗi hạt',
-            'Nhạc thiền',
-            'Sự kiện trong năm',
-            'Liên hệ hỗ trợ',
+        $utilities = [
+            ['name' => 'Máy niệm phật', 'link_url' => '/tien-ich/may-niem-phat'],
+            ['name' => 'Đọc kinh', 'link_url' => '/#thu-vien-kinh-dien'],
+            ['name' => 'Ngồi thiền', 'link_url' => '/tien-ich/ngoi-thien'],
+            ['name' => 'Chuông mõ', 'link_url' => '/tien-ich/chuong-mo'],
+            ['name' => 'Lần chuỗi hạt', 'link_url' => '/tien-ich/lan-chuoi-hat'],
+            ['name' => 'Nhạc thiền', 'link_url' => '/tien-ich/nhac-thien'],
+            ['name' => 'Sự kiện trong năm', 'link_url' => '/tien-ich/su-kien-trong-nam'],
+            ['name' => 'Liên hệ hỗ trợ', 'link_url' => '/tien-ich/lien-he-ho-tro'],
         ];
 
-        foreach ($utilityNames as $index => $name) {
-            Utility::query()->create([
-                'name' => $name,
-                'icon_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s',
-                'is_active' => true,
-                'sort_order' => $index + 1,
-            ]);
+        foreach ($utilities as $index => $row) {
+            Utility::query()->updateOrCreate(
+                ['name' => $row['name']],
+                [
+                    'icon_url' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s',
+                    'link_url' => $row['link_url'],
+                    'is_active' => true,
+                    'sort_order' => $index + 1,
+                ]
+            );
         }
     }
 }

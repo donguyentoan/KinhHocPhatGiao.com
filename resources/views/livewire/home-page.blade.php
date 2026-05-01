@@ -1,15 +1,18 @@
 <div>
     <header class="z-50 bg-[#f9f3e6] border-b border-[#e5dec9] px-6 py-3 shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <div class="flex items-center gap-3">
+            <a href="{{ route('home') }}" class="flex items-center gap-3">
                 <img class="w-24 h-13" src="http://kinhhocphatgiao.local/image/logothb.png" alt="">
-            </div>
-            <nav class="hidden lg:flex items-center gap-8">
-                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Đọc Kinh</a>
-                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Ngồi Thiền</a>
-                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Chuông Mõ</a>
-                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Lần Chuỗi Hạt</a>
-                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Nhạc Thiền</a>
+            </a>
+            <nav class="hidden lg:flex flex-wrap items-center gap-6">
+                <a href="{{ route('tools.show', 'may-niem-phat') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Máy niệm Phật</a>
+                <a href="/#thu-vien-kinh-dien" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Đọc Kinh</a>
+                <a href="{{ route('tools.show', 'ngoi-thien') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Ngồi Thiền</a>
+                <a href="{{ route('tools.show', 'chuong-mo') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Chuông Mõ</a>
+                <a href="{{ route('tools.show', 'lan-chuoi-hat') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Lần chuỗi hạt</a>
+                <a href="{{ route('tools.show', 'nhac-thien') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Nhạc Thiền</a>
+                <a href="{{ route('tools.show', 'su-kien-trong-nam') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Sự kiện</a>
+                <a href="{{ route('tools.show', 'lien-he-ho-tro') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Liên hệ</a>
             </nav>
             <div class="flex items-center gap-4">
                 <p class="flex items-center gap-2 px-5 py-2 text-[#4a2c11] font-bold text-sm rounded-lg hover:bg-[#efe7d5] transition-all">
@@ -50,7 +53,7 @@
             <x-utility-grid :utilities="$utilities" />
         </section>
 
-        <section class="py-8">
+        <section id="thu-vien-kinh-dien" class="py-8 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Thư Viện Kinh Điển</h3></div>
             <x-scripture-library :categories="$categories" />
         </section>

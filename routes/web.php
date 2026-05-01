@@ -4,6 +4,7 @@ use App\Livewire\DashboardPage;
 use App\Livewire\HomePage;
 use App\Livewire\IntroductionPage;
 use App\Http\Controllers\ScriptureReaderController;
+use App\Http\Controllers\ToolsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,4 +23,5 @@ Route::get('/', HomePage::class)->name('home');
 Route::get('/dashboard', DashboardPage::class)->name('dashboard');
 Route::get('/scriptures/{scripture}/read', [ScriptureReaderController::class, 'show'])->name('scriptures.read');
 Route::get('/scriptures/{scripture}/pdf', [ScriptureReaderController::class, 'pdf'])->name('scriptures.pdf');
+Route::get('/tien-ich/{slug}', [ToolsController::class, 'show'])->name('tools.show');
 

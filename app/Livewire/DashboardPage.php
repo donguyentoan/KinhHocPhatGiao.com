@@ -50,6 +50,7 @@ class DashboardPage extends Component
     public array $utilityForm = [
         'name' => '',
         'icon_url' => '',
+        'link_url' => '',
         'sort_order' => 1,
         'is_active' => true,
     ];
@@ -357,6 +358,7 @@ class DashboardPage extends Component
         $validated = $this->validate([
             'utilityForm.name' => ['required', 'string', 'max:255'],
             'utilityForm.icon_url' => ['nullable', 'url'],
+            'utilityForm.link_url' => ['nullable', 'string', 'max:2048'],
             'utilityForm.sort_order' => ['required', 'integer', 'min:1'],
             'utilityForm.is_active' => ['required', 'boolean'],
         ]);
@@ -376,6 +378,7 @@ class DashboardPage extends Component
         $this->utilityForm = [
             'name' => $utility->name,
             'icon_url' => $utility->icon_url ?? '',
+            'link_url' => $utility->link_url ?? '',
             'sort_order' => $utility->sort_order,
             'is_active' => $utility->is_active,
         ];
@@ -442,6 +445,7 @@ class DashboardPage extends Component
         $this->utilityForm = [
             'name' => '',
             'icon_url' => '',
+            'link_url' => '',
             'sort_order' => 1,
             'is_active' => true,
         ];

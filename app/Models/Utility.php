@@ -12,6 +12,7 @@ class Utility extends Model
     protected $fillable = [
         'name',
         'icon_url',
+        'link_url',
         'is_active',
         'sort_order',
     ];

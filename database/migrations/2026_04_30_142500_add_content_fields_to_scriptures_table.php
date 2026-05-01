@@ -10,6 +10,7 @@ return new class extends Migration
     {
         Schema::table('scriptures', function (Blueprint $table) {
             $table->longText('content_text')->nullable()->after('summary');
+            // Đường dẫn tương đối trong storage/app/public (qua disk public). PDF: scriptures/pdf/ten-file.pdf
             $table->string('content_file_path')->nullable()->after('content_text');
         });
     }

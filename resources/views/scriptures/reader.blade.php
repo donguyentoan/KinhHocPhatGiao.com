@@ -14,8 +14,26 @@
         .header { text-align: center; margin-bottom: 12px; }
         .header h1 { margin: 0; font-size: 46px; }
         .back-link { display: inline-block; margin-bottom: 12px; color: #8b5e34; text-decoration: none; font-weight: 700; font-size: 24px; }
-        .book-nav { display: flex; justify-content: space-between; max-width: 900px; margin: 0 auto 10px; }
+        .book-nav { display: flex; align-items: center; justify-content: space-between; gap: 10px; max-width: 900px; margin: 0 auto 10px; flex-wrap: wrap; }
         .book-nav button { border: 0; background: #8b5e34; color: #fff; border-radius: 999px; padding: 8px 14px; cursor: pointer; font-weight: 700; }
+        .jump-wrap { display: inline-flex; align-items: center; gap: 8px; color: #6d4621; font-weight: 700; }
+        .jump-wrap input {
+            width: 90px;
+            border: 1px solid #b9956e;
+            border-radius: 999px;
+            padding: 6px 10px;
+            font-weight: 700;
+            color: #4a2c11;
+            background: #fffaf2;
+            text-align: center;
+        }
+        .jump-wrap .total-pages { min-width: 56px; text-align: left; }
+        .jump-wrap button { padding: 6px 12px; }
+        .jump-message { min-height: 18px; max-width: 900px; margin: 0 auto 10px; color: #8b5e34; text-align: center; font-size: 14px; }
+        @media (max-width: 720px) {
+            .book-nav { justify-content: center; }
+            .jump-wrap { width: 100%; justify-content: center; }
+        }
         .book-wrap { width: 905px; margin: 0 auto; position: relative; }
         #mybook { width: 900px; height: 607px; margin: 0 auto; display: none; }
         #mybook .book { padding: 10px 16px 6px; height: 100%; box-sizing: border-box; }
@@ -47,8 +65,15 @@
         </div>
         <div class="book-nav">
             <button id="prev_page_button" type="button">← Trang trước</button>
+            <div class="jump-wrap">
+                <label for="jump_to_page">Đi tới trang</label>
+                <input id="jump_to_page" type="number" inputmode="numeric" min="1" step="1" value="1">
+                <span class="total-pages" id="total_pages_label">/ {{ count($pages) }}</span>
+                <button id="jump_to_page_button" type="button">Đi</button>
+            </div>
             <button id="next_page_button" type="button">Trang sau →</button>
         </div>
+        <div id="jump_message" class="jump-message"></div>
         <div class="book-wrap">
             <div id="mybook">
                 <div class="b-load">
@@ -74,6 +99,57 @@
             const $book = $('#mybook');
             if (!$book.length || !$.fn.booklet) return;
             let bookletInitialized = false;
+            let totalPages = 1;
+            let currentPage = 1;
+            const $jumpInput = $('#jump_to_page');
+            const $jumpButton = $('#jump_to_page_button');
+            const $totalPagesLabel = $('#total_pages_label');
+            const $jumpMessage = $('#jump_message');
+            const $prevButton = $('#prev_page_button');
+            const $nextButton = $('#next_page_button');
+
+            function normalizePage(value) {
+                const parsed = parseInt(value, 10);
+                if (Number.isNaN(parsed)) return null;
+                if (parsed < 1) return 1;
+                if (parsed > totalPages) return totalPages;
+                return parsed;
+            }
+
+            function setTotalPages(total) {
+                const safeTotal = Math.max(1, parseInt(total, 10) || 1);
+                totalPages = safeTotal;
+                $jumpInput.attr('max', safeTotal);
+                $totalPagesLabel.text('/ ' + safeTotal);
+                if (currentPage > safeTotal) {
+                    currentPage = safeTotal;
+                }
+                $jumpInput.val(currentPage);
+            }
+
+            function setCurrentPage(page, showClampNotice) {
+                const normalized = normalizePage(page);
+                if (normalized === null) return false;
+                currentPage = normalized;
+                $jumpInput.val(currentPage);
+                if (showClampNotice && parseInt(page, 10) !== normalized) {
+                    $jumpMessage.text('Đã giới hạn trong khoảng 1 đến ' + totalPages + '.');
+                } else {
+                    $jumpMessage.text('');
+                }
+                return true;
+            }
+
+            function gotoPage(page, showClampNotice) {
+                const normalized = normalizePage(page);
+                if (normalized === null) {
+                    $jumpMessage.text('Vui lòng nhập số trang hợp lệ.');
+                    return;
+                }
+                setCurrentPage(normalized, showClampNotice);
+                // Booklet uses zero-based internal index; convert from human page number.
+                $book.booklet(normalized - 1);
+            }
 
             function initBooklet() {
                 if (bookletInitialized) return;
@@ -90,6 +166,42 @@
                     tabs: false,
                     pageNumbers: true,
                     pagePadding: 0 /* Đã thêm pagePadding: 0 để xóa viền xám mặc định */
+                });
+                setCurrentPage(1, false);
+            }
+
+            function bindJumpControls() {
+                $jumpButton.click(function () {
+                    gotoPage($jumpInput.val(), true);
+                });
+
+                $jumpInput.keydown(function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        gotoPage($jumpInput.val(), true);
+                    }
+                });
+
+                $jumpInput.blur(function () {
+                    if ($jumpInput.val() === '') {
+                        setCurrentPage(currentPage, false);
+                        return;
+                    }
+                    const normalized = normalizePage($jumpInput.val());
+                    if (normalized === null) {
+                        $jumpMessage.text('Vui lòng nhập số trang hợp lệ.');
+                        setCurrentPage(currentPage, false);
+                        return;
+                    }
+                    setCurrentPage(normalized, true);
+                });
+
+                $prevButton.click(function () {
+                    setCurrentPage(currentPage - 1, false);
+                });
+
+                $nextButton.click(function () {
+                    setCurrentPage(currentPage + 1, false);
                 });
             }
 
@@ -115,6 +227,7 @@
                 }
 
                 $book.find('.b-load').html(fallbackHtml.join(''));
+                setTotalPages(Array.isArray(textPages) && textPages.length ? textPages.length : 1);
                 initBooklet();
             }
 
@@ -201,11 +314,13 @@
                             pagesHtml.push('<div class="book"><img class="pdf-page" src="' + pageImage + '" alt="Trang ' + i + '"></div>');
                         }
 
+                        const originalPageCount = pagesHtml.length;
                         if (pagesHtml.length % 2 !== 0) {
                             pagesHtml.push('<div class="book"><p></p></div>');
                         }
 
                         $load.html(pagesHtml.join(''));
+                        setTotalPages(originalPageCount);
                         initBooklet();
                     });
                 }
@@ -214,11 +329,14 @@
                 loadFirstAvailable(pdfLibSources)
                     .then(renderPdfBooklet)
                     .catch(function () {
+                        setTotalPages(@json(count($pages)));
                         renderTextFallback();
                     });
             @else
+                setTotalPages(@json(count($pages)));
                 initBooklet();
             @endif
+            bindJumpControls();
         });
     </script>
 </body>

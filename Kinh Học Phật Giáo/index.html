@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phụng Sự Nhân Sinh - Nhập Pháp Danh</title>
+ <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Noto+Serif+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+</head>
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                },
+            }
+        }
+    }
+</script>
+
+<body> 
+    <header class="z-50 bg-[#f9f3e6] border-b border-[#e5dec9] px-6 py-3 shadow-sm">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            
+            <!-- Logo bên trái -->
+            <div class="flex items-center gap-3 cursor-pointer group">
+                <img class="w-24 h-13" src="http://kinhhocphatgiao.local/image/logothb.png" alt="">
+            </div>
+    
+            <!-- Menu điều hướng ở giữa -->
+            <nav class="hidden lg:flex items-center gap-8">
+                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Đọc Kinh</a>
+                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Ngồi Thiền</a>
+                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Chuông Mõ</a>
+                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Lần Chuỗi Hạt</a>
+                <a href="#" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Nhạc Thiền</a>
+            </nav>
+    
+            <!-- Nút hành động bên phải -->
+            <div class="flex items-center gap-4">
+                <!-- Đăng nhập -->
+                <p class="flex items-center gap-2 px-5 py-2 text-[#4a2c11] font-bold text-sm rounded-lg hover:bg-[#efe7d5] transition-all">
+                    Xin chào, Thiện Hoằng Bảo!
+                </p>
+
+               
+                
+            </div>
+        </div>
+    </header>
+
+    <div class="py-4 container mx-auto font-sans  p-3 ">
+       <!-- Lịch Vạn Niên -->
+        <section class="w-full h-full flex md:flex-row flex-col bg-[#25282c] rounded-[20px] overflow-hidden ">
+    
+            <!-- Cột Trái: Dương Lịch & Hình ảnh -->
+            <div class="relative md:w-7/12 w-full flex flex-col p-10 overflow-hidden group">
+                <!-- Background Image -->
+                <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110" 
+                    style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20241013/pngtree-a-serene-and-peaceful-background-of-nature-with-lush-greenery-a-image_16380757.jpg');">
+                </div>
+                <!-- Overlay Gradient -->
+                <div class="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-transparent"></div>
+                
+                <div class="relative z-10">
+                    <!-- Đã bỏ phần Tiết khí ở đây -->
+                    <p id="txt-thu" class="text-white/80 font-medium text-xl italic">---</p>
+                </div>
+                
+                <div class="relative z-10 mt-auto">
+                    <h1 id="txt-ngayduong" class="text-white text-[120px] font-extrabold leading-none tracking-tighter drop-shadow-2xl">--</h1>
+                    <p id="txt-thangnamduong" class="text-white/90 text-2xl font-light tracking-[0.3em] uppercase mt-2">-- ----</p>
+                </div>
+            </div>
+        
+            <!-- Cột Phải: Âm Lịch & Nội dung -->
+            <div class="md:w-5/12 w-full bg-gradient-to-br from-[#e67e22] to-[#d35400] p-10 flex flex-col shadow-inner">
+                
+                <!-- Grid Âm Lịch -->
+                <div class="grid grid-cols-3 gap-4 text-center border-b border-white/10 pb-8 text-white">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Ngày</span>
+                        <span id="txt-ngayam" class="text-4xl font-extrabold tracking-tight">--</span>
+                        <span id="txt-canchingay" class="text-[10px] mt-2 font-semibold bg-black/10 rounded-md py-1 px-1">---</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Tháng</span>
+                        <span id="txt-thangam" class="text-4xl font-extrabold tracking-tight">--</span>
+                        <span id="txt-canchithang" class="text-[10px] mt-2 font-semibold bg-black/10 rounded-md py-1 px-1">---</span>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Năm</span>
+                        <span id="txt-namam" class="text-4xl font-extrabold tracking-tight">----</span>
+                        <span id="txt-canchinam" class="text-[10px] mt-2 font-semibold bg-black/10 rounded-md py-1 px-1">---</span>
+                    </div>
+                </div>
+        
+                <!-- Câu nói / Châm ngôn -->
+                <div class="flex-grow flex items-center justify-center py-6">
+                    <p class="text-center italic text-orange-50 leading-relaxed font-light text-sm opacity-90 px-4 relative">
+                        <span class="absolute -top-2 left-0 text-3xl opacity-30">“</span>
+                        Ý dẫn đầu các pháp, Ý làm chủ, ý tạo; Nếu với ý ô nhiễm, Nói lên hay hành động, Khổ não bước theo sau, Như xe, chân vật kéo.
+                        <span class="absolute -bottom-6 right-0 text-3xl opacity-30">”</span>
+                    </p>
+                </div>
+                
+                <!-- Đã bỏ phần Badge Trạng thái ở dưới cùng -->
+            </div>
+        </section>
+        <!-- Tiện Ích -->
+        <section class="py-8">
+            <!-- Tiêu đề mục: Giữ nguyên nội dung, nâng cấp thẩm mỹ -->
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-2 h-8 bg-[#8b5e34] rounded-full shadow-sm"></div>
+                <h3 class="font-serif text-3xl font-bold text-[#4a2c11] tracking-tight">Tiện ích</h3>
+            </div>
+        
+            <!-- Grid Layout: 2 cột trên mobile, 3 trên tablet, 4 trên desktop -->
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                
+                <!-- Card: Máy niệm phật -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Máy niệm phật">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Máy niệm phật</span>
+                </div>
+        
+                <!-- Card: Đọc kinh -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Đọc kinh">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Đọc kinh</span>
+                </div>
+        
+                <!-- Card: Ngồi thiền -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Ngồi thiền">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Ngồi thiền</span>
+                </div>
+        
+                <!-- Card: Chuông mõ -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Chuông mõ">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Chuông mõ</span>
+                </div>
+        
+                <!-- Card: Lần chuỗi hạt -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Lần chuỗi hạt">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Lần chuỗi hạt</span>
+                </div>
+        
+                <!-- Card: Ảnh đẹp -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Ảnh đẹp">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Ảnh đẹp</span>
+                </div>
+        
+                <!-- Card: Nhạc thiền -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Nhạc thiền">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Nhạc thiền</span>
+                </div>
+        
+                <!-- Card: Sự kiện trong năm -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Sự kiện trong năm">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Sự kiện trong năm</span>
+                </div>
+        
+                <!-- Card: Thông tin lịch tháng -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Thông tin lịch tháng">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Thông tin lịch tháng</span>
+                </div>
+        
+                <!-- Card: Thư viện bổn tôn -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Thư viện bổn tôn">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Thư viện bổn tôn</span>
+                </div>
+        
+                <!-- Card: Sự kiện cá nhân -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Sự kiện cá nhân">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Sự kiện cá nhân</span>
+                </div>
+        
+                <!-- Card: Liên hệ hỗ trợ -->
+                <div class="group bg-white/50 backdrop-blur-md border border-gray-300 rounded-2xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:bg-white hover:shadow-xl hover:shadow-[#8b5e34]/10 hover:-translate-y-1 cursor-pointer">
+                    <div class="w-16 h-16 mb-3 flex items-center justify-center rounded-full bg-orange-50 group-hover:bg-orange-100 transition-colors">
+                        <img class="w-12 h-12 object-contain group-hover:scale-110 transition-transform duration-300" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQK3vqaAlAVrF3ICG82_XpZPi4ebsNR1HEd-Q&s" alt="Liên hệ hỗ trợ">
+                    </div>
+                    <span class="text-[#4a2c11] font-semibold text-sm group-hover:text-[#8b5e34] transition-colors">Liên hệ hỗ trợ</span>
+                </div>
+        
+            </div>
+        </section>
+        <!-- Thư Viện Kinh Điển -->
+        <section class="py-8">
+            <!-- Tiêu đề mục -->
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div>
+                <h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Thư Viện Kinh Điển</h3>
+            </div>
+
+            
+    
+            <!-- Grid Danh sách -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+                
+                <!-- Loại 1: Kinh -->
+                <div class="group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer">
+                    <div class="w-14 h-14 bg-orange-100 rounded-2xl flex items-center justify-center text-[#8b5e34] mb-6 group-hover:bg-[#8b5e34] group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-book-open text-2xl"></i>
+                    </div>
+                    <h4 class="font-serif text-xl font-bold text-[#4a2c11] mb-2">Hệ Thống Kinh</h4>
+                    <p class="text-sm text-[#8b5e34]/70 leading-relaxed mb-4 line-clamp-2">Các bộ kinh căn bản từ sơ cấp đến đại thừa.</p>
+                    <span class="text-xs font-bold uppercase tracking-widest text-[#8b5e34] flex items-center gap-2">
+                        Xem 120 bài <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </span>
+                </div>
+    
+                <!-- Loại 2: Kinh Địa Tạng -->
+                <div class="group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer">
+                    <div class="w-14 h-14 bg-red-100 rounded-2xl flex items-center justify-center text-red-700 mb-6 group-hover:bg-red-700 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-gopuram text-2xl"></i>
+                    </div>
+                    <h4 class="font-serif text-xl font-bold text-[#4a2c11] mb-2">Kinh Địa Tạng</h4>
+                    <p class="text-sm text-[#8b5e34]/70 leading-relaxed mb-4 line-clamp-2">Nguyện lực vĩ đại, hiếu đạo và giải thoát siêu độ.</p>
+                    <span class="text-xs font-bold uppercase tracking-widest text-red-700 flex items-center gap-2">
+                        Đang đọc <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </span>
+                </div>
+    
+                <!-- Loại 3: Chú -->
+                <div class="group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer">
+                    <div class="w-14 h-14 bg-purple-100 rounded-2xl flex items-center justify-center text-purple-700 mb-6 group-hover:bg-purple-700 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-hand-holding-magic text-2xl"></i>
+                    </div>
+                    <h4 class="font-serif text-xl font-bold text-[#4a2c11] mb-2">Mật Chú</h4>
+                    <p class="text-sm text-[#8b5e34]/70 leading-relaxed mb-4 line-clamp-2">Chú Đại Bi, Chú Lăng Nghiêm và các chân ngôn tâm linh.</p>
+                    <span class="text-xs font-bold uppercase tracking-widest text-purple-700 flex items-center gap-2">
+                        Xem 45 chú <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </span>
+                </div>
+    
+                <!-- Loại 4: Kinh tụng hằng ngày -->
+                <div class="group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer">
+                    <div class="w-14 h-14 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-700 mb-6 group-hover:bg-blue-700 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-sun text-2xl"></i>
+                    </div>
+                    <h4 class="font-serif text-xl font-bold text-[#4a2c11] mb-2">Tụng Hằng Ngày</h4>
+                    <p class="text-sm text-[#8b5e34]/70 leading-relaxed mb-4 line-clamp-2">Nghi thức tụng niệm sớm tối cho Phật tử tại gia.</p>
+                    <span class="text-xs font-bold uppercase tracking-widest text-blue-700 flex items-center gap-2">
+                        Bắt đầu ngay <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </span>
+                </div>
+    
+                <!-- Loại 5: Sám -->
+                <div class="group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer">
+                    <div class="w-14 h-14 bg-emerald-100 rounded-2xl flex items-center justify-center text-emerald-700 mb-6 group-hover:bg-emerald-700 group-hover:text-white transition-colors">
+                        <i class="fa-solid fa-hands-praying text-2xl"></i>
+                    </div>
+                    <h4 class="font-serif text-xl font-bold text-[#4a2c11] mb-2">Văn Sám Hối</h4>
+                    <p class="text-sm text-[#8b5e34]/70 leading-relaxed mb-4 line-clamp-2">Các bài văn sám nguyện, thanh tịnh thân tâm.</p>
+                    <span class="text-xs font-bold uppercase tracking-widest text-emerald-700 flex items-center gap-2">
+                        Xem 15 bài <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                    </span>
+                </div>
+    
+            </div>
+        </section>
+        <!-- Bài Tụng Phổ Biến -->
+        <section class="py-8">
+            <div class="flex items-center justify-between mb-10">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div>
+                    <h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài Tụng Phổ Biến</h3>
+                </div>
+                <a href="#" class="group text-[#8b5e34] text-xs font-bold uppercase tracking-widest flex items-center gap-2">
+                    Xem tất cả <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </a>
+            </div>
+
+            <!-- Grid 4 Cột -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                
+                <!-- Card 1: Kinh Phổ Môn -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <!-- Image Header -->
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=500" 
+                            alt="Kinh Phổ Môn" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-orange-500 text-white font-bold uppercase backdrop-blur-md">Kinh</span>
+                    </div>
+                    <!-- Content -->
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Kinh Phổ Môn (Cầu An)
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 25 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 1.2k lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Chú Đại Bi -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&q=80&w=500" 
+                            alt="Chú Đại Bi" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-purple-600 text-white font-bold uppercase backdrop-blur-md">Chú</span>
+                    </div>
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Chú Đại Bi (84 Biến)
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 45 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 3.5k lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Kinh A Di Đà -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1590731130394-77c8e9982496?auto=format&fit=crop&q=80&w=500" 
+                            alt="Kinh A Di Đà" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-blue-600 text-white font-bold uppercase backdrop-blur-md">Tụng Ngày</span>
+                    </div>
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Kinh A Di Đà
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 30 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 850 lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 4: Sám Hối -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&q=80&w=500" 
+                            alt="Sám Hối" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-emerald-600 text-white font-bold uppercase backdrop-blur-md">Sám Hối</span>
+                    </div>
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Sám Hối Hồng Danh
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 2.1k lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                        <!-- Card 1: Kinh Phổ Môn -->
+                        <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                            <!-- Image Header -->
+                            <div class="relative h-44 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=500" 
+                                    alt="Kinh Phổ Môn" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-orange-500 text-white font-bold uppercase backdrop-blur-md">Kinh</span>
+                            </div>
+                            <!-- Content -->
+                            <div class="p-6">
+                                <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                                    Kinh Phổ Môn (Cầu An)
+                                </h5>
+                                <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 25 phút</span>
+                                    <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 1.2k lượt tụng</span>
+                                </div>
+                                <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                                    Bắt đầu tụng
+                                </button>
+                            </div>
+                        </div>
+                
+                        <!-- Card 2: Chú Đại Bi -->
+                        <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                            <div class="relative h-44 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&q=80&w=500" 
+                                    alt="Chú Đại Bi" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-purple-600 text-white font-bold uppercase backdrop-blur-md">Chú</span>
+                            </div>
+                            <div class="p-6">
+                                <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                                    Chú Đại Bi (84 Biến)
+                                </h5>
+                                <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 45 phút</span>
+                                    <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 3.5k lượt tụng</span>
+                                </div>
+                                <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                                    Bắt đầu tụng
+                                </button>
+                            </div>
+                        </div>
+                
+                        <!-- Card 3: Kinh A Di Đà -->
+                        <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                            <div class="relative h-44 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1590731130394-77c8e9982496?auto=format&fit=crop&q=80&w=500" 
+                                    alt="Kinh A Di Đà" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-blue-600 text-white font-bold uppercase backdrop-blur-md">Tụng Ngày</span>
+                            </div>
+                            <div class="p-6">
+                                <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                                    Kinh A Di Đà
+                                </h5>
+                                <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 30 phút</span>
+                                    <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 850 lượt tụng</span>
+                                </div>
+                                <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                                    Bắt đầu tụng
+                                </button>
+                            </div>
+                        </div>
+                
+                        <!-- Card 4: Sám Hối -->
+                        <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                            <div class="relative h-44 overflow-hidden">
+                                <img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&q=80&w=500" 
+                                    alt="Sám Hối" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-emerald-600 text-white font-bold uppercase backdrop-blur-md">Sám Hối</span>
+                            </div>
+                            <div class="p-6">
+                                <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                                    Sám Hối Hồng Danh
+                                </h5>
+                                <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                                    <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 phút</span>
+                                    <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 2.1k lượt tụng</span>
+                                </div>
+                                <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                                    Bắt đầu tụng
+                                </button>
+                            </div>
+                        </div>
+                                <!-- Card 1: Kinh Phổ Môn -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <!-- Image Header -->
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=500" 
+                            alt="Kinh Phổ Môn" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-orange-500 text-white font-bold uppercase backdrop-blur-md">Kinh</span>
+                    </div>
+                    <!-- Content -->
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Kinh Phổ Môn (Cầu An)
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 25 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 1.2k lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Chú Đại Bi -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&q=80&w=500" 
+                            alt="Chú Đại Bi" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-purple-600 text-white font-bold uppercase backdrop-blur-md">Chú</span>
+                    </div>
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Chú Đại Bi (84 Biến)
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 45 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 3.5k lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Kinh A Di Đà -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1590731130394-77c8e9982496?auto=format&fit=crop&q=80&w=500" 
+                            alt="Kinh A Di Đà" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-blue-600 text-white font-bold uppercase backdrop-blur-md">Tụng Ngày</span>
+                    </div>
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Kinh A Di Đà
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 30 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 850 lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card 4: Sám Hối -->
+                <div class="group bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 border border-[#e5dec9]/50">
+                    <div class="relative h-44 overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&q=80&w=500" 
+                            alt="Sám Hối" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 left-4 text-[10px] px-3 py-1 rounded-full bg-emerald-600 text-white font-bold uppercase backdrop-blur-md">Sám Hối</span>
+                    </div>
+                    <div class="p-6">
+                        <h5 class="font-bold text-[#4a2c11] text-lg leading-snug mb-3 group-hover:text-[#8b5e34] transition-colors line-clamp-2 h-14">
+                            Sám Hối Hồng Danh
+                        </h5>
+                        <div class="flex items-center justify-between text-[11px] text-[#8b5e34]/60 mb-6">
+                            <span class="flex items-center gap-1"><i class="fa-regular fa-clock"></i> 40 phút</span>
+                            <span class="flex items-center gap-1"><i class="fa-solid fa-hands-praying"></i> 2.1k lượt tụng</span>
+                        </div>
+                        <button class="w-full py-3 bg-[#f9f3e6] text-[#4a2c11] rounded-2xl font-bold text-sm group-hover:bg-[#8b5e34] group-hover:text-white transition-all shadow-inner">
+                            Bắt đầu tụng
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        <!-- Bài viết đọc nhiều trong tuần -->
+        <section class="py-8">
+            <!-- Tiêu đề Section -->
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div>
+                <h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài viết đọc nhiều trong tuần</h3>
+            </div>
+
+            <!-- Danh sách bài viết (Dạng List) -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                
+                <!-- Bài viết 1 -->
+                <div class="flex gap-4 group cursor-pointer">
+                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                        <img src="https://png.pngtree.com/thumb_back/fh260/background/20250224/pngtree-a-small-buddha-statue-sits-on-top-of-smooth-black-rocks-image_16948733.jpg" 
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                            Truyện cổ Phật giáo: Một lời ác ý, trăm năm chịu khổ
+                        </h4>
+                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                            Người xưa có câu: "Ác giả ác báo, thiện giả thiện lai", chỉ một lời nói không hay cũng có thể...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bài viết 2 -->
+                <div class="flex gap-4 group cursor-pointer">
+                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                        <img src="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&q=80&w=300" 
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                            Ác giả ác báo theo quan điểm của nhà Phật
+                        </h4>
+                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                            Đức Phật khai thị một dạng thức chung nhất: Ác giả ác báo. Nó không thiên vị một ai, không...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bài viết 3 -->
+                <div class="flex gap-4 group cursor-pointer">
+                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                        <img src="https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=300" 
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                            Có nên thờ cốt tại nhà? Người mất đã tái sinh thì việc cúng giỗ...
+                        </h4>
+                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                            Vì giải tỏa nghĩa địa nên gia đình tôi đem hài cốt bố mẹ và thân nhân hỏa thiêu, đưa về...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Bài viết 4 -->
+                <div class="flex gap-4 group cursor-pointer">
+                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                        <img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&q=80&w=300" 
+                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                    </div>
+                    <div class="flex flex-col justify-center">
+                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                            Người mất trong 49 ngày rất trông mong người thân làm phước
+                        </h4>
+                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                            Trích: Địa Tạng Bồ Tát Bổn Nguyện Kinh Giảng Ký. Kinh văn: "Khi người chết đó chưa...
+                        </p>
+                    </div>
+                </div>
+
+                                <!-- Bài viết 1 -->
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                                        <img src="https://png.pngtree.com/thumb_back/fh260/background/20250224/pngtree-a-small-buddha-statue-sits-on-top-of-smooth-black-rocks-image_16948733.jpg" 
+                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                                            Truyện cổ Phật giáo: Một lời ác ý, trăm năm chịu khổ
+                                        </h4>
+                                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                                            Người xưa có câu: "Ác giả ác báo, thiện giả thiện lai", chỉ một lời nói không hay cũng có thể...
+                                        </p>
+                                    </div>
+                                </div>
+                
+                                <!-- Bài viết 2 -->
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                                        <img src="https://images.unsplash.com/photo-1604881991720-f91add269bed?auto=format&fit=crop&q=80&w=300" 
+                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                                            Ác giả ác báo theo quan điểm của nhà Phật
+                                        </h4>
+                                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                                            Đức Phật khai thị một dạng thức chung nhất: Ác giả ác báo. Nó không thiên vị một ai, không...
+                                        </p>
+                                    </div>
+                                </div>
+                
+                                <!-- Bài viết 3 -->
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                                        <img src="https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&q=80&w=300" 
+                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                                            Có nên thờ cốt tại nhà? Người mất đã tái sinh thì việc cúng giỗ...
+                                        </h4>
+                                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                                            Vì giải tỏa nghĩa địa nên gia đình tôi đem hài cốt bố mẹ và thân nhân hỏa thiêu, đưa về...
+                                        </p>
+                                    </div>
+                                </div>
+                
+                                <!-- Bài viết 4 -->
+                                <div class="flex gap-4 group cursor-pointer">
+                                    <div class="w-32 h-32 flex-shrink-0 overflow-hidden rounded-2xl border border-[#e5dec9]">
+                                        <img src="https://images.unsplash.com/photo-1542332213-9b5a5a3fad35?auto=format&fit=crop&q=80&w=300" 
+                                            class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+                                    </div>
+                                    <div class="flex flex-col justify-center">
+                                        <h4 class="font-bold text-[#4a2c11] leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2">
+                                            Người mất trong 49 ngày rất trông mong người thân làm phước
+                                        </h4>
+                                        <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">
+                                            Trích: Địa Tạng Bồ Tát Bổn Nguyện Kinh Giảng Ký. Kinh văn: "Khi người chết đó chưa...
+                                        </p>
+                                    </div>
+                                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const dictionary = {
+            '甲': 'Giáp', '乙': 'Ất', '丙': 'Bính', '丁': 'Đinh', '戊': 'Mậu', '己': 'Kỷ', '庚': 'Canh', '辛': 'Tân', '壬': 'Nhâm', '癸': 'Quý',
+            '子': 'Tý', '丑': 'Sửu', '寅': 'Dần', '卯': 'Mão', '辰': 'Thìn', '巳': 'Tỵ', '午': 'Ngọ', '未': 'Mùi', '申': 'Thân', '酉': 'Dậu', '戌': 'Tuất', '亥': 'Hợi'
+        };
+    
+        function translate(text) {
+            return text.split('').map(char => dictionary[char] || char).join(' ');
+        }
+    
+        function runCalendar() {
+            if (typeof Solar === 'undefined') return;
+            const now = new Date();
+            const solar = Solar.fromDate(now);
+            const lunar = solar.getLunar();
+    
+            // Cập nhật Dương lịch
+            document.getElementById('txt-thu').innerText = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"][now.getDay()];
+            document.getElementById('txt-ngayduong').innerText = now.getDate().toString().padStart(2, '0');
+            document.getElementById('txt-thangnamduong').innerText = `Tháng ${(now.getMonth() + 1).toString().padStart(2, '0')} · ${now.getFullYear()}`;
+    
+            // Cập nhật Âm lịch
+            document.getElementById('txt-ngayam').innerText = lunar.getDay();
+            document.getElementById('txt-thangam').innerText = lunar.getMonth();
+            document.getElementById('txt-namam').innerText = lunar.getYear();
+    
+            // Cập nhật Can Chi
+            document.getElementById('txt-canchingay').innerText = translate(lunar.getDayInGanZhi());
+            document.getElementById('txt-canchithang').innerText = translate(lunar.getMonthInGanZhi());
+            document.getElementById('txt-canchinam').innerText = translate(lunar.getYearInGanZhi());
+        }
+    
+        window.onload = runCalendar;
+    </script>
+
+
+<footer class="bg-[#f3ead7] border-t border-[#e5dec9]">
+    <div class="max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+
+        <!-- Logo + mô tả -->
+        <div>
+            <img src="http://kinhhocphatgiao.local/image/logothb.png" class="w-28 mb-4">
+            <p class="text-sm text-[#6b4f2c] leading-relaxed">
+                Nơi chia sẻ kinh điển, thiền định và giá trị sống an lạc theo giáo lý nhà Phật.
+            </p>
+        </div>
+
+        <!-- Điều hướng -->
+        <div>
+            <h4 class="font-bold text-[#4a2c11] mb-4">Điều hướng</h4>
+            <ul class="space-y-2 text-sm text-[#6b4f2c]">
+                <li><a href="#" class="hover:text-[#8b5e34]">Đọc Kinh</a></li>
+                <li><a href="#" class="hover:text-[#8b5e34]">Ngồi Thiền</a></li>
+                <li><a href="#" class="hover:text-[#8b5e34]">Chuông Mõ</a></li>
+                <li><a href="#" class="hover:text-[#8b5e34]">Nhạc Thiền</a></li>
+            </ul>
+        </div>
+
+        <!-- Nội dung -->
+        <div>
+            <h4 class="font-bold text-[#4a2c11] mb-4">Nội dung</h4>
+            <ul class="space-y-2 text-sm text-[#6b4f2c]">
+                <li><a href="#" class="hover:text-[#8b5e34]">Kinh Phật</a></li>
+                <li><a href="#" class="hover:text-[#8b5e34]">Mật Chú</a></li>
+                <li><a href="#" class="hover:text-[#8b5e34]">Sám Hối</a></li>
+                <li><a href="#" class="hover:text-[#8b5e34]">Bài viết</a></li>
+            </ul>
+        </div>
+
+        <!-- Liên hệ -->
+        <div>
+            <h4 class="font-bold text-[#4a2c11] mb-4">Liên hệ</h4>
+            <p class="text-sm text-[#6b4f2c] mb-3">Email: contact@phungsunhansinh.vn</p>
+            <p class="text-sm text-[#6b4f2c] mb-4">Hotline: 0900.xxx.xxx</p>
+
+            <div class="flex gap-3">
+                <a href="#" class="w-9 h-9 flex items-center justify-center bg-[#e5dec9] rounded-full hover:bg-[#8b5e34] hover:text-white transition">
+                    <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a href="#" class="w-9 h-9 flex items-center justify-center bg-[#e5dec9] rounded-full hover:bg-[#8b5e34] hover:text-white transition">
+                    <i class="fa-brands fa-youtube"></i>
+                </a>
+                <a href="#" class="w-9 h-9 flex items-center justify-center bg-[#e5dec9] rounded-full hover:bg-[#8b5e34] hover:text-white transition">
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom -->
+    <div class="border-t border-[#e5dec9] text-center py-4 text-xs text-[#6b4f2c]">
+        © 2026 Phụng Sự Nhân Sinh. All rights reserved.
+    </div>
+</footer>
+
+</body>
+</html>
+

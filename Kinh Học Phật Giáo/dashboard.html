@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zen Admin System - Full Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: 'Quicksand', sans-serif; background-color: #f8f5f2; background-image: url("https://www.transparenttextures.com/patterns/p6.png"); }
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.4); }
+        .sidebar-link.active { background-color: #8b5e34; color: white; box-shadow: 0 4px 12px rgba(139, 94, 52, 0.2); }
+        .content-section { display: none; }
+        .content-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #8b5e3433; border-radius: 10px; }
+        
+        .modal-active { animation: modalIn 0.3s ease-out; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="text-[#4a2c11] flex h-screen overflow-hidden">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 border-r border-[#8b5e34]/10 flex flex-col p-6 glass">
+        <div class="flex items-center gap-3 mb-12 px-2">
+            <div class="w-10 h-10 shadow-2xl rounded-2xl flex items-center justify-center text-white bg-[#8b5e34]">
+                <i data-lucide="flower-2" class="w-6 h-6"></i>
+            </div>
+            <span class="font-serif text-2xl font-bold">An Nhiên</span>
+        </div>
+
+        <nav class="space-y-2 flex-1">
+            <button onclick="showSection('tong-quan')" class="sidebar-link active w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60" data-section="tong-quan">
+                <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Tổng quan
+            </button>
+            <button onclick="showSection('kinh-phat')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60" data-section="kinh-phat">
+                <i data-lucide="scroll" class="w-5 h-5"></i> Kinh Phật
+            </button>
+            <button onclick="showSection('loai-kinh')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60" data-section="loai-kinh">
+                <i data-lucide="layers" class="w-5 h-5"></i> Loại Kinh
+            </button>
+            <button onclick="showSection('bai-viet')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60" data-section="bai-viet">
+                <i data-lucide="pen-tool" class="w-5 h-5"></i> Bài viết
+            </button>
+            <button onclick="showSection('tien-ich')" class="sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60" data-section="tien-ich">
+                <i data-lucide="component" class="w-5 h-5"></i> Tiện ích
+            </button>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 overflow-y-auto">
+        <header class="p-4 flex justify-between items-center sticky top-0 z-20 glass">
+            <h1 id="page-title" class="text-2xl font-serif font-bold">Tổng quan</h1>
+            <div class="flex items-center gap-3 glass p-1.5 pr-5 rounded-full shadow-sm">
+                <div class="w-10 h-10 rounded-full bg-[#d4a373] flex items-center justify-center text-white">
+                    <i data-lucide="user" class="w-5 h-5"></i>
+                </div>
+                <span class="text-sm font-bold">Admin Zen</span>
+            </div>
+        </header>
+
+        <div class="p-8">
+            
+            <!-- SECTION: TỔNG QUAN -->
+            <div id="tong-quan" class="content-section active">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                    <div class="glass p-6 rounded-[2.5rem] shadow-sm border-none relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-bold text-[#8b5e34]/60 uppercase tracking-[0.2em]">Tổng Kinh Văn</p>
+                            <h2 class="text-3xl font-serif font-bold mt-2">1,284</h2>
+                            <div class="flex items-center gap-2 mt-4 text-green-600 text-xs font-bold">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i>
+                                <span>+12% tháng này</span>
+                            </div>
+                        </div>
+                        <i data-lucide="scroll" class="absolute -right-2 -bottom-2 w-24 h-24 text-[#8b5e34]/5 -rotate-12 group-hover:rotate-0 transition-transform duration-500"></i>
+                    </div>
+                    <!-- Stats Card 2 -->
+                    <div class="glass p-6 rounded-[2.5rem] shadow-sm border-none relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-bold text-[#8b5e34]/60 uppercase tracking-[0.2em]">Bài viết mới</p>
+                            <h2 class="text-3xl font-serif font-bold mt-2">45</h2>
+                            <div class="flex items-center gap-2 mt-4 text-green-600 text-xs font-bold">
+                                <i data-lucide="trending-up" class="w-4 h-4"></i>
+                                <span>+5 bài tuần này</span>
+                            </div>
+                        </div>
+                        <i data-lucide="pen-tool" class="absolute -right-2 -bottom-2 w-24 h-24 text-[#8b5e34]/5 -rotate-12 group-hover:rotate-0 transition-transform duration-500"></i>
+                    </div>
+                    <!-- Stats Card 3 -->
+                    <div class="glass p-6 rounded-[2.5rem] shadow-sm border-none relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-bold text-[#8b5e34]/60 uppercase tracking-[0.2em]">Lượt tiếp cận</p>
+                            <h2 class="text-3xl font-serif font-bold mt-2">12.5k</h2>
+                            <div class="flex items-center gap-2 mt-4 text-[#8b5e34] text-xs font-bold">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                                <span>Trực tuyến: 142</span>
+                            </div>
+                        </div>
+                        <i data-lucide="eye" class="absolute -right-2 -bottom-2 w-24 h-24 text-[#8b5e34]/5 -rotate-12 group-hover:rotate-0 transition-transform duration-500"></i>
+                    </div>
+                    <!-- Stats Card 4 -->
+                    <div class="glass p-6 rounded-[2.5rem] shadow-sm border-none relative overflow-hidden group">
+                        <div class="relative z-10">
+                            <p class="text-[10px] font-bold text-[#8b5e34]/60 uppercase tracking-[0.2em]">Thời gian đọc TB</p>
+                            <h2 class="text-3xl font-serif font-bold mt-2">18p</h2>
+                            <div class="flex items-center gap-2 mt-4 text-amber-600 text-xs font-bold">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                                <span>Tăng 2p</span>
+                            </div>
+                        </div>
+                        <i data-lucide="hourglass" class="absolute -right-2 -bottom-2 w-24 h-24 text-[#8b5e34]/5 -rotate-12 group-hover:rotate-0 transition-transform duration-500"></i>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2 glass p-8 rounded-[3rem] shadow-sm">
+                        <div class="flex justify-between items-center mb-8">
+                            <h3 class="text-lg font-serif font-bold">Tăng trưởng lượt đọc</h3>
+                            <select class="bg-white/50 border-none rounded-full px-4 py-1.5 text-xs font-bold cursor-pointer outline-none">
+                                <option>Tuần này</option>
+                                <option>Tháng này</option>
+                            </select>
+                        </div>
+                        <div class="h-[300px] w-full"><canvas id="lineChart"></canvas></div>
+                    </div>
+                    <div class="glass p-8 rounded-[3rem] shadow-sm">
+                        <h3 class="text-lg font-serif font-bold mb-8">Phân bổ Kinh Văn</h3>
+                        <div class="h-[250px]"><canvas id="doughnutChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: KINH PHẬT -->
+            <div id="kinh-phat" class="content-section">
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between gap-4 mb-8">
+                        <div class="relative">
+                            <input type="text" placeholder="Tìm kiếm kinh văn..." class="pl-12 pr-6 py-3 glass rounded-full w-full md:w-80 focus:outline-none focus:ring-2 focus:ring-[#8b5e34]/20">
+                            <i data-lucide="search" class="absolute left-4 top-3.5 text-[#8b5e34]/40 w-5 h-5"></i>
+                        </div>
+                        <button onclick="openModal('modal-kinh-phat')" class="bg-[#4a2c11] text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-[#8b5e34] transition-all">
+                            <i data-lucide="plus" class="w-5 h-5"></i> Thêm Kinh Phật
+                        </button>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[#8b5e34]/50 text-xs uppercase tracking-widest border-b border-[#8b5e34]/10">
+                                <th class="pb-4">Tên Bài Kinh</th>
+                                <th class="pb-4">Phân Loại</th>
+                                <th class="pb-4">Ngày Thêm</th>
+                                <th class="pb-4 text-right">Hành Động</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                <td class="py-4 font-bold text-[#4a2c11]">Kinh Bát Nhã Ba La Mật Đa</td>
+                                <td class="py-4">Kinh Bộ Tùng Thư</td>
+                                <td class="py-4">20/04/2026</td>
+                                <td class="py-4 text-right space-x-2">
+                                    <button class="p-2 text-gray-400 hover:text-[#8b5e34]"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                    <button class="p-2 text-gray-400 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION: LOẠI KINH -->
+            <div id="loai-kinh" class="content-section">
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex justify-between items-center mb-8">
+                        <h3 class="text-xl font-serif font-bold">Phân Loại Kinh</h3>
+                        <button onclick="openModal('modal-loai-kinh')" class="text-sm px-6 py-2.5 bg-[#8b5e34] text-white rounded-full font-bold hover:shadow-lg transition-all">+ Thêm Loại Mới</button>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="p-5 bg-white/40 rounded-2xl border border-[#8b5e34]/10 flex justify-between items-center">
+                            <div><p class="font-bold">Kinh Bộ Tùng Thư</p><p class="text-xs text-[#8b5e34]/60">12 bài kinh</p></div>
+                            <div class="flex gap-1">
+                                <button class="p-2 text-gray-400 hover:text-[#8b5e34]"><i data-lucide="edit-2" class="w-4 h-4"></i></button>
+                                <button class="p-2 text-gray-400 hover:text-red-400"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION: BÀI VIẾT -->
+            <div id="bai-viet" class="content-section">
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between gap-4 mb-8">
+                        <div class="relative">
+                            <input type="text" placeholder="Tìm tiêu đề bài viết..." class="pl-12 pr-6 py-3 glass rounded-full w-full md:w-80 focus:outline-none focus:ring-2 focus:ring-[#8b5e34]/20">
+                            <i data-lucide="search" class="absolute left-4 top-3.5 text-[#8b5e34]/40 w-5 h-5"></i>
+                        </div>
+                        <button onclick="openModal('modal-bai-viet')" class="bg-[#4a2c11] text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-[#8b5e34] transition-all shadow-lg">
+                            <i data-lucide="pen-tool" class="w-5 h-5"></i> Viết Bài Mới
+                        </button>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[#8b5e34]/50 text-xs uppercase tracking-widest border-b border-[#8b5e34]/10">
+                                <th class="pb-4">Tiêu Đề Bài Viết</th>
+                                <th class="pb-4">Trạng Thái</th>
+                                <th class="pb-4">Ngày Đăng</th>
+                                <th class="pb-4 text-right">Thao Tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                <td class="py-5 font-bold text-[#4a2c11]">Học cách buông bỏ để tâm an lạc</td>
+                                <td class="py-5"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Công khai</span></td>
+                                <td class="py-5 text-gray-500">15/04/2026</td>
+                                <td class="py-5 text-right space-x-2">
+                                    <button class="p-2 text-gray-300 hover:text-[#8b5e34]"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                                    <button class="p-2 text-gray-300 hover:text-red-500"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- SECTION: TIỆN ÍCH -->
+            <div id="tien-ich" class="content-section">
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+                        <div class="bg-white/40 border border-[#8b5e34]/5 p-6 rounded-[2rem] flex flex-col items-center hover:shadow-xl transition-all">
+                            <div class="w-14 h-14 mb-4 bg-orange-50 rounded-2xl flex items-center justify-center">
+                                <i data-lucide="music" class="text-orange-500"></i>
+                            </div>
+                            <span class="text-xs font-bold text-center mb-5">Máy Niệm Phật</span>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" checked class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#8b5e34]"></div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- MODAL: THÊM KINH PHẬT -->
+   <!-- MODAL: THÊM KINH PHẬT (Cập nhật có Upload File) -->
+<div id="modal-kinh-phat" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+    <div class="glass w-full max-w-2xl rounded-[2.5rem] p-8 shadow-2xl modal-active overflow-y-auto max-h-[90vh]">
+        <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-2xl font-serif font-bold">Thêm Kinh Văn Mới</h2>
+                <p class="text-[10px] text-[#8b5e34]/60 font-bold uppercase tracking-wider">Nhập liệu thủ công hoặc tải lên tệp tin</p>
+            </div>
+            <button onclick="closeModal('modal-kinh-phat')" class="p-2 hover:bg-[#8b5e34]/10 rounded-full transition-all"><i data-lucide="x"></i></button>
+        </div>
+        
+        <form class="space-y-5">
+            <!-- Tên & Loại -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Tên bài kinh</label>
+                    <input type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none" placeholder="Nhập tên kinh...">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Loại kinh</label>
+                    <select class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none appearance-none">
+                        <option>Kinh Bộ Tùng Thư</option>
+                        <option>Kinh Chú</option>
+                        <option>Kinh Nhật Tụng</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Upload File Area -->
+            <div class="space-y-2">
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] px-1">Tải lên tệp nội dung (Tùy chọn)</label>
+                <div id="drop-zone" class="relative group border-2 border-dashed border-[#8b5e34]/20 rounded-3xl p-6 transition-all hover:border-[#8b5e34]/40 hover:bg-[#8b5e34]/5 flex flex-col items-center justify-center cursor-pointer">
+                    <input type="file" id="file-upload" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" accept=".txt,.doc,.docx,.pdf">
+                    <div class="flex flex-col items-center text-center space-y-2">
+                        <div class="w-12 h-12 rounded-2xl bg-[#8b5e34]/10 flex items-center justify-center text-[#8b5e34] group-hover:scale-110 transition-transform">
+                            <i data-lucide="file-up" class="w-6 h-6"></i>
+                        </div>
+                        <p class="text-xs font-bold text-[#4a2c11]/70">Kéo thả tệp hoặc click để chọn</p>
+                        <p class="text-[10px] text-[#8b5e34]/50">Hỗ trợ PDF, DOCX, TXT (Tối đa 10MB)</p>
+                    </div>
+                    <!-- File Preview (Ẩn mặc định) -->
+                    <div id="file-name-preview" class="hidden mt-2 flex items-center gap-2 bg-[#8b5e34] text-white px-3 py-1 rounded-full text-[10px] font-bold">
+                        <i data-lucide="file-text" class="w-3 h-3"></i>
+                        <span id="display-file-name"></span>
+                        <button type="button" id="remove-file" class="hover:text-red-300"><i data-lucide="x" class="w-3 h-3"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Nội dung chính -->
+            <div>
+                <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Nội dung kinh văn</label>
+                <textarea id="kinh-content" rows="6" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-none" placeholder="Nhập nội dung bài kinh hoặc nội dung sẽ tự động trích xuất từ file..."></textarea>
+            </div>
+
+            <div class="flex gap-3 pt-2">
+                <button type="button" onclick="closeModal('modal-kinh-phat')" class="flex-1 py-3 rounded-full font-bold border border-[#8b5e34]/20 hover:bg-white transition-all text-sm">Hủy bỏ</button>
+                <button type="submit" class="flex-1 py-3 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-lg transition-all text-sm">Lưu Kinh Văn</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    <!-- MODAL: THÊM LOẠI KINH -->
+    <div id="modal-loai-kinh" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="glass w-full max-w-md rounded-[2.5rem] p-8 shadow-2xl modal-active">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-serif font-bold">Danh mục mới</h2>
+                <button onclick="closeModal('modal-loai-kinh')" class="p-2 hover:bg-[#8b5e34]/10 rounded-full"><i data-lucide="x"></i></button>
+            </div>
+            <form class="space-y-5">
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Tên danh mục</label>
+                    <input type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none" placeholder="VD: Kinh A Hàm...">
+                </div>
+                <div>
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Mô tả</label>
+                    <textarea rows="3" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-none" placeholder="Mô tả ngắn về loại kinh này..."></textarea>
+                </div>
+                <button type="submit" class="w-full py-3 mt-4 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-lg transition-all">Tạo danh mục</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: THÊM BÀI VIẾT -->
+    <div id="modal-bai-viet" class="fixed inset-0 z-[100] hidden flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+        <div class="glass w-full max-w-4xl rounded-[2.5rem] p-8 shadow-2xl modal-active overflow-y-auto max-h-[90vh]">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-serif font-bold">Viết Bài Chia Sẻ</h2>
+                <button onclick="closeModal('modal-bai-viet')" class="p-2 hover:bg-[#8b5e34]/10 rounded-full"><i data-lucide="x"></i></button>
+            </div>
+            <form class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="md:col-span-2 space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Tiêu đề bài viết</label>
+                        <input type="text" class="w-full px-5 py-4 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none font-bold text-lg" placeholder="Nhập tiêu đề...">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Nội dung chi tiết</label>
+                        <textarea rows="12" class="w-full px-5 py-4 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-none" placeholder="Bắt đầu câu chuyện của bạn..."></textarea>
+                    </div>
+                </div>
+                <div class="space-y-6">
+                    <div class="p-6 bg-[#8b5e34]/5 rounded-[2rem] border border-[#8b5e34]/10">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-4">Ảnh bìa</label>
+                        <div class="w-full h-40 border-2 border-dashed border-[#8b5e34]/20 rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-white/50 cursor-pointer transition-all">
+                            <i data-lucide="image-plus" class="text-[#8b5e34]/30 w-8 h-8"></i>
+                            <span class="text-[10px] font-bold opacity-50">Upload Image</span>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Chế độ hiển thị</label>
+                        <select class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 outline-none">
+                            <option>Lưu bản nháp</option>
+                            <option>Công khai ngay</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="w-full py-4 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-xl shadow-[#4a2c11]/20 transition-all">Xuất bản bài viết</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Khởi tạo Lucide Icons
+        lucide.createIcons();
+
+        // Xử lý chuyển đổi Section
+        function showSection(sectionId) {
+            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(sectionId).classList.add('active');
+
+            document.querySelectorAll('.sidebar-link').forEach(l => {
+                l.classList.remove('active');
+                if(l.getAttribute('data-section') === sectionId) l.classList.add('active');
+            });
+
+            const titles = {
+                'tong-quan': 'Tổng quan hệ thống',
+                'kinh-phat': 'Danh sách Kinh Phật',
+                'loai-kinh': 'Quản lý Loại Kinh',
+                'bai-viet': 'Danh sách Bài viết',
+                'tien-ich': 'Trung tâm Tiện ích'
+            };
+            document.getElementById('page-title').innerText = titles[sectionId];
+        }
+
+        // Xử lý Modal
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Chart.js Configuration
+        document.addEventListener('DOMContentLoaded', function() {
+            const ctxLine = document.getElementById('lineChart').getContext('2d');
+            new Chart(ctxLine, {
+                type: 'line',
+                data: {
+                    labels: ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'],
+                    datasets: [{
+                        data: [1200, 1900, 1500, 2500, 2200, 3000, 3500],
+                        borderColor: '#8b5e34',
+                        backgroundColor: 'rgba(139, 94, 52, 0.1)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 3,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { display: false }, x: { grid: { display: false } } }
+                }
+            });
+
+            const ctxDoughnut = document.getElementById('doughnutChart').getContext('2d');
+            new Chart(ctxDoughnut, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Kinh Bộ', 'Kinh Chú', 'Khác'],
+                    datasets: [{
+                        data: [45, 30, 25],
+                        backgroundColor: ['#8b5e34', '#4a2c11', '#d4a373'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '80%',
+                    plugins: { legend: { position: 'bottom', labels: { font: { family: 'Quicksand', weight: 'bold' } } } }
+                }
+            });
+        });
+
+        // Click outside modal to close
+        window.onclick = function(event) {
+            if (event.target.classList.contains('fixed')) {
+                event.target.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('file-upload');
+    const dropZone = document.getElementById('drop-zone');
+    const fileNamePreview = document.getElementById('file-name-preview');
+    const displayFileName = document.getElementById('display-file-name');
+    const removeFileBtn = document.getElementById('remove-file');
+    const kinhContent = document.getElementById('kinh-content');
+
+    // Hiển thị tên file khi chọn
+    fileInput.addEventListener('change', function(e) {
+        if (this.files && this.files[0]) {
+            const file = this.files[0];
+            displayFileName.textContent = file.name;
+            fileNamePreview.classList.remove('hidden');
+            
+            // Một chút "Zen" giả lập: Thông báo file đã sẵn sàng
+            // Lưu ý: Để đọc file thực tế, bạn cần dùng thư viện như Mammoth.js (docx) hoặc PDF.js
+            console.log("File đã được chọn: " + file.name);
+        }
+    });
+
+    // Nút xóa file đã chọn
+    removeFileBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        fileInput.value = '';
+        fileNamePreview.classList.add('hidden');
+    });
+
+    // Hiệu ứng kéo thả
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.add('bg-[#8b5e34]/10', 'border-[#8b5e34]');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.remove('bg-[#8b5e34]/10', 'border-[#8b5e34]');
+        }, false);
+    });
+});
+    </script>
+</body>
+</html>

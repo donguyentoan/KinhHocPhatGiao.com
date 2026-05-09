@@ -58,8 +58,6 @@
                 <a href="{{ route('tools.show', 'chuong-mo') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Chuông Mõ</a>
                 <a href="{{ route('tools.show', 'lan-chuoi-hat') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Lần chuỗi hạt</a>
                 <a href="{{ route('tools.show', 'nhac-thien') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Nhạc Thiền</a>
-                <a href="{{ route('tools.show', 'su-kien-trong-nam') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Sự kiện</a>
-                <a href="{{ route('tools.show', 'lien-he-ho-tro') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Liên hệ</a>
             </nav>
             <div class="flex items-center gap-4 flex-wrap justify-end">
                 <x-auth-nav />

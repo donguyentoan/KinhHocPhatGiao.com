@@ -1,0 +1,14 @@
+# Sao chép thành ~/.cloudflared/config.yml và điền TUNNEL_ID + hostname + port Local của bạn.
+#
+# Lấy TUNNEL_ID: chạy  cloudflared tunnel create kinhhocphatgiaocom
+# Port Local: mở Local → site → xem URL (vd http://kinhhocphatgiaocom.local:10018) → dùng 10018
+
+tunnel: YOUR_TUNNEL_UUID_HERE
+credentials-file: /Users/YOUR_USER/.cloudflared/YOUR_TUNNEL_UUID_HERE.json
+
+ingress:
+  - hostname: dev.example.com
+    service: http://127.0.0.1:REPLACE_WITH_LOCAL_PORT
+    originRequest:
+      httpHostHeader: kinhhocphatgiaocom.local
+  - service: http_status:404

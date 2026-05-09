@@ -10,6 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&family=Noto+Serif+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <x-pwa-meta />
     @stack('head')
 </head>
 <body class="bg-[#f9f3e6] text-[#4a2c11] min-h-screen" style="font-family: 'Plus Jakarta Sans', sans-serif;">
@@ -38,5 +39,6 @@
     </main>
 
     <x-site-footer />
+    <x-pwa-install-banner />
 </body>
 </html>

@@ -16,10 +16,12 @@
         .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.4); }
         .sidebar-link.active { background-color: #8b5e34; color: white; box-shadow: 0 4px 12px rgba(139, 94, 52, 0.2); }
     </style>
+    <x-pwa-meta />
     @livewireStyles
 </head>
 <body class="text-[#4a2c11] bg-[#f8f5f2]" style="font-family: 'Quicksand', sans-serif; background-color: #f8f5f2; background-image: url('https://www.transparenttextures.com/patterns/p6.png');">
     {{ $slot }}
+    <x-pwa-install-banner />
     @livewireScripts
 </body>
 </html>

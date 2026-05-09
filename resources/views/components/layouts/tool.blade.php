@@ -3,6 +3,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }} — Kinh Học Phật Giáo</title>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -22,6 +23,7 @@
                 <h1 class="font-serif text-lg font-bold text-[#4a2c11]">{{ $title }}</h1>
             </div>
             <nav class="flex flex-wrap items-center gap-4 text-sm font-medium">
+                <x-auth-nav class="mr-2 border-r border-[#e5dec9] pr-4" />
                 <a href="{{ route('tools.show', 'may-niem-phat') }}" class="hover:text-[#8b5e34]">Máy niệm Phật</a>
                 <a href="/#thu-vien-kinh-dien" class="hover:text-[#8b5e34]">Đọc kinh</a>
                 <a href="{{ route('tools.show', 'ngoi-thien') }}" class="hover:text-[#8b5e34]">Ngồi thiền</a>

@@ -1,4 +1,51 @@
 <div>
+    @if($showIntroModal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center p-3 bg-black/50 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="intro-modal-title">
+            <div class="w-full max-w-4xl max-h-[92vh] overflow-y-auto rounded-[2rem] shadow-2xl border border-white/50 bg-[radial-gradient(circle,_#fff9e6_0%,_#f7e8ad_100%)] font-['Noto_Serif_Display']">
+                <div class="flex flex-col md:flex-row bg-white/40 backdrop-blur-md rounded-[2rem] overflow-hidden">
+                    <div class="md:w-2/3 p-4 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-amber-200/50">
+                        <div class="relative mb-4 md:mb-6">
+                            <img class="h-40 md:h-56 mx-auto rounded-full drop-shadow-[0_0_20px_rgba(255,215,0,0.3)]" src="https://www.daophatngaynay.com/buddha-moi.gif" alt="Đức Phật">
+                        </div>
+                        <div class="text-center space-y-3">
+                            <h2 id="intro-modal-title" class="font-['Dancing_Script'] text-4xl md:text-5xl text-amber-700 leading-tight">Phụng sự nhân sinh</h2>
+                            <div class="h-[1px] w-32 mx-auto bg-gradient-to-r from-transparent via-amber-700 to-transparent my-3"></div>
+                            <p class="text-lg md:text-xl text-gray-700 italic">Tốt đời - đẹp đạo</p>
+                            <p class="font-['Dancing_Script'] text-2xl md:text-3xl text-amber-900">Hộ quốc <span class="text-amber-500 mx-2">•</span> An dân</p>
+                        </div>
+                        <div class="mt-6 opacity-60">
+                            <img class="mx-auto w-12" src="https://www.daophatngaynay.com/logo_tron.gif" alt="">
+                        </div>
+                    </div>
+                    <div class="md:w-1/3 p-6 md:p-10 bg-white/20 flex flex-col justify-center">
+                        <div class="space-y-6">
+                            <div class="text-center md:text-left">
+                                <h3 class="text-amber-800 font-bold tracking-[0.2em] text-sm uppercase mb-2">Pháp danh Phật tử</h3>
+                                <p class="text-sm text-amber-900/60 italic">Vui lòng nhập pháp danh của bạn</p>
+                            </div>
+                            <div class="space-y-3">
+                                <input
+                                    type="text"
+                                    wire:model.defer="introDharmaName"
+                                    placeholder="Ví dụ: Chúc An..."
+                                    class="w-full px-4 py-2 rounded-xl bg-white/70 border border-amber-200 text-amber-900 placeholder-amber-900/30 text-base focus:outline-none"
+                                >
+                                @error('introDharmaName')
+                                    <p class="text-sm text-red-700">{{ $message }}</p>
+                                @enderror
+                                <div class="flex flex-col gap-2">
+                                    <button type="button" wire:click="saveIntro" class="w-full py-2.5 bg-amber-700 hover:bg-amber-800 text-white rounded-xl font-bold transition-all">Lưu thông tin</button>
+                                    <button type="button" wire:click="skipIntro" class="w-full py-2.5 bg-transparent border border-amber-700/30 text-amber-800 hover:bg-amber-700/5 rounded-xl font-medium">Để sau</button>
+                                </div>
+                            </div>
+                            <p class="text-center text-[11px] text-amber-800/40 uppercase tracking-[0.25em]">Tâm an vạn sự an</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+
     <header style="max-height: 77px" class="z-50 bg-[#f9f3e6] border-b border-[#e5dec9] px-6 py-3 shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <a href="{{ route('home') }}" class="flex items-center gap-3">
@@ -14,13 +61,20 @@
                 <a href="{{ route('tools.show', 'su-kien-trong-nam') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Sự kiện</a>
                 <a href="{{ route('tools.show', 'lien-he-ho-tro') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Liên hệ</a>
             </nav>
-            <div class="flex items-center gap-4">
-                <p class="flex items-center gap-2 px-5 py-2 text-[#4a2c11] font-bold text-sm rounded-lg hover:bg-[#efe7d5] transition-all">
-                    Xin chào, Thiện Hoằng Bảo!
-                </p>
+            <div class="flex items-center gap-4 flex-wrap justify-end">
+                <x-auth-nav />
+                <a href="{{ route('account') }}" class="flex items-center gap-2 px-5 py-2 text-[#4a2c11] font-bold text-sm rounded-lg hover:bg-[#efe7d5] transition-all">
+                    Xin chào, {{ $profileName }}!
+                </a>
             </div>
         </div>
     </header>
+
+    @if(session('auth_notice'))
+        <div class="bg-amber-100 border-b border-amber-200 text-amber-950 text-sm text-center py-2 px-4 font-medium">
+            {{ session('auth_notice') }}
+        </div>
+    @endif
 
     <div class="py-4 container mx-auto font-sans p-3">
         <section class="w-full h-full flex md:flex-row flex-col bg-[#25282c] rounded-[20px] overflow-hidden">
@@ -47,6 +101,8 @@
                 </div>
             </div>
         </section>
+
+        <x-daily-wish-moment :wishes="$dailyWishes" />
 
         <section class="py-8">
             <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full shadow-sm"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11] tracking-tight">Tiện ích</h3></div>

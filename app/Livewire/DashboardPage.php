@@ -2,12 +2,15 @@
 
 namespace App\Livewire;
 
+use App\Models\DailyWish;
 use App\Models\Post;
+use App\Models\PracticeProfile;
 use App\Models\Scripture;
 use App\Models\ScriptureCategory;
 use App\Models\Utility;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
@@ -24,6 +27,7 @@ class DashboardPage extends Component
     public bool $showCategoryModal = false;
     public bool $showPostModal = false;
     public bool $showUtilityModal = false;
+    public bool $showDailyWishModal = false;
 
     public array $scriptureForm = [
         'title' => '',
@@ -55,20 +59,85 @@ class DashboardPage extends Component
         'is_active' => true,
     ];
 
+    public string $practiceProfileSearch = '';
+
+    public array $dailyWishForm = [
+        'text' => '',
+        'icon' => 'lotus',
+        'sort_order' => 0,
+        'is_active' => true,
+    ];
+
+    public ?int $editingDailyWishId = null;
+
     public ?int $editingScriptureId = null;
     public ?int $editingPostId = null;
     public ?int $editingCategoryId = null;
     public ?int $editingUtilityId = null;
+
     public $scriptureImageFile = null;
     public $scriptureContentFile = null;
     public $postImageFile = null;
     public ?string $scriptureImagePreview = null;
     public ?string $postImagePreview = null;
 
+    public ?string $migrateFlash = null;
+
+    public ?string $migrateFlashType = null;
+
     public function setSection(string $section): void
     {
         $this->activeSection = $section;
         $this->dispatch('dashboard-section-changed');
+    }
+
+    public function runPendingMigrations(): void
+    {
+        $this->migrateFlash = null;
+        $this->migrateFlashType = null;
+
+        $pending = $this->pendingMigrationNames();
+
+        if ($pending === []) {
+            $this->migrateFlash = 'Không có migration nào đang chờ chạy.';
+            $this->migrateFlashType = 'info';
+
+            return;
+        }
+
+        $exitCode = Artisan::call('migrate', ['--force' => true]);
+        $output = trim(Artisan::output());
+
+        if ($exitCode !== 0) {
+            $this->migrateFlash = $output !== '' ? $output : 'Chạy migrate không thành công.';
+            $this->migrateFlashType = 'error';
+
+            return;
+        }
+
+        $this->migrateFlash = $output !== '' ? $output : 'Đã chạy migrate thành công.';
+        $this->migrateFlashType = 'success';
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function pendingMigrationNames(): array
+    {
+        try {
+            $migrator = app('migrator');
+
+            if (! $migrator->repositoryExists()) {
+                return [];
+            }
+
+            $files = $migrator->getMigrationFiles([database_path('migrations')]);
+            $ran = $migrator->getRepository()->getRan();
+
+            return collect($files)->keys()->diff($ran)->values()->all();
+        } catch (\Throwable) {
+            return [];
+        }
     }
 
     public function openScriptureModal(?int $id = null): void
@@ -392,12 +461,86 @@ class DashboardPage extends Component
         }
     }
 
+    public function deletePracticeProfile(int $id): void
+    {
+        PracticeProfile::query()->whereKey($id)->delete();
+    }
+
     public function toggleUtility(int $id): void
     {
         $utility = Utility::query()->findOrFail($id);
         $utility->update([
             'is_active' => ! $utility->is_active,
         ]);
+    }
+
+    public function openDailyWishModal(?int $id = null): void
+    {
+        $this->resetErrorBag();
+        if ($id) {
+            $wish = DailyWish::query()->findOrFail($id);
+            $this->editingDailyWishId = $id;
+            $this->dailyWishForm = [
+                'text' => $wish->text,
+                'icon' => $wish->icon,
+                'sort_order' => $wish->sort_order,
+                'is_active' => $wish->is_active,
+            ];
+        } else {
+            $this->resetDailyWishForm();
+        }
+        $this->showDailyWishModal = true;
+    }
+
+    public function closeDailyWishModal(): void
+    {
+        $this->showDailyWishModal = false;
+        $this->resetDailyWishForm();
+    }
+
+    public function saveDailyWish(): void
+    {
+        $validated = $this->validate([
+            'dailyWishForm.text' => ['required', 'string', 'max:5000'],
+            'dailyWishForm.icon' => ['required', Rule::in(['lotus', 'light', 'meditation'])],
+            'dailyWishForm.sort_order' => ['required', 'integer', 'min:0', 'max:65535'],
+            'dailyWishForm.is_active' => ['required', 'boolean'],
+        ]);
+
+        if ($this->editingDailyWishId) {
+            DailyWish::query()->whereKey($this->editingDailyWishId)->update($validated['dailyWishForm']);
+        } else {
+            DailyWish::query()->create($validated['dailyWishForm']);
+        }
+
+        $this->closeDailyWishModal();
+    }
+
+    public function deleteDailyWish(int $id): void
+    {
+        DailyWish::query()->whereKey($id)->delete();
+        if ($this->editingDailyWishId === $id) {
+            $this->resetDailyWishForm();
+        }
+    }
+
+    public function toggleDailyWish(int $id): void
+    {
+        $wish = DailyWish::query()->findOrFail($id);
+        $wish->update([
+            'is_active' => ! $wish->is_active,
+        ]);
+    }
+
+    public function resetDailyWishForm(): void
+    {
+        $this->editingDailyWishId = null;
+        $this->dailyWishForm = [
+            'text' => '',
+            'icon' => 'lotus',
+            'sort_order' => (int) DailyWish::query()->max('sort_order') + 1,
+            'is_active' => true,
+        ];
     }
 
     public function resetScriptureForm(): void
@@ -456,7 +599,17 @@ class DashboardPage extends Component
         $totalScriptures = Scripture::query()->count();
         $totalPosts = Post::query()->count();
 
+        $practiceProfileQuery = PracticeProfile::query()
+            ->withCount('activities')
+            ->orderByDesc('last_seen_at');
+
+        if (filled($this->practiceProfileSearch)) {
+            $term = '%' . addcslashes($this->practiceProfileSearch, '%_\\') . '%';
+            $practiceProfileQuery->where('dharma_name', 'like', $term);
+        }
+
         return view('livewire.dashboard-page', [
+            'pendingMigrations' => $this->pendingMigrationNames(),
             'stats' => [
                 ['label' => 'Tổng Kinh Văn', 'value' => number_format($totalScriptures), 'description' => 'Dữ liệu hiện có'],
                 ['label' => 'Bài Viết', 'value' => number_format($totalPosts), 'description' => 'Đã xuất bản'],
@@ -467,6 +620,9 @@ class DashboardPage extends Component
             'posts' => Post::query()->latest('published_at')->get(),
             'categories' => ScriptureCategory::query()->withCount('scriptures')->orderBy('name')->get(),
             'utilities' => Utility::query()->orderBy('sort_order')->get(),
+            'practiceProfiles' => $practiceProfileQuery->take(500)->get(),
+            'practiceProfileCount' => PracticeProfile::query()->count(),
+            'dailyWishes' => DailyWish::query()->ordered()->get(),
         ]);
     }
 }

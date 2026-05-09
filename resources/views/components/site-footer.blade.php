@@ -15,6 +15,7 @@
                 <li><a href="{{ route('tools.show', 'nhac-thien') }}">Nhạc Thiền</a></li>
                 <li><a href="{{ route('tools.show', 'su-kien-trong-nam') }}">Sự kiện trong năm</a></li>
                 <li><a href="{{ route('tools.show', 'lien-he-ho-tro') }}">Liên hệ hỗ trợ</a></li>
+                <li><x-donate-link variant="text" class="text-[#6b4f2c]" /></li>
             </ul>
         </div>
         <div>

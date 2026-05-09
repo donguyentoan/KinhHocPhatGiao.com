@@ -12,11 +12,13 @@
             <button wire:click="setSection('loai-kinh')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'loai-kinh'])><x-icon name="layers" class="w-5 h-5" />Loại Kinh</button>
             <button wire:click="setSection('bai-viet')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'bai-viet'])><x-icon name="pen-tool" class="w-5 h-5" />Bài viết</button>
             <button wire:click="setSection('tien-ich')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'tien-ich'])><x-icon name="component" class="w-5 h-5" />Tiện ích</button>
+            <button wire:click="setSection('loi-nguyen')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'loi-nguyen'])><x-icon name="flower-2" class="w-5 h-5" />Lời nguyện</button>
+            <button wire:click="setSection('phat-tu')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'phat-tu'])><x-icon name="users" class="w-5 h-5" />Phật tử</button>
         </nav>
     </aside>
 
     <main class="flex-1 overflow-y-auto">
-        <header class="p-4 flex justify-between items-center sticky top-0 z-20 glass">
+        <header class="p-4 flex flex-wrap justify-between items-center gap-3 sticky top-0 z-20 glass">
             <h1 class="text-2xl font-serif font-bold">
                 @php
                     $titles = [
@@ -25,20 +27,74 @@
                         'loai-kinh' => 'Quản lý Loại Kinh',
                         'bai-viet' => 'Danh sách Bài viết',
                         'tien-ich' => 'Trung tâm Tiện ích',
+                        'loi-nguyen' => 'Lời nguyện & quán chiếu (trang chủ)',
+                        'phat-tu' => 'Phật tử đã lưu tài khoản tu học',
                     ];
                 @endphp
                 {{ $titles[$activeSection] ?? 'Dashboard' }}
             </h1>
-            <div class="flex items-center gap-3 glass p-1.5 pr-5 rounded-full shadow-sm">
+            <div class="flex flex-wrap items-center gap-2">
+            <button type="button"
+                wire:click="runPendingMigrations"
+                wire:confirm="Chạy migrate sẽ thay đổi cơ sở dữ liệu. Tiếp tục?"
+                wire:loading.attr="disabled"
+                wire:target="runPendingMigrations"
+                class="inline-flex items-center gap-2 rounded-full border-2 border-[#8b5e34]/40 bg-white/70 px-4 py-2 text-sm font-bold text-[#4a2c11] shadow-sm transition hover:bg-[#8b5e34]/10 disabled:opacity-60 disabled:cursor-not-allowed">
+                <x-icon name="layers" class="w-4 h-4 text-[#8b5e34]" />
+                <span wire:loading.remove wire:target="runPendingMigrations">Migrate</span>
+                <span wire:loading wire:target="runPendingMigrations" class="inline-flex items-center gap-1.5">
+                    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                    Đang chạy…
+                </span>
+                @if(count($pendingMigrations) > 0)
+                    <span class="min-w-[1.25rem] rounded-full bg-amber-500 px-1.5 text-center text-[11px] font-extrabold text-white">{{ count($pendingMigrations) }}</span>
+                @endif
+            </button>
+            <div class="flex items-center gap-3 glass p-1.5 pl-2 pr-2 rounded-full shadow-sm">
                 <div class="w-10 h-10 rounded-full bg-[#d4a373] flex items-center justify-center text-white">
                     <x-icon name="user" class="w-5 h-5" />
                 </div>
-                <span class="text-sm font-bold">Admin Zen</span>
+                <span class="text-sm font-bold max-w-[8rem] truncate" title="{{ auth()->user()->phone }}">{{ auth()->user()->name }}</span>
+                <form method="POST" action="{{ route('logout') }}" class="pl-2 border-l border-[#8b5e34]/15">
+                    @csrf
+                    <button type="submit" class="text-xs font-bold text-[#8b5e34] hover:underline px-2">Đăng xuất</button>
+                </form>
+            </div>
             </div>
         </header>
 
         <div class="p-8">
+            @if(filled($migrateFlash))
+                <div @class([
+                    'mb-6 p-5 rounded-[2rem] text-sm font-medium border',
+                    'bg-emerald-50 text-emerald-900 border-emerald-200' => $migrateFlashType === 'success',
+                    'bg-red-50 text-red-900 border-red-200' => $migrateFlashType === 'error',
+                    'bg-amber-50 text-amber-950 border-amber-200' => $migrateFlashType === 'info',
+                ])>
+                    <pre class="whitespace-pre-wrap font-sans text-[13px] leading-relaxed m-0">{{ $migrateFlash }}</pre>
+                </div>
+            @endif
+
             @if($activeSection === 'tong-quan')
+                @if(count($pendingMigrations) > 0)
+                    <div class="glass p-6 md:p-8 rounded-[2.5rem] shadow-sm border-2 border-amber-300/60 mb-10">
+                        <div class="flex items-start gap-3 mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 shrink-0">
+                                <x-icon name="layers" class="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-serif font-bold text-[#4a2c11]">Migration chưa chạy</h3>
+                                <p class="text-sm text-[#6b4f2c] mt-1">Có {{ count($pendingMigrations) }} file chưa áp dụng. Bấm nút <strong class="text-[#4a2c11]">Migrate</strong> trên thanh trên để chạy (<code class="text-xs bg-white/60 px-1.5 py-0.5 rounded">php artisan migrate --force</code>).</p>
+                            </div>
+                        </div>
+                        <ul class="space-y-2 text-sm font-mono text-[#4a2c11]/90 bg-white/40 rounded-2xl p-4 max-h-48 overflow-y-auto border border-[#8b5e34]/10">
+                            @foreach($pendingMigrations as $name)
+                                <li class="truncate" title="{{ $name }}">{{ $name }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
                     @foreach($stats as $index => $stat)
                         <div class="glass p-6 rounded-[2.5rem] shadow-sm border-none relative overflow-hidden group">
@@ -198,6 +254,131 @@
                                 </div>
                             </div>
                         @endforeach
+                    </div>
+                </div>
+            @endif
+
+            @if($activeSection === 'loi-nguyen')
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                        <div>
+                            <h2 class="text-xl font-serif font-bold text-[#4a2c11]">Danh sách lời nguyện</h2>
+                            <p class="text-sm text-[#8b5e34]/80 mt-1">Chỉ các mục <strong>bật hiển thị</strong> mới xuất hiện trên trang chủ. Icon: sen / ánh sáng / thiền.</p>
+                        </div>
+                        <button type="button" wire:click="openDailyWishModal" class="bg-[#4a2c11] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#8b5e34] transition-all shadow-lg w-fit">+ Thêm lời nguyện</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left min-w-[640px]">
+                            <thead>
+                                <tr class="text-[#8b5e34]/50 text-xs uppercase tracking-widest border-b border-[#8b5e34]/10">
+                                    <th class="pb-4 pr-4">Nội dung</th>
+                                    <th class="pb-4 pr-4">Icon</th>
+                                    <th class="pb-4 pr-4">Thứ tự</th>
+                                    <th class="pb-4 pr-4">Trạng thái</th>
+                                    <th class="pb-4 text-right">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                @forelse($dailyWishes as $wish)
+                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                        <td class="py-4 pr-4 max-w-md">
+                                            <p class="text-[#4a2c11] line-clamp-3 whitespace-pre-line">{{ $wish->text }}</p>
+                                        </td>
+                                        <td class="py-4 pr-4 font-mono text-xs">{{ $wish->icon }}</td>
+                                        <td class="py-4 pr-4 tabular-nums">{{ $wish->sort_order }}</td>
+                                        <td class="py-4 pr-4">
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input wire:change="toggleDailyWish({{ $wish->id }})" type="checkbox" @checked($wish->is_active) class="sr-only peer">
+                                                <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#8b5e34] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                            </label>
+                                        </td>
+                                        <td class="py-4 text-right space-x-1">
+                                            <button type="button" wire:click="openDailyWishModal({{ $wish->id }})" class="p-2 text-gray-400 hover:text-[#8b5e34]" title="Sửa"><x-icon name="edit-3" class="w-4 h-4" /></button>
+                                            <button type="button" wire:click="deleteDailyWish({{ $wish->id }})" wire:confirm="Xóa lời nguyện này?" class="p-2 text-gray-400 hover:text-red-500" title="Xóa"><x-icon name="trash-2" class="w-4 h-4" /></button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="5" class="py-10 text-center text-[#8b5e34]/70">
+                                            Chưa có dữ liệu. Chạy <code class="text-xs bg-black/5 px-2 py-0.5 rounded">php artisan migrate</code> rồi
+                                            <code class="text-xs bg-black/5 px-2 py-0.5 rounded">php artisan db:seed --class=DailyWishSeeder</code> để nhập từ file JSON mẫu.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            @endif
+
+            @if($activeSection === 'phat-tu')
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4 mb-8">
+                        <div>
+                            <p class="text-xs font-bold text-[#8b5e34]/70 uppercase tracking-widest mb-2">Tổng: {{ number_format($practiceProfileCount) }} hồ sơ</p>
+                            <p class="text-sm text-[#4a2c11]/80 max-w-xl">
+                                Danh sách người dùng đã lưu pháp danh trên trang chủ (nhận diện theo thiết bị). Hiển thị tối đa 500 bản ghi mới hoạt động gần đây.
+                            </p>
+                        </div>
+                        <div class="relative w-full lg:w-80">
+                            <input
+                                type="text"
+                                wire:model.live.debounce.300ms="practiceProfileSearch"
+                                placeholder="Tìm theo pháp danh..."
+                                class="pl-12 pr-6 py-3 glass rounded-full w-full focus:outline-none"
+                            >
+                            <x-icon name="search" class="absolute left-4 top-3.5 text-[#8b5e34]/40 w-5 h-5" />
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left min-w-[720px]">
+                            <thead>
+                                <tr class="text-[#8b5e34]/50 text-xs uppercase tracking-widest border-b border-[#8b5e34]/10">
+                                    <th class="pb-4 pr-4">Pháp danh</th>
+                                    <th class="pb-4 pr-4">Mã thiết bị</th>
+                                    <th class="pb-4 pr-4">Giới thiệu</th>
+                                    <th class="pb-4 pr-4">Hoạt động</th>
+                                    <th class="pb-4 pr-4">Lần cuối</th>
+                                    <th class="pb-4 pr-4">Tạo</th>
+                                    <th class="pb-4 text-right">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                @forelse($practiceProfiles as $practiceProfile)
+                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                        <td class="py-4 font-bold text-[#4a2c11] pr-4">{{ $practiceProfile->dharma_name }}</td>
+                                        <td class="py-4 pr-4 font-mono text-xs text-[#8b5e34]/80" title="{{ $practiceProfile->session_key }}">
+                                            {{ \Illuminate\Support\Str::limit($practiceProfile->session_key, 14, '…') }}
+                                        </td>
+                                        <td class="py-4 pr-4">
+                                            @if($practiceProfile->intro_completed_at)
+                                                <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-[10px] font-bold uppercase">Đã hoàn tất</span>
+                                            @else
+                                                <span class="bg-amber-100 text-amber-900 px-2 py-1 rounded-full text-[10px] font-bold uppercase">Chưa xong</span>
+                                            @endif
+                                        </td>
+                                        <td class="py-4 pr-4 tabular-nums">{{ number_format($practiceProfile->activities_count) }}</td>
+                                        <td class="py-4 pr-4 text-gray-600 whitespace-nowrap">{{ optional($practiceProfile->last_seen_at)->format('d/m/Y H:i') ?? '—' }}</td>
+                                        <td class="py-4 pr-4 text-gray-600 whitespace-nowrap">{{ $practiceProfile->created_at->format('d/m/Y') }}</td>
+                                        <td class="py-4 text-right">
+                                            <button
+                                                type="button"
+                                                wire:click="deletePracticeProfile({{ $practiceProfile->id }})"
+                                                wire:confirm="Xóa hồ sơ này và toàn bộ nhật ký tu học liên quan?"
+                                                class="p-2 text-gray-400 hover:text-red-500"
+                                                title="Xóa"
+                                            >
+                                                <x-icon name="trash-2" class="w-4 h-4" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-10 text-center text-[#8b5e34]/70">Chưa có hồ sơ phật tử nào.</td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             @endif
@@ -404,6 +585,50 @@
                         @error('postForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
                         @error('postImageFile') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
                         <button type="submit" class="w-full py-4 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-xl shadow-[#4a2c11]/20 transition-all">Xuất bản bài viết</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    @if($showDailyWishModal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+            <div class="glass w-full max-w-lg rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif font-bold">{{ $editingDailyWishId ? 'Cập nhật lời nguyện' : 'Lời nguyện mới' }}</h2>
+                    <button type="button" wire:click="closeDailyWishModal" class="p-2 hover:bg-[#8b5e34]/10 rounded-full" aria-label="Đóng modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/>
+                        </svg>
+                    </button>
+                </div>
+                <form wire:submit="saveDailyWish" class="space-y-5">
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Nội dung (xuống dòng được)</label>
+                        <textarea wire:model="dailyWishForm.text" rows="8" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-y text-sm" placeholder="Mỗi đoạn có thể xuống dòng..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Icon</label>
+                            <select wire:model="dailyWishForm.icon" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 outline-none">
+                                <option value="lotus">Hoa sen</option>
+                                <option value="light">Ánh sáng</option>
+                                <option value="meditation">Thiền</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Thứ tự hiển thị</label>
+                            <input wire:model="dailyWishForm.sort_order" type="number" min="0" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 outline-none">
+                        </div>
+                    </div>
+                    <label class="inline-flex items-center gap-3 cursor-pointer">
+                        <input wire:model="dailyWishForm.is_active" type="checkbox" class="rounded border-[#8b5e34]/30 text-[#8b5e34] focus:ring-[#8b5e34]">
+                        <span class="text-sm font-semibold text-[#4a2c11]">Hiển thị trên trang chủ</span>
+                    </label>
+                    @error('dailyWishForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" wire:click="closeDailyWishModal" class="flex-1 py-3 rounded-full font-bold border border-[#8b5e34]/20 hover:bg-white transition-all text-sm">Hủy</button>
+                        <button type="submit" class="flex-1 py-3 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-lg transition-all text-sm">Lưu</button>
                     </div>
                 </form>
             </div>

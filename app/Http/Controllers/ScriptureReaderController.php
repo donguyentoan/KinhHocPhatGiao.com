@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Scripture;
+use App\Support\PracticeTracker;
 use Illuminate\Support\Str;
 
 class ScriptureReaderController extends Controller
 {
-    public function show(Scripture $scripture)
+    public function show(Scripture $scripture, PracticeTracker $tracker)
     {
+        $tracker->logActivity('scripture_read', $scripture, [
+            'title' => $scripture->title,
+        ]);
+
         $readerMode = in_array($scripture->reader_mode, ['auto', 'pdf', 'content'], true)
             ? $scripture->reader_mode
             : 'auto';

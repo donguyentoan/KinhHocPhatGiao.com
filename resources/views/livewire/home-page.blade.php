@@ -1,8 +1,8 @@
 <div>
-    <header class="z-50 bg-[#f9f3e6] border-b border-[#e5dec9] px-6 py-3 shadow-sm">
+    <header style="max-height: 77px" class="z-50 bg-[#f9f3e6] border-b border-[#e5dec9] px-6 py-3 shadow-sm">
         <div class="max-w-7xl mx-auto flex items-center justify-between">
             <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <img class="w-24 h-13" src="http://kinhhocphatgiao.local/image/logothb.png" alt="">
+                <img style="height: 77px" src="/logoWeb.png" alt="">
             </a>
             <nav class="hidden lg:flex flex-wrap items-center gap-6">
                 <a href="{{ route('tools.show', 'may-niem-phat') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Máy niệm Phật</a>
@@ -83,6 +83,11 @@
             <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài viết đọc nhiều trong tuần</h3></div>
             <x-popular-posts :posts="$popularPosts" />
         </section>
+
+        <section class="py-8">
+        <img  src="/banner.png" alt="">
+        </section>
+        
     </div>
 
     <x-site-footer />

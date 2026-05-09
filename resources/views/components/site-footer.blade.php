@@ -1,7 +1,7 @@
-<footer class="bg-[#f3ead7] border-t border-[#e5dec9] mt-16">
+<footer class="bg-[#f3ead7] border-t border-[#e5dec9]">
     <div class="max-w-7xl mx-auto px-6 py-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
         <div>
-            <img src="http://kinhhocphatgiao.local/image/logothb.png" class="w-28 mb-4" alt="Logo">
+            <img src="/logoWeb.png" class="w-36 h-31 mb-4" alt="Logo">
             <p class="text-sm text-[#6b4f2c] leading-relaxed">Nơi chia sẻ kinh điển, thiền định và giá trị sống an lạc theo giáo lý nhà Phật.</p>
         </div>
         <div>

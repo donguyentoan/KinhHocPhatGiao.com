@@ -5,9 +5,9 @@
         @php
             $themes = [
                 ['iconWrap' => 'bg-orange-100 text-[#8b5e34] group-hover:bg-[#8b5e34] group-hover:text-white', 'icon' => 'fa-solid fa-book-open', 'cta' => 'Xem '.$category->scriptures_count.' bài', 'ctaColor' => 'text-[#8b5e34]'],
-                ['iconWrap' => 'bg-red-100 text-red-700 group-hover:bg-red-700 group-hover:text-white', 'icon' => 'fa-solid fa-gopuram', 'cta' => 'Đang đọc', 'ctaColor' => 'text-red-700'],
+                ['iconWrap' => 'bg-red-100 text-red-700 group-hover:bg-red-700 group-hover:text-white', 'icon' => 'fa-solid fa-gopuram', 'cta' => 'Xem '.$category->scriptures_count.' bài', 'ctaColor' => 'text-red-700'],
                 ['iconWrap' => 'bg-purple-100 text-purple-700 group-hover:bg-purple-700 group-hover:text-white', 'icon' => 'fa-solid fa-hand-holding-magic', 'cta' => 'Xem '.$category->scriptures_count.' chú', 'ctaColor' => 'text-purple-700'],
-                ['iconWrap' => 'bg-blue-100 text-blue-700 group-hover:bg-blue-700 group-hover:text-white', 'icon' => 'fa-solid fa-sun', 'cta' => 'Bắt đầu ngay', 'ctaColor' => 'text-blue-700'],
+                ['iconWrap' => 'bg-blue-100 text-blue-700 group-hover:bg-blue-700 group-hover:text-white', 'icon' => 'fa-solid fa-sun', 'cta' => 'Xem '.$category->scriptures_count.' bài', 'ctaColor' => 'text-blue-700'],
                 ['iconWrap' => 'bg-emerald-100 text-emerald-700 group-hover:bg-emerald-700 group-hover:text-white', 'icon' => 'fa-solid fa-hands-praying', 'cta' => 'Xem '.$category->scriptures_count.' bài', 'ctaColor' => 'text-emerald-700'],
             ];
             $theme = $themes[$index % count($themes)];

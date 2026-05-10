@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Scripture;
 use App\Support\PracticeTracker;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -17,6 +18,7 @@ class ToolsController extends Controller
         'nhac-thien' => 'tools.nhac-thien',
         'su-kien-trong-nam' => 'tools.su-kien-trong-nam',
         'lien-he-ho-tro' => 'tools.lien-he-ho-tro',
+        'doc-kinh' => 'tools.doc-kinh',
     ];
 
     public function show(string $slug, PracticeTracker $tracker): View
@@ -26,6 +28,15 @@ class ToolsController extends Controller
         }
 
         $tracker->logActivity('tool_usage', null, ['slug' => $slug]);
+
+        if ($slug === 'doc-kinh') {
+            return view(self::SLUG_TO_VIEW[$slug], [
+                'scriptures' => Scripture::query()
+                    ->with('category')
+                    ->orderBy('title')
+                    ->get(),
+            ]);
+        }
 
         return view(self::SLUG_TO_VIEW[$slug]);
     }

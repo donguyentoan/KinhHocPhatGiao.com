@@ -1,4 +1,4 @@
-<div class="text-[#4a2c11] flex h-screen overflow-hidden">
+<div class="text-[#4a2c11] flex h-full max-h-full overflow-hidden">
     <aside class="w-72 border-r border-[#8b5e34]/10 flex flex-col p-6 glass">
         <div class="flex items-center gap-3 mb-12 px-2">
             <div class="w-10 h-10 shadow-2xl rounded-2xl flex items-center justify-center text-white bg-[#8b5e34]">

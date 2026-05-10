@@ -95,7 +95,7 @@ class BuddhistContentSeeder extends Seeder
 
         $utilities = [
             ['name' => 'Máy niệm phật', 'link_url' => '/tien-ich/may-niem-phat'],
-            ['name' => 'Đọc kinh', 'link_url' => '/#thu-vien-kinh-dien'],
+            ['name' => 'Đọc kinh', 'link_url' => '/tien-ich/doc-kinh'],
             ['name' => 'Ngồi thiền', 'link_url' => '/tien-ich/ngoi-thien'],
             ['name' => 'Chuông mõ', 'link_url' => '/tien-ich/chuong-mo'],
             ['name' => 'Lần chuỗi hạt', 'link_url' => '/tien-ich/lan-chuoi-hat'],

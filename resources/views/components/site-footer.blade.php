@@ -8,10 +8,9 @@
             <h4 class="font-bold mb-4">Điều hướng</h4>
             <ul class="space-y-2 text-sm text-[#6b4f2c]">
                 <li><a href="{{ route('tools.show', 'may-niem-phat') }}">Máy niệm Phật</a></li>
-                <li><a href="/#thu-vien-kinh-dien">Đọc Kinh</a></li>
+                <li><a href="{{ route('tools.show', 'doc-kinh') }}">Đọc Kinh</a></li>
                 <li><a href="{{ route('tools.show', 'ngoi-thien') }}">Ngồi Thiền</a></li>
                 <li><a href="{{ route('tools.show', 'chuong-mo') }}">Chuông Mõ</a></li>
-                <li><a href="{{ route('tools.show', 'lan-chuoi-hat') }}">Lần chuỗi hạt</a></li>
                 <li><a href="{{ route('tools.show', 'nhac-thien') }}">Nhạc Thiền</a></li>
                 <li><a href="{{ route('tools.show', 'su-kien-trong-nam') }}">Sự kiện trong năm</a></li>
                 <li><a href="{{ route('tools.show', 'lien-he-ho-tro') }}">Liên hệ hỗ trợ</a></li>
@@ -21,8 +20,8 @@
         <div>
             <h4 class="font-bold mb-4">Nội dung</h4>
             <ul class="space-y-2 text-sm text-[#6b4f2c]">
-                <li><a href="/#thu-vien-kinh-dien">Kinh Phật</a></li>
-                <li><a href="/#thu-vien-kinh-dien">Mật Chú</a></li>
+                <li><a href="{{ route('tools.show', 'doc-kinh') }}">Kinh Phật</a></li>
+                <li><a href="{{ route('tools.show', 'doc-kinh') }}">Mật Chú</a></li>
                 <li><a href="{{ route('home') }}">Bài viết</a></li>
             </ul>
         </div>

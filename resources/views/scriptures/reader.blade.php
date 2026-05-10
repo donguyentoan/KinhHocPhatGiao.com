@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $scripture->title }} - Đọc kinh</title>
     @include('components.pwa-meta')
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <link href="/booklet/jquery.booklet.1.1.0.css" type="text/css" rel="stylesheet" media="screen">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
     <script src="/booklet/jquery.easing.1.3.js"></script>
@@ -265,8 +270,9 @@
     </style>
 </head>
 <body class="scripture-reader {{ $pdfUrl ? 'pdf-mode' : '' }}">
+    <x-site-header class="shrink-0" active-slug="doc-kinh" />
     <div class="container">
-        <a class="back-link" href="{{ route('home') }}">← Về trang chủ</a>
+        <a class="back-link" href="{{ route('tools.show', 'doc-kinh') }}">← Quay lại Đọc kinh</a>
         <div class="header">
             <h1>{{ $scripture->title }}</h1>
         </div>

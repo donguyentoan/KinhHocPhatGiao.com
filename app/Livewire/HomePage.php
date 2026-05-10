@@ -70,8 +70,6 @@ class HomePage extends Component
             $scripture->image_url = $this->resolveImageUrl($scripture->image_url);
         }
 
-        $profile = app(PracticeTracker::class)->currentProfile();
-
         $dailyWishes = DailyWish::query()->active()->ordered()->get();
 
         return view('livewire.home-page', [
@@ -80,7 +78,6 @@ class HomePage extends Component
             'popularScriptures' => $popularScriptures,
             'hasMoreScriptures' => $hasMoreScriptures,
             'popularPosts' => Post::query()->latest('published_at')->take(4)->get(),
-            'profileName' => $profile->dharma_name,
             'dailyWishes' => $dailyWishes,
         ]);
     }

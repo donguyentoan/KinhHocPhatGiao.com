@@ -46,28 +46,6 @@
         </div>
     @endif
 
-    <header style="max-height: 77px" class="z-50 bg-[#f9f3e6] border-b border-[#e5dec9] px-6 py-3 shadow-sm">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="{{ route('home') }}" class="flex items-center gap-3">
-                <img style="height: 77px" src="/logoWeb.png" alt="">
-            </a>
-            <nav class="hidden lg:flex flex-wrap items-center gap-6">
-                <a href="{{ route('tools.show', 'may-niem-phat') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Máy niệm Phật</a>
-                <a href="/#thu-vien-kinh-dien" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Đọc Kinh</a>
-                <a href="{{ route('tools.show', 'ngoi-thien') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Ngồi Thiền</a>
-                <a href="{{ route('tools.show', 'chuong-mo') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Chuông Mõ</a>
-                <a href="{{ route('tools.show', 'lan-chuoi-hat') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Lần chuỗi hạt</a>
-                <a href="{{ route('tools.show', 'nhac-thien') }}" class="text-[#4a2c11] font-medium text-sm hover:text-[#8b5e34] transition-colors">Nhạc Thiền</a>
-            </nav>
-            <div class="flex items-center gap-4 flex-wrap justify-end">
-                <x-auth-nav />
-                <a href="{{ route('account') }}" class="flex items-center gap-2 px-5 py-2 text-[#4a2c11] font-bold text-sm rounded-lg hover:bg-[#efe7d5] transition-all">
-                    Xin chào, {{ $profileName }}!
-                </a>
-            </div>
-        </div>
-    </header>
-
     @if(session('auth_notice'))
         <div class="bg-amber-100 border-b border-amber-200 text-amber-950 text-sm text-center py-2 px-4 font-medium">
             {{ session('auth_notice') }}

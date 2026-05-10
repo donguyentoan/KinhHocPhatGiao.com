@@ -2,9 +2,6 @@
     <div class="max-w-5xl mx-auto space-y-6">
         <div class="flex items-center justify-between">
             <h1 class="text-2xl md:text-3xl font-bold text-[#4a2c11]">Tài khoản tu học</h1>
-            <a href="{{ route('home') }}" class="px-4 py-2 rounded-lg bg-white border border-[#e5dec9] text-[#4a2c11] hover:bg-[#efe7d5]">
-                Về trang chủ
-            </a>
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-[#e5dec9] p-5 md:p-6">

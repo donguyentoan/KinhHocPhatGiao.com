@@ -17,6 +17,7 @@
     @livewireStyles
 </head>
 <body class="bg-[#f9f3e6] text-[#4a2c11]" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+    <x-site-header />
     {{ $slot }}
     <x-pwa-install-banner />
     @livewireScripts

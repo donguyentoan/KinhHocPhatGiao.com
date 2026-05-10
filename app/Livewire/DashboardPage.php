@@ -16,11 +16,13 @@ use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
+use Livewire\WithPagination;
 
 #[Layout('components.layouts.dashboard')]
 class DashboardPage extends Component
 {
     use WithFileUploads;
+    use WithPagination;
 
     public string $activeSection = 'tong-quan';
     public bool $showScriptureModal = false;
@@ -89,6 +91,11 @@ class DashboardPage extends Component
     {
         $this->activeSection = $section;
         $this->dispatch('dashboard-section-changed');
+    }
+
+    public function updatedPracticeProfileSearch(): void
+    {
+        $this->resetPage('practiceProfilesPage');
     }
 
     public function runPendingMigrations(): void
@@ -616,13 +623,14 @@ class DashboardPage extends Component
                 ['label' => 'Loại Kinh', 'value' => number_format(ScriptureCategory::query()->count()), 'description' => 'Danh mục'],
                 ['label' => 'Tiện Ích', 'value' => number_format(Utility::query()->count()), 'description' => 'Đang hoạt động'],
             ],
-            'scriptures' => Scripture::query()->with('category')->latest()->get(),
-            'posts' => Post::query()->latest('published_at')->get(),
-            'categories' => ScriptureCategory::query()->withCount('scriptures')->orderBy('name')->get(),
-            'utilities' => Utility::query()->orderBy('sort_order')->get(),
-            'practiceProfiles' => $practiceProfileQuery->take(500)->get(),
+            'scriptures' => Scripture::query()->with('category')->latest()->paginate(15, ['*'], 'scripturesPage'),
+            'posts' => Post::query()->latest('published_at')->paginate(15, ['*'], 'postsPage'),
+            'categories' => ScriptureCategory::query()->withCount('scriptures')->orderBy('name')->paginate(12, ['*'], 'categoriesPage'),
+            'allCategories' => ScriptureCategory::query()->orderBy('name')->get(),
+            'utilities' => Utility::query()->orderBy('sort_order')->paginate(12, ['*'], 'utilitiesPage'),
+            'practiceProfiles' => $practiceProfileQuery->paginate(20, ['*'], 'practiceProfilesPage'),
             'practiceProfileCount' => PracticeProfile::query()->count(),
-            'dailyWishes' => DailyWish::query()->ordered()->get(),
+            'dailyWishes' => DailyWish::query()->ordered()->paginate(15, ['*'], 'dailyWishesPage'),
         ]);
     }
 }

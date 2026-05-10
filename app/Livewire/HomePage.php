@@ -77,7 +77,12 @@ class HomePage extends Component
             'categories' => ScriptureCategory::query()->withCount('scriptures')->get(),
             'popularScriptures' => $popularScriptures,
             'hasMoreScriptures' => $hasMoreScriptures,
-            'popularPosts' => Post::query()->latest('published_at')->take(4)->get(),
+            'popularPosts' => Post::query()
+                ->whereNotNull('published_at')
+                ->where('published_at', '<=', now())
+                ->latest('published_at')
+                ->take(4)
+                ->get(),
             'dailyWishes' => $dailyWishes,
         ]);
     }

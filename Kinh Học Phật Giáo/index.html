@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phụng Sự Nhân Sinh - Nhập Pháp Danh</title>
- <script src="https://cdn.jsdelivr.net/npm/lunar-javascript/lunar.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Noto+Serif+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
@@ -722,39 +721,37 @@
         </section>
     </div>
 
+    <script src="../public/js/calendar-converter.js"></script>
     <script>
         const dictionary = {
             '甲': 'Giáp', '乙': 'Ất', '丙': 'Bính', '丁': 'Đinh', '戊': 'Mậu', '己': 'Kỷ', '庚': 'Canh', '辛': 'Tân', '壬': 'Nhâm', '癸': 'Quý',
             '子': 'Tý', '丑': 'Sửu', '寅': 'Dần', '卯': 'Mão', '辰': 'Thìn', '巳': 'Tỵ', '午': 'Ngọ', '未': 'Mùi', '申': 'Thân', '酉': 'Dậu', '戌': 'Tuất', '亥': 'Hợi'
         };
-    
+
         function translate(text) {
             return text.split('').map(char => dictionary[char] || char).join(' ');
         }
-    
+
         function runCalendar() {
-            if (typeof Solar === 'undefined') return;
+            if (typeof calendar === 'undefined') return;
             const now = new Date();
-            const solar = Solar.fromDate(now);
-            const lunar = solar.getLunar();
-    
-            // Cập nhật Dương lịch
-            document.getElementById('txt-thu').innerText = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"][now.getDay()];
+            const r = calendar.solar2lunar(now.getFullYear(), now.getMonth() + 1, now.getDate());
+            if (!r || r.lDay === undefined) return;
+
+            document.getElementById('txt-thu').innerText = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'][now.getDay()];
             document.getElementById('txt-ngayduong').innerText = now.getDate().toString().padStart(2, '0');
             document.getElementById('txt-thangnamduong').innerText = `Tháng ${(now.getMonth() + 1).toString().padStart(2, '0')} · ${now.getFullYear()}`;
-    
-            // Cập nhật Âm lịch
-            document.getElementById('txt-ngayam').innerText = lunar.getDay();
-            document.getElementById('txt-thangam').innerText = lunar.getMonth();
-            document.getElementById('txt-namam').innerText = lunar.getYear();
-    
-            // Cập nhật Can Chi
-            document.getElementById('txt-canchingay').innerText = translate(lunar.getDayInGanZhi());
-            document.getElementById('txt-canchithang').innerText = translate(lunar.getMonthInGanZhi());
-            document.getElementById('txt-canchinam').innerText = translate(lunar.getYearInGanZhi());
+
+            document.getElementById('txt-ngayam').innerText = r.lDay;
+            document.getElementById('txt-thangam').innerText = r.lMonth;
+            document.getElementById('txt-namam').innerText = r.lYear;
+
+            document.getElementById('txt-canchingay').innerText = translate(r.gzDay);
+            document.getElementById('txt-canchithang').innerText = translate(r.gzMonth);
+            document.getElementById('txt-canchinam').innerText = translate(r.gzYear);
         }
-    
-        window.onload = runCalendar;
+
+        runCalendar();
     </script>
 
 

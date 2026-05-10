@@ -5,7 +5,6 @@ namespace App\Livewire;
 use App\Models\PracticeActivity;
 use App\Support\PracticeTracker;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -37,30 +36,6 @@ class AccountPage extends Component
         $profile = $tracker->currentProfile();
 
         $baseQuery = PracticeActivity::query()->where('practice_profile_id', $profile->id);
-        $activities = PracticeActivity::query()
-            ->where('practice_profile_id', $profile->id)
-            ->latest()
-            ->take(20)
-            ->get();
-        $dailyCounts = PracticeActivity::query()
-            ->where('practice_profile_id', $profile->id)
-            ->whereDate('practiced_on', '>=', Carbon::today()->subDays(13))
-            ->select('practiced_on', DB::raw('count(*) as total'))
-            ->groupBy('practiced_on')
-            ->pluck('total', 'practiced_on');
-
-        $practiceChart = collect(range(13, 0))
-            ->map(function (int $daysAgo) use ($dailyCounts) {
-                $date = Carbon::today()->subDays($daysAgo);
-                $dateKey = $date->toDateString();
-
-                return [
-                    'label' => $date->format('d/m'),
-                    'short_day' => mb_substr($date->locale('vi')->dayName, 0, 3),
-                    'count' => (int) ($dailyCounts[$dateKey] ?? 0),
-                    'is_today' => $daysAgo === 0,
-                ];
-            });
         $meditationSessions = PracticeActivity::query()
             ->where('practice_profile_id', $profile->id)
             ->where('activity_type', 'meditation_session')
@@ -83,6 +58,14 @@ class AccountPage extends Component
                 return round($seconds / 60, 1);
             });
 
+        $dailyReadingCounts = PracticeActivity::query()
+            ->where('practice_profile_id', $profile->id)
+            ->where('activity_type', 'scripture_read')
+            ->whereDate('practiced_on', '>=', Carbon::today()->subDays(13))
+            ->get(['practiced_on'])
+            ->groupBy(fn (PracticeActivity $a) => $a->practiced_on->toDateString())
+            ->map(fn ($items) => $items->count());
+
         $todayMeditationMinutes = (float) ($dailyMeditationMinutes[Carbon::today()->toDateString()] ?? 0);
         $weeklyMeditationMinutes = (float) $dailyMeditationMinutes
             ->filter(function (float $minutes, string $date) {
@@ -90,15 +73,30 @@ class AccountPage extends Component
             })
             ->sum();
 
+        $practiceChart = collect(range(13, 0))
+            ->map(function (int $daysAgo) use ($dailyMeditationMinutes, $dailyReadingCounts) {
+                $date = Carbon::today()->subDays($daysAgo);
+                $dateKey = $date->toDateString();
+
+                return [
+                    'label' => $date->format('d/m'),
+                    'short_day' => mb_substr($date->locale('vi')->dayName, 0, 3),
+                    'meditation_minutes' => (float) ($dailyMeditationMinutes[$dateKey] ?? 0),
+                    'reading_count' => (int) ($dailyReadingCounts[$dateKey] ?? 0),
+                    'is_today' => $daysAgo === 0,
+                ];
+            });
+        $chartMaxMinutes = max(1e-6, (float) $practiceChart->max('meditation_minutes'));
+        $chartMaxReads = max(1, (int) $practiceChart->max('reading_count'));
+
         return view('livewire.account-page', [
             'profile' => $profile,
             'streak' => $tracker->currentStreak($profile),
             'readingCount' => (clone $baseQuery)->where('activity_type', 'scripture_read')->count(),
             'meditationCount' => (clone $baseQuery)->where('activity_type', 'meditation_session')->count(),
-            'totalActivities' => (clone $baseQuery)->count(),
-            'activities' => $activities,
             'practiceChart' => $practiceChart,
-            'chartMax' => max(1, (int) $practiceChart->max('count')),
+            'chartMaxMinutes' => $chartMaxMinutes,
+            'chartMaxReads' => $chartMaxReads,
             'todayMeditationMinutes' => $todayMeditationMinutes,
             'weeklyMeditationMinutes' => round($weeklyMeditationMinutes, 1),
         ]);

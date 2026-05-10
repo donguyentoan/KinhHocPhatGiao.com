@@ -89,10 +89,7 @@
                             <i class="fa-solid fa-wand-magic-sparkles" aria-hidden="true"></i>
                             Lời nguyện khác
                         </button>
-                        <a href="{{ route('tools.show', 'doc-kinh') }}" class="khpg-daily-wish__btn khpg-daily-wish__btn--ghost khpg-daily-wish__btn--link">
-                            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
-                            Đọc tiếp
-                        </a>
+                      
                     </div>
                 </div>
             </div>

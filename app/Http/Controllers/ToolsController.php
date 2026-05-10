@@ -21,7 +21,7 @@ class ToolsController extends Controller
         'doc-kinh' => 'tools.doc-kinh',
     ];
 
-    public function show(string $slug, PracticeTracker $tracker): View
+    public function show(string $slug, PracticeTracker $tracker, Request $request): View
     {
         if (! isset(self::SLUG_TO_VIEW[$slug])) {
             abort(404);
@@ -30,11 +30,28 @@ class ToolsController extends Controller
         $tracker->logActivity('tool_usage', null, ['slug' => $slug]);
 
         if ($slug === 'doc-kinh') {
+            $q = trim((string) $request->query('q', ''));
+            if (mb_strlen($q) > 200) {
+                $q = mb_substr($q, 0, 200);
+            }
+
+            $like = $q !== '' ? '%'.addcslashes($q, '%_\\').'%' : null;
+
+            $scriptures = Scripture::query()
+                ->with('category')
+                ->when($like !== null, function ($query) use ($like) {
+                    $query->where(function ($sub) use ($like) {
+                        $sub->where('title', 'like', $like)
+                            ->orWhereHas('category', fn ($c) => $c->where('name', 'like', $like));
+                    });
+                })
+                ->orderBy('title')
+                ->paginate(20)
+                ->withQueryString();
+
             return view(self::SLUG_TO_VIEW[$slug], [
-                'scriptures' => Scripture::query()
-                    ->with('category')
-                    ->orderBy('title')
-                    ->get(),
+                'scriptures' => $scriptures,
+                'searchQuery' => $q,
             ]);
         }
 

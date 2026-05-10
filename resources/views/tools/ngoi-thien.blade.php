@@ -7,7 +7,7 @@
             <p class="text-center text-xs font-bold uppercase tracking-wider text-[#8a7d72] mb-2">Thời lượng</p>
             <div class="flex flex-wrap justify-center gap-2">
                 @foreach ([5, 10, 15, 20, 30] as $m)
-                    <button type="button" class="duration-btn px-4 py-2 rounded-full text-sm font-bold border border-[#d4c9b8] bg-white text-[#4a2c11] hover:border-[#8b5e34] hover:bg-[#faf6f0] data-min="{{ $m }}">{{ $m }} phút</button>
+                    <button type="button" class="duration-btn px-4 py-2 rounded-full text-sm font-bold border border-[#d4c9b8] bg-white text-[#4a2c11] hover:border-[#8b5e34] hover:bg-[#faf6f0]" data-min="{{ $m }}">{{ $m }} phút</button>
                 @endforeach
             </div>
         </div>
@@ -31,7 +31,9 @@
             const sessionMessage = document.getElementById('session-message');
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             function fmt(s) {
-                const m = Math.floor(s / 60), sec = s % 60;
+                const n = Number(s);
+                if (!Number.isFinite(n) || n < 0) return '00:00';
+                const m = Math.floor(n / 60), sec = Math.floor(n % 60);
                 return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
             }
             function tick() {
@@ -51,7 +53,9 @@
             document.querySelectorAll('.duration-btn').forEach(function (b) {
                 b.addEventListener('click', function () {
                     if (running) return;
-                    totalSec = parseInt(b.dataset.min, 10) * 60;
+                    const mins = parseInt(b.getAttribute('data-min') || b.dataset.min || '0', 10);
+                    if (!Number.isFinite(mins) || mins <= 0) return;
+                    totalSec = mins * 60;
                     remain = totalSec;
                     elapsedSec = 0;
                     display.textContent = fmt(remain);

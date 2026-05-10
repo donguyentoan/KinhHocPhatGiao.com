@@ -18,17 +18,16 @@
     <x-site-header />
 
     <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
-        @if($showPageHeading)
-            <h1 class="font-serif text-2xl sm:text-3xl font-bold text-[#1a1512] mb-8 lg:mb-10">{{ $title }}</h1>
-        @endif
-        {{ $slot }}
-
-        <div class="mt-12 lg:mt-16 pt-8 border-t border-[#e0d5c8]">
+        <div class="mb-6 lg:mb-8">
             <a href="{{ route('home') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-[#8b5e34] hover:text-[#6f4a2b] hover:underline">
                 <i class="fa-solid fa-arrow-left-long" aria-hidden="true"></i>
                 Quay lại trang chủ
             </a>
         </div>
+        @if($showPageHeading)
+            <h1 class="font-serif text-2xl sm:text-3xl font-bold text-[#1a1512] mb-8 lg:mb-10">{{ $title }}</h1>
+        @endif
+        {{ $slot }}
     </main>
 
     <x-site-footer />

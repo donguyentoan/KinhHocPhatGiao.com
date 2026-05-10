@@ -1,14 +1,14 @@
 @php
     $tracks = [
-        ['title' => 'Bát Nhã Tâm Kinh', 'dur' => '5:38', 'yt' => 'nXCy9fT8_OQ', 'thumb' => null],
-        ['title' => 'Peaceful Healing (Chữa lành)', 'dur' => '2:59', 'yt' => '1ZYbU82GVz4', 'thumb' => null],
-        ['title' => 'Namo A Mi Tuo Fo', 'dur' => '3:43', 'yt' => 'WQK9K7yM29I', 'thumb' => null],
-        ['title' => 'Bamboo water relaxation', 'dur' => '9:49', 'yt' => 'bP6oDocTd_I', 'thumb' => null],
-        ['title' => 'Thư giãn (Relaxing Music Part 1)', 'dur' => '21:52', 'yt' => '4vIQHrwiBX0', 'thumb' => null],
-        ['title' => 'Thiền sâu (Deep Meditation)', 'dur' => '3:04', 'yt' => 'lTRiuFIWV54', 'thumb' => null],
-        ['title' => 'Tĩnh lặng (Trance of Stillness)', 'dur' => '9:14', 'yt' => '_4kHxtUYMLA', 'thumb' => null],
-        ['title' => 'Nīlakaṇṭha Dhāraṇī', 'dur' => '11:54', 'yt' => 'jfl5Bj0k_OK', 'thumb' => null],
-        ['title' => 'Budha Music (nhạc thiền)', 'dur' => '5:58', 'yt' => '1ZYbU82GVz4', 'thumb' => null],
+        ['title' => 'Bát Nhã Tâm Kinh', 'dur' => '5:46', 'yt' => 'Dh4sRaJkRaw', 'thumb' => null],
+        ['title' => 'Peaceful Healing (Chữa lành)', 'dur' => '3:00:22', 'yt' => '1ZYbU82GVz4', 'thumb' => null],
+        ['title' => 'Namo A Mi Tuo Fo', 'dur' => '5:23', 'yt' => 'CMjUtQMVo3c', 'thumb' => null],
+        ['title' => 'Bamboo water relaxation', 'dur' => '12:15', 'yt' => 'QF-rTcpyjvg', 'thumb' => null],
+        ['title' => 'Thư giãn (Relaxing Music)', 'dur' => '20:20', 'yt' => '8LV2hTWr48k', 'thumb' => null],
+        ['title' => 'Thiền sâu (Deep Meditation)', 'dur' => '1:01:14', 'yt' => 'lTRiuFIWV54', 'thumb' => null],
+        ['title' => 'Tĩnh lặng (Deep Stillness)', 'dur' => '9:00', 'yt' => 'H8W8NloQIII', 'thumb' => null],
+        ['title' => 'Nīlakaṇṭha Dhāraṇī (Đại Bi chú)', 'dur' => '31:35', 'yt' => 'Df_pGKwDJDU', 'thumb' => null],
+        ['title' => 'Nhạc thiền năng lượng tích cực', 'dur' => '10:24', 'yt' => 'BWMcR35D-cE', 'thumb' => null],
     ];
 @endphp
 

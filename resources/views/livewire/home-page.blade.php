@@ -111,7 +111,7 @@
             @endif
         </section>
 
-        <section class="py-8">
+        <section id="bai-viet-noi-bat" class="py-8 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài viết đọc nhiều trong tuần</h3></div>
             <x-popular-posts :posts="$popularPosts" />
         </section>
@@ -198,22 +198,25 @@
 
     <x-site-footer />
 
+    <script src="{{ asset('js/calendar-converter.js') }}"></script>
     <script>
         const dictionary = {'甲':'Giáp','乙':'Ất','丙':'Bính','丁':'Đinh','戊':'Mậu','己':'Kỷ','庚':'Canh','辛':'Tân','壬':'Nhâm','癸':'Quý','子':'Tý','丑':'Sửu','寅':'Dần','卯':'Mão','辰':'Thìn','巳':'Tỵ','午':'Ngọ','未':'Mùi','申':'Thân','酉':'Dậu','戌':'Tuất','亥':'Hợi'};
         function translate(text){return text.split('').map(char=>dictionary[char]||char).join(' ');}
         function runCalendar(){
-            if(typeof Solar==='undefined') return;
-            const now=new Date(); const solar=Solar.fromDate(now); const lunar=solar.getLunar();
-            document.getElementById('txt-thu').innerText=["Chủ Nhật","Thứ Hai","Thứ Ba","Thứ Tư","Thứ Năm","Thứ Sáu","Thứ Bảy"][now.getDay()];
-            document.getElementById('txt-ngayduong').innerText=now.getDate().toString().padStart(2,'0');
-            document.getElementById('txt-thangnamduong').innerText=`Tháng ${(now.getMonth()+1).toString().padStart(2,'0')} · ${now.getFullYear()}`;
-            document.getElementById('txt-ngayam').innerText=lunar.getDay();
-            document.getElementById('txt-thangam').innerText=lunar.getMonth();
-            document.getElementById('txt-namam').innerText=lunar.getYear();
-            document.getElementById('txt-canchingay').innerText=translate(lunar.getDayInGanZhi());
-            document.getElementById('txt-canchithang').innerText=translate(lunar.getMonthInGanZhi());
-            document.getElementById('txt-canchinam').innerText=translate(lunar.getYearInGanZhi());
+            if (typeof calendar === 'undefined') return;
+            const now = new Date();
+            const r = calendar.solar2lunar(now.getFullYear(), now.getMonth() + 1, now.getDate());
+            if (!r || r.lDay === undefined) return;
+            document.getElementById('txt-thu').innerText = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'][now.getDay()];
+            document.getElementById('txt-ngayduong').innerText = String(now.getDate()).padStart(2, '0');
+            document.getElementById('txt-thangnamduong').innerText = 'Tháng ' + String(now.getMonth() + 1).padStart(2, '0') + ' · ' + now.getFullYear();
+            document.getElementById('txt-ngayam').innerText = r.lDay;
+            document.getElementById('txt-thangam').innerText = r.lMonth;
+            document.getElementById('txt-namam').innerText = r.lYear;
+            document.getElementById('txt-canchingay').innerText = translate(r.gzDay);
+            document.getElementById('txt-canchithang').innerText = translate(r.gzMonth);
+            document.getElementById('txt-canchinam').innerText = translate(r.gzYear);
         }
-        window.onload=runCalendar;
+        runCalendar();
     </script>
 </div>

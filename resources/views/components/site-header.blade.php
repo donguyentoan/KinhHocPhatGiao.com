@@ -17,7 +17,7 @@
             <img src="/logoWeb.png" alt="" class="h-[72px] w-auto max-h-[77px] object-contain sm:h-[77px]">
         </a>
 
-        <nav class="hidden min-w-0 flex-1 justify-center lg:flex lg:flex-wrap lg:items-center lg:gap-x-5 xl:gap-x-6" aria-label="Tiện ích">
+        <nav class="hidden min-w-0 flex-1 justify-start lg:flex lg:flex-wrap lg:items-center lg:gap-x-5 xl:gap-x-6" aria-label="Tiện ích">
             <a href="{{ route('tools.show', 'may-niem-phat') }}" class="whitespace-nowrap text-sm {{ $navClass('may-niem-phat') }}" @if($slug === 'may-niem-phat') aria-current="page" @endif>Máy niệm Phật</a>
             <a href="{{ route('tools.show', 'doc-kinh') }}" class="whitespace-nowrap text-sm {{ $navClass('doc-kinh') }}" @if($slug === 'doc-kinh') aria-current="page" @endif>Đọc Kinh</a>
             <a href="{{ route('tools.show', 'ngoi-thien') }}" class="whitespace-nowrap text-sm {{ $navClass('ngoi-thien') }}" @if($slug === 'ngoi-thien') aria-current="page" @endif>Ngồi Thiền</a>

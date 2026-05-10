@@ -1,10 +1,10 @@
 <div class="text-[#4a2c11] flex h-full max-h-full overflow-hidden">
     <aside class="w-72 border-r border-[#8b5e34]/10 flex flex-col p-6 glass">
         <div class="flex items-center gap-3 mb-12 px-2">
-            <div class="w-10 h-10 shadow-2xl rounded-2xl flex items-center justify-center text-white bg-[#8b5e34]">
-                <x-icon name="flower-2" class="w-6 h-6" />
+            <div class=" flex items-center justify-center text-white">
+                <img class="w-32 h-16 object-contain" src="/logoWeb.png" alt="">
             </div>
-            <span class="font-serif text-2xl font-bold">An Nhiên</span>
+            {{-- <span class="font-serif text-2xl font-bold">An Nhiên</span> --}}
         </div>
         <nav class="space-y-2 flex-1">
             <button wire:click="setSection('tong-quan')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'tong-quan'])><x-icon name="layout-dashboard" class="w-5 h-5" />Tổng quan</button>
@@ -52,7 +52,7 @@
             </button>
             <div class="flex items-center gap-3 glass p-1.5 pl-2 pr-2 rounded-full shadow-sm">
                 <div class="w-10 h-10 rounded-full bg-[#d4a373] flex items-center justify-center text-white">
-                    <x-icon name="user" class="w-5 h-5" />
+                   AD {{-- <x-icon name="user" class="w-5 h-5" /> --}}
                 </div>
                 <span class="text-sm font-bold max-w-[8rem] truncate" title="{{ auth()->user()->phone }}">{{ auth()->user()->name }}</span>
                 <form method="POST" action="{{ route('logout') }}" class="pl-2 border-l border-[#8b5e34]/15">
@@ -151,7 +151,7 @@
                         </thead>
                         <tbody class="text-sm">
                             @foreach($scriptures as $scripture)
-                                <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all" wire:key="dash-scripture-{{ $scripture->id }}">
                                     <td class="py-4 font-bold text-[#4a2c11]">{{ $scripture->title }}</td>
                                     <td class="py-4">{{ optional($scripture->category)->name }}</td>
                                     <td class="py-4">{{ $scripture->created_at->format('d/m/Y') }}</td>
@@ -163,6 +163,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <x-dashboard-pagination :paginator="$scriptures" page-name="scripturesPage" />
                 </div>
             @endif
 
@@ -174,7 +175,7 @@
                     </div>
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         @foreach($categories as $category)
-                            <div class="p-5 bg-white/40 rounded-2xl border border-[#8b5e34]/10 flex justify-between items-center">
+                            <div class="p-5 bg-white/40 rounded-2xl border border-[#8b5e34]/10 flex justify-between items-center" wire:key="dash-category-{{ $category->id }}">
                                 <div>
                                     <p class="font-bold">{{ $category->name }}</p>
                                     <p class="text-xs text-[#8b5e34]/60">{{ $category->scriptures_count }} bài kinh</p>
@@ -186,6 +187,7 @@
                             </div>
                         @endforeach
                     </div>
+                    <x-dashboard-pagination :paginator="$categories" page-name="categoriesPage" />
                 </div>
             @endif
 
@@ -211,7 +213,7 @@
                         </thead>
                         <tbody class="text-sm">
                             @foreach($posts as $post)
-                                <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all" wire:key="dash-post-{{ $post->id }}">
                                     <td class="py-5 font-bold text-[#4a2c11]">{{ $post->title }}</td>
                                     <td class="py-5"><span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-[10px] font-bold uppercase">Công khai</span></td>
                                     <td class="py-5 text-gray-500">{{ optional($post->published_at)->format('d/m/Y') }}</td>
@@ -223,6 +225,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <x-dashboard-pagination :paginator="$posts" page-name="postsPage" />
                 </div>
             @endif
 
@@ -234,7 +237,7 @@
                     </div>
                     <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
                         @foreach($utilities as $utility)
-                            <div class="bg-white/40 border border-[#8b5e34]/5 p-6 rounded-[2rem] flex flex-col items-center hover:shadow-xl transition-all">
+                            <div class="bg-white/40 border border-[#8b5e34]/5 p-6 rounded-[2rem] flex flex-col items-center hover:shadow-xl transition-all" wire:key="dash-utility-{{ $utility->id }}">
                                 <div class="w-14 h-14 mb-4 bg-orange-50 rounded-2xl flex items-center justify-center">
                                     <img src="{{ $utility->icon_url }}" alt="{{ $utility->name }}" class="w-10 h-10 object-contain">
                                 </div>
@@ -255,6 +258,7 @@
                             </div>
                         @endforeach
                     </div>
+                    <x-dashboard-pagination :paginator="$utilities" page-name="utilitiesPage" />
                 </div>
             @endif
 
@@ -280,7 +284,7 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($dailyWishes as $wish)
-                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all" wire:key="dash-wish-{{ $wish->id }}">
                                         <td class="py-4 pr-4 max-w-md">
                                             <p class="text-[#4a2c11] line-clamp-3 whitespace-pre-line">{{ $wish->text }}</p>
                                         </td>
@@ -317,7 +321,7 @@
                         <div>
                             <p class="text-xs font-bold text-[#8b5e34]/70 uppercase tracking-widest mb-2">Tổng: {{ number_format($practiceProfileCount) }} hồ sơ</p>
                             <p class="text-sm text-[#4a2c11]/80 max-w-xl">
-                                Danh sách người dùng đã lưu pháp danh trên trang chủ (nhận diện theo thiết bị). Hiển thị tối đa 500 bản ghi mới hoạt động gần đây.
+                                Danh sách người dùng đã lưu pháp danh trên trang chủ (nhận diện theo thiết bị). Sắp xếp theo lần hoạt động gần nhất; có phân trang.
                             </p>
                         </div>
                         <div class="relative w-full lg:w-80">
@@ -345,7 +349,7 @@
                             </thead>
                             <tbody class="text-sm">
                                 @forelse($practiceProfiles as $practiceProfile)
-                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all">
+                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all" wire:key="dash-profile-{{ $practiceProfile->id }}">
                                         <td class="py-4 font-bold text-[#4a2c11] pr-4">{{ $practiceProfile->dharma_name }}</td>
                                         <td class="py-4 pr-4 font-mono text-xs text-[#8b5e34]/80" title="{{ $practiceProfile->session_key }}">
                                             {{ \Illuminate\Support\Str::limit($practiceProfile->session_key, 14, '…') }}
@@ -380,6 +384,7 @@
                             </tbody>
                         </table>
                     </div>
+                    <x-dashboard-pagination :paginator="$practiceProfiles" page-name="practiceProfilesPage" />
                 </div>
             @endif
         </div>
@@ -409,7 +414,7 @@
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Loại kinh</label>
                             <select wire:model="scriptureForm.category_id" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none appearance-none">
                                 <option value="">Chọn loại kinh</option>
-                                @foreach($categories as $category)
+                                @foreach($allCategories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>

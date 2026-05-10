@@ -3,6 +3,7 @@
 use App\Livewire\AccountPage;
 use App\Livewire\DashboardPage;
 use App\Livewire\HomePage;
+use App\Livewire\PostShowPage;
 use App\Livewire\LoginPage;
 use App\Livewire\RegisterPage;
 use App\Http\Controllers\ScriptureReaderController;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', HomePage::class)->name('home');
+Route::get('/bai-viet/{post}', PostShowPage::class)->name('posts.show');
 Route::redirect('/home', '/');
 Route::get('/tai-khoan', AccountPage::class)->name('account');
 

@@ -41,10 +41,20 @@
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-[#e5dec9] p-5 md:p-6">
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 mb-4">
                 <h2 class="text-xl font-semibold text-[#4a2c11]">Biểu đồ 14 ngày tu học</h2>
-                <span class="text-sm text-[#8b5e34]">Đơn vị: số hoạt động/ngày</span>
+                <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs sm:text-sm text-[#5c4a3d]">
+                    <span class="inline-flex items-center gap-2">
+                        <span class="h-3 w-3 shrink-0 rounded-sm bg-[#c9a77c]" aria-hidden="true"></span>
+                        Đọc kinh <span class="text-[#8b5e34]">(lượt — cột trái)</span>
+                    </span>
+                    <span class="inline-flex items-center gap-2">
+                        <span class="h-3 w-3 shrink-0 rounded-sm bg-[#4a2c11]" aria-hidden="true"></span>
+                        Thiền <span class="text-[#8b5e34]">(phút — cột phải)</span>
+                    </span>
+                </div>
             </div>
+            <p class="text-xs text-[#8b5e34] mb-3">Mỗi ngày hai cột cạnh nhau; chiều cao tỉ lệ với cực đại 14 ngày của từng loại.</p>
             <div class="flex flex-wrap gap-3 mb-4">
                 <div class="px-3 py-2 rounded-lg bg-[#efe7d5] text-[#4a2c11] text-sm">
                     Thiền hôm nay: <span class="font-semibold">{{ $todayMeditationMinutes }} phút</span>
@@ -54,60 +64,33 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-7 md:grid-cols-14 gap-2 items-end h-44">
+            <div class="grid grid-cols-7 md:grid-cols-14 gap-x-1 gap-y-1 md:gap-2 items-end h-48">
                 @foreach($practiceChart as $day)
                     @php
-                        $height = max(8, (int) round(($day['count'] / $chartMax) * 100));
+                        $reads = (int) ($day['reading_count'] ?? 0);
+                        $med = (float) ($day['meditation_minutes'] ?? 0);
+                        $hRead = $reads <= 0 ? 0 : (int) round(($reads / $chartMaxReads) * 100);
+                        $hMed = $med <= 0 ? 0 : (int) round(($med / $chartMaxMinutes) * 100);
                     @endphp
-                    <div class="flex flex-col items-center justify-end gap-2 h-full">
-                        <div class="w-full max-w-[22px] rounded-t-md {{ $day['is_today'] ? 'bg-[#4a2c11]' : 'bg-[#8b5e34]/80' }}"
-                             style="height: {{ $height }}%;">
+                    <div class="flex min-w-0 flex-col items-center justify-end gap-2 h-full">
+                        <div class="flex h-full w-full max-w-[2.75rem] items-end justify-center gap-0.5 px-0.5 {{ $day['is_today'] ? 'rounded-t-md bg-[#faf6f0] ring-1 ring-[#c9a77c]/60' : '' }}">
+                            <div class="flex h-full min-h-0 w-1/2 flex-col justify-end" title="{{ $reads > 0 ? $reads.' lượt đọc kinh' : 'Không đọc kinh' }}">
+                                <div
+                                    class="w-full max-w-[14px] mx-auto rounded-t-sm bg-[#c9a77c] transition-[height]"
+                                    style="{{ $hRead > 0 ? 'height: '.$hRead.'%; min-height: 2px;' : 'height: 0;' }}"
+                                ></div>
+                            </div>
+                            <div class="flex h-full min-h-0 w-1/2 flex-col justify-end" title="{{ $med > 0 ? number_format($med, 1, ',', ' ').' phút thiền' : 'Không thiền' }}">
+                                <div
+                                    class="w-full max-w-[14px] mx-auto rounded-t-sm bg-[#4a2c11] transition-[height]"
+                                    style="{{ $hMed > 0 ? 'height: '.$hMed.'%; min-height: 2px;' : 'height: 0;' }}"
+                                ></div>
+                            </div>
                         </div>
-                        <p class="text-[10px] text-[#8b5e34]">{{ $day['label'] }}</p>
+                        <p class="text-[10px] text-[#8b5e34] tabular-nums">{{ $day['label'] }}</p>
                     </div>
                 @endforeach
             </div>
-        </div>
-
-        <div class="bg-white rounded-2xl shadow-sm border border-[#e5dec9] p-5 md:p-6">
-            <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xl font-semibold text-[#4a2c11]">Nhật ký thao tác</h2>
-                <span class="text-sm text-[#8b5e34]">Tổng: {{ $totalActivities }}</span>
-            </div>
-
-            @if($activities->isEmpty())
-                <p class="text-[#8b5e34]">Bạn chưa có hoạt động nào, hãy bắt đầu đọc kinh hoặc ngồi thiền.</p>
-            @else
-                <div class="space-y-3">
-                    @foreach($activities as $activity)
-                        <div class="rounded-xl border border-[#efe7d5] px-4 py-3">
-                            <div class="flex justify-between gap-4">
-                                <p class="font-medium text-[#4a2c11]">
-                                    @if($activity->activity_type === 'scripture_read')
-                                        Đọc kinh
-                                    @elseif($activity->activity_type === 'meditation_session')
-                                        Ngồi thiền
-                                    @elseif($activity->activity_type === 'tool_usage')
-                                        Dùng tiện ích
-                                    @else
-                                        Cập nhật thông tin
-                                    @endif
-                                </p>
-                                <p class="text-xs text-[#8b5e34]">{{ $activity->created_at?->format('d/m/Y H:i') }}</p>
-                            </div>
-                            @if(!empty($activity->meta['title']))
-                                <p class="text-sm text-[#8b5e34] mt-1">{{ $activity->meta['title'] }}</p>
-                            @elseif($activity->activity_type === 'meditation_session' && !empty($activity->meta['actual_minutes']))
-                                <p class="text-sm text-[#8b5e34] mt-1">
-                                    Thời lượng thực tế: {{ $activity->meta['actual_minutes'] }} phút
-                                </p>
-                            @elseif(!empty($activity->meta['slug']))
-                                <p class="text-sm text-[#8b5e34] mt-1">{{ $activity->meta['slug'] }}</p>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @endif
         </div>
     </div>
 </div>

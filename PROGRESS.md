@@ -1,6 +1,58 @@
 # PROGRESS
 
-Updated: 2026-05-01
+Updated: 2026-05-17 (session: reader, header, email, máy niệm Phật, PWA tải app)
+
+## Session 2026-05-17 — Hoàn thành
+
+### Đọc kinh (`reader.blade.php`)
+
+- Tối ưu lật trang booklet: tăng tốc animation (`easeOutCubic`, ~500ms), GPU `backface-visibility`, hoãn prefetch PDF (`schedulePrioritizePages`), bỏ overlay loading khi chuyển trang.
+- Thử virtual reader / thanh điều hướng cố định trên mobile — sau đó **khôi phục mobile về bản gốc** theo yêu cầu (giữ `book-nav` trên/dưới, `syncMobileSlide()`).
+- Desktop: giữ cải tiến booklet; mobile: hành vi như trước khi thử nghiệm.
+
+### Header & UI
+
+- **Tên dài trong header:** mobile chỉ hiện icon user; hover/active hiện tooltip đầy đủ «Xin chào, {tên}»; desktop (≥640px) vẫn hiện đủ chữ.
+- **`donate-link.blade.php`:** mobile icon only, chữ từ `sm` trở lên.
+
+### Email liên hệ
+
+- Thống nhất email **`thienhoangbao15102003@gmail.com`** (qua `SITE_CONTACT_EMAIL` / mặc định):
+  - `config/site.php`, `config/mail.php`
+  - `site-footer.blade.php`, `lien-he-ho-tro.blade.php`
+  - `.env`, `.env.example`
+  - `Kinh Học Phật Giáo/index.html`
+- *Lưu ý:* `local.sql` / nội dung DB cũ có thể còn email bên thứ ba — chưa đổi hàng loạt trong DB.
+
+### Máy niệm Phật (`may-niem-phat.blade.php` + `public/audio/may-niem-phat/`)
+
+- Toàn bộ **7 câu** dùng giọng **Thầy Thích Trí Thoát** (trích YouTube), không còn TTS.
+- File âm thanh:
+
+| Câu | Clip (một lần) | Loop (~90s, niệm liên tục) | Nguồn YouTube |
+|-----|------------------|----------------------------|---------------|
+| Niệm Nam Mô A Di Đà Phật (6 chữ) | `02-nam-mo-a-di-da-phat.mp3` | `02-nam-mo-a-di-da-phat-loop.mp3` | `5Wg0Vs-OziA` |
+| Thích Ca | `03-nam-mo-thich-ca.mp3` | `03-nam-mo-thich-ca-loop.mp3` | `0pwcc-VuxqI` |
+| Quan Thế Âm | `04-nam-mo-quan-the-am.mp3` | `04-nam-mo-quan-the-am-loop.mp3` | `mkYHkQ-fVdk` |
+| Đại Thế Chí | `05-nam-mo-dai-the-chi.mp3` | `05-nam-mo-dai-the-chi-loop.mp3` | `5qNcy2pfHkw` |
+| Địa Tạng | `06-nam-mo-dia-tang.mp3` | `06-nam-mo-dia-tang-loop.mp3` | `MyMM5oipY4Y` |
+| Dược Sư | `07-nam-mo-duoc-su.mp3` | `07-nam-mo-duoc-su-loop.mp3` | `8ATJPhWdfGk` |
+
+- Tạo clip/loop bằng `yt_dlp` + `ffmpeg` (imageio_ffmpeg). File `00-nam-mo-6-chu-tri-thoat-loop.mp3` vẫn tồn tại (dùng khi cắt ban đầu).
+- **UI hiện tại:** lưới 6 câu (user đã bỏ dòng «Niệm A Di Đà Phật» riêng); mỗi nút phát **file loop** với `audio.loop = true`; bấm lại để dừng; bấm câu khác dừng bản đang phát.
+- Đã bỏ khối «Niệm lặp liên tục» riêng (dropdown + Phát/Dừng toàn trang).
+- Copy trang: «Chọn câu niệm bên dưới. Bấm một lần để bắt đầu, bấm lại để dừng.» — không còn dòng phụ «Thầy Thích Trí Thoát · niệm liên tục».
+
+### Trang chủ — Phần ứng dụng Thiện Hoàng Bảo
+
+- **Bỏ** nút Google Play / App Store (mockup app section).
+- **Bỏ** banner tự bật `pwa-install-banner` trên layout trang chủ (`layouts/home.blade.php`) — không popup khi vào trang chủ.
+- **Thêm** nút **«Tải ứng dụng»** → mở popup hướng dẫn **Thêm vào Màn hình chính** (`components/pwa-install-modal.blade.php`):
+  - Hướng dẫn iOS (Safari), Android (Chrome), máy tính (Chrome/Edge).
+  - Android: nút **«Cài đặt ngay»** nếu có `beforeinstallprompt`.
+  - Đóng: X, «Đã hiểu», click nền, Esc.
+  - Nút ẩn nếu đã mở ở chế độ standalone (đã cài PWA).
+- Banner `pwa-install-banner` vẫn có trên **tool**, **dashboard**, **reader** (không tự bật trên home).
 
 ## Done
 
@@ -29,6 +81,14 @@ Updated: 2026-05-01
   - Trang: máy niệm Phật, ngồi thiền (bấm giờ), chuông mõ (Web Audio), lần chuỗi hạt, nhạc thiền (iframe), sự kiện trong năm, liên hệ hỗ trợ; **Đọc kinh** trỏ neo `#thu-vien-kinh-dien` trên trang chủ.
   - Cột `utilities.link_url`, lưới tiện ích clickable, nav/footer/header đồng bộ.
   - Dashboard: modal thêm/sửa tiện ích (trước đó thiếu UI modal).
+- Production-ready SEO crawling (`/robots.txt`, `/sitemap.xml`):
+  - Dynamic routes `seo.robots`, `seo.sitemap`; removed static `public/robots.txt`.
+  - `config/seo.php`: indexing toggle, disallow paths, cache TTL, priorities.
+  - `SitemapBuilder`: home, 8 tiện ích, mọi `scriptures.read`, bài viết đã publish.
+  - Cache sitemap (1h) + auto-invalidate khi Post/Scripture thay đổi.
+  - `php artisan sitemap:generate` ghi file tĩnh (tùy chọn CDN).
+  - `x-seo-meta`: canonical + meta description + `noindex` khi staging.
+  - Tests: `tests/Feature/SeoTest.php`.
 
 ## Partially Done / In Progress
 
@@ -134,9 +194,9 @@ Updated: 2026-05-01
   - `Article` for posts,
   - `FAQPage` for Q&A sections,
   - `BreadcrumbList` for navigation.
-- Ensure unique meta title/description per scripture and article.
-- Add canonical tags to prevent duplicate indexing.
-- Add XML sitemap entries for scripture reader pages.
+- Ensure unique meta title/description per scripture and article (description via `x-seo-meta`; titles per page).
+- ~~Add canonical tags to prevent duplicate indexing.~~ Done (`x-seo-meta`).
+- ~~Add XML sitemap entries for scripture reader pages.~~ Done (`SitemapBuilder`).
 - Improve Core Web Vitals on reader page (optimize PDF loading, lazy assets).
 
 ### Execution Roadmap (12 weeks, less simple and more complete)
@@ -188,6 +248,21 @@ Phase 5 (Week 11-12) - Scale SEO Engine
 
 ## Required Manual Steps
 
+### Tái tạo file âm Máy niệm Phật (tùy chọn)
+
+Cần `python3 -m yt_dlp` và ffmpeg (hoặc `imageio_ffmpeg`). Ví dụ cắt loop A Di Đà từ video `5Wg0Vs-OziA`:
+
+```bash
+# Tải audio
+python3 -m yt_dlp -x --audio-format mp3 -o "/tmp/nam-mo-a-di-da.%(ext)s" "https://www.youtube.com/watch?v=5Wg0Vs-OziA"
+
+# Cắt ~90s loop (điều chỉnh -ss theo đoạn niệm ổn định trong video)
+ffmpeg -y -ss 25 -t 90 -i "/tmp/nam-mo-a-di-da.webm" -vn -ac 1 -ar 44100 \
+  -c:a libmp3lame -b:a 96k public/audio/may-niem-phat/02-nam-mo-a-di-da-phat-loop.mp3
+```
+
+Các câu 03–07: tải từ video ID trong bảng trên, cắt clip + loop tương tự (`ss` ~22–25s, `t` 90s cho loop).
+
 Run migrations (gồm `reader_mode` và `utilities.link_url`):
 
 ```bash
@@ -202,7 +277,57 @@ Recommended cache clear after migrations/config changes:
 php artisan optimize:clear
 ```
 
+### Production SEO (robots + sitemap)
+
+Trên server production, trong `.env`:
+
+```env
+APP_URL=https://kinhhocphatgiaocom.com
+APP_ENV=production
+SEO_INDEXING_ENABLED=true
+```
+
+Staging/local: để `SEO_INDEXING_ENABLED=false` (mặc định khi `APP_ENV` ≠ `production`) — `robots.txt` chặn toàn site, `sitemap.xml` trả 404.
+
+Sau deploy:
+
+```bash
+php artisan optimize:clear
+php artisan route:cache
+```
+
+Kiểm tra:
+
+- `https://<domain>/robots.txt` — có `Sitemap:` trỏ đúng domain.
+- `https://<domain>/sitemap.xml` — XML hợp lệ, có URL kinh/bài/tiện ích.
+
+Google Search Console: gửi sitemap `https://<domain>/sitemap.xml`.
+
+Tùy chọn (host chỉ phục vụ file tĩnh):
+
+```bash
+php artisan sitemap:generate
+```
+
 ## Main Files Touched (recent work)
+
+### Session 2026-05-17
+
+- `resources/views/scriptures/reader.blade.php`
+- `resources/views/components/site-header.blade.php`
+- `resources/views/components/donate-link.blade.php`
+- `resources/views/tools/may-niem-phat.blade.php`
+- `public/audio/may-niem-phat/*.mp3` (01–07 clip + loop; `00-*` loop A Di Đà 6 chữ)
+- `resources/views/livewire/home-page.blade.php`
+- `resources/views/components/layouts/home.blade.php`
+- `resources/views/components/pwa-install-modal.blade.php` *(mới)*
+- `resources/views/components/pwa-install-banner.blade.php`
+- `config/site.php`, `config/mail.php`, `.env`, `.env.example`
+- `resources/views/components/site-footer.blade.php`
+- `resources/views/tools/lien-he-ho-tro.blade.php`
+- `Kinh Học Phật Giáo/index.html`
+
+### Trước đó
 
 - `app/Http/Controllers/ScriptureReaderController.php`
 - `app/Http/Controllers/ToolsController.php`
@@ -222,3 +347,10 @@ php artisan optimize:clear
 - `database/migrations/2026_05_01_120000_add_link_url_to_utilities_table.php`
 - `database/seeders/BuddhistContentSeeder.php`
 - `resources/views/components/icon.blade.php`
+- `app/Http/Controllers/SeoController.php`
+- `app/Services/SitemapBuilder.php`
+- `app/Support/ToolSlugs.php`
+- `app/Console/Commands/GenerateSitemapCommand.php`
+- `config/seo.php`
+- `resources/views/components/seo-meta.blade.php`
+- `tests/Feature/SeoTest.php`

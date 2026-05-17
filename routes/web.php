@@ -7,6 +7,7 @@ use App\Livewire\PostShowPage;
 use App\Livewire\LoginPage;
 use App\Livewire\RegisterPage;
 use App\Http\Controllers\ScriptureReaderController;
+use App\Http\Controllers\SeoController;
 use App\Http\Controllers\ToolsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
+Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
 
 Route::get('/', HomePage::class)->name('home');
 Route::get('/bai-viet/{post}', PostShowPage::class)->name('posts.show');

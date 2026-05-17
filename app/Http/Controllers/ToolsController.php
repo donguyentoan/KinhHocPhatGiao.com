@@ -3,27 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Scripture;
+use App\Models\ScriptureCategory;
 use App\Support\PracticeTracker;
+use App\Support\ToolSlugs;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 class ToolsController extends Controller
 {
-    private const SLUG_TO_VIEW = [
-        'may-niem-phat' => 'tools.may-niem-phat',
-        'ngoi-thien' => 'tools.ngoi-thien',
-        'chuong-mo' => 'tools.chuong-mo',
-        'lan-chuoi-hat' => 'tools.lan-chuoi-hat',
-        'nhac-thien' => 'tools.nhac-thien',
-        'su-kien-trong-nam' => 'tools.su-kien-trong-nam',
-        'lien-he-ho-tro' => 'tools.lien-he-ho-tro',
-        'doc-kinh' => 'tools.doc-kinh',
-    ];
-
     public function show(string $slug, PracticeTracker $tracker, Request $request): View
     {
-        if (! isset(self::SLUG_TO_VIEW[$slug])) {
+        if (! ToolSlugs::isValid($slug)) {
             abort(404);
         }
 
@@ -35,10 +26,19 @@ class ToolsController extends Controller
                 $q = mb_substr($q, 0, 200);
             }
 
+            $categoryId = $request->integer('category') ?: null;
+            $activeCategory = $categoryId !== null
+                ? ScriptureCategory::query()->find($categoryId)
+                : null;
+            if ($activeCategory === null) {
+                $categoryId = null;
+            }
+
             $like = $q !== '' ? '%'.addcslashes($q, '%_\\').'%' : null;
 
             $scriptures = Scripture::query()
                 ->with('category')
+                ->when($categoryId !== null, fn ($query) => $query->where('category_id', $categoryId))
                 ->when($like !== null, function ($query) use ($like) {
                     $query->where(function ($sub) use ($like) {
                         $sub->where('title', 'like', $like)
@@ -49,13 +49,14 @@ class ToolsController extends Controller
                 ->paginate(20)
                 ->withQueryString();
 
-            return view(self::SLUG_TO_VIEW[$slug], [
+            return view(ToolSlugs::SLUG_TO_VIEW[$slug], [
                 'scriptures' => $scriptures,
                 'searchQuery' => $q,
+                'activeCategory' => $activeCategory,
             ]);
         }
 
-        return view(self::SLUG_TO_VIEW[$slug]);
+        return view(ToolSlugs::SLUG_TO_VIEW[$slug]);
     }
 
     public function startMeditation(Request $request): JsonResponse

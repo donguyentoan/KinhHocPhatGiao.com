@@ -1,3 +1,10 @@
+@push('head')
+    <x-seo-meta
+        :canonical="route('posts.show', $post)"
+        :description="$post->excerpt ?: $post->title"
+    />
+@endpush
+
 <div class="min-h-screen">
     <article class="max-w-3xl mx-auto px-4 sm:px-6 py-10 lg:py-14">
         <nav class="mb-8" aria-label="Điều hướng">

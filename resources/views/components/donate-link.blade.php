@@ -18,8 +18,9 @@
             'class' => 'inline-flex items-center gap-1.5 rounded-full bg-[#8b5e34] px-3.5 py-1.5 text-sm font-bold text-white shadow-sm transition hover:bg-[#6f4a2b] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/50',
         ]) }}
     >
-        <i class="fa-solid fa-hand-holding-heart text-xs opacity-95" aria-hidden="true"></i>
-        <span>Ủng hộ</span>
+        <i class="fa-solid fa-hand-holding-heart text-sm opacity-95 sm:text-xs" aria-hidden="true"></i>
+        <span class="hidden sm:inline">Ủng hộ</span>
+        <span class="sr-only sm:hidden">Ủng hộ</span>
     </a>
 @else
     <a

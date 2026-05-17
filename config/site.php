@@ -15,4 +15,15 @@ return [
 
     'momo_donate_url' => env('MOMO_DONATE_URL', env('DONATE_URL')),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Email liên hệ / hỗ trợ
+    |--------------------------------------------------------------------------
+    |
+    | Trong .env: SITE_CONTACT_EMAIL=thienhoangbao15102003@gmail.com
+    |
+    */
+
+    'contact_email' => env('SITE_CONTACT_EMAIL', 'thienhoangbao15102003@gmail.com'),
+
 ];

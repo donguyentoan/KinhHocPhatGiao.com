@@ -72,7 +72,7 @@
                             <h3 class="text-lg font-bold text-[#2c2118] tracking-tight" style="font-family: 'Noto Serif Display', Georgia, 'Times New Roman', serif;">Liên hệ</h3>
                         </div>
                         <a
-                            href="mailto:contact@phungsunhansinh.vn"
+                            href="mailto:{{ config('site.contact_email') }}"
                             class="flex items-start gap-3 rounded-2xl border border-[#d4a373]/40 bg-gradient-to-br from-[#fff9f0] to-[#f5ebe0] p-4 text-[#2c2118] shadow-sm transition-shadow hover:shadow-md"
                         >
                             <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-2 border-[#d4a373]/55 bg-[#faf6f0] text-[#b07d4f] shadow-[0_6px_18px_rgba(176,125,79,0.18)]" aria-hidden="true">
@@ -80,7 +80,7 @@
                             </span>
                             <span class="min-w-0">
                                 <span class="block text-xs font-bold uppercase tracking-wider text-[#8b5e34]/90 mb-0.5">Email</span>
-                                <span class="text-sm font-medium break-all text-[#2c2118]">contact@phungsunhansinh.vn</span>
+                                <span class="text-sm font-medium break-all text-[#2c2118]">{{ config('site.contact_email') }}</span>
                             </span>
                         </a>
                     </div>

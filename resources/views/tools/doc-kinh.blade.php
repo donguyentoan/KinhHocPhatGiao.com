@@ -58,6 +58,9 @@
 
     <div id="danh-sach-kinh" class="scroll-mt-28 space-y-4">
         <form method="get" action="{{ route('tools.show', 'doc-kinh') }}#danh-sach-kinh" class="relative">
+            @if(isset($activeCategory) && $activeCategory)
+                <input type="hidden" name="category" value="{{ $activeCategory->id }}">
+            @endif
             <i class="fa-solid fa-magnifying-glass pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#a08b7a]" aria-hidden="true"></i>
             <input
                 type="search"

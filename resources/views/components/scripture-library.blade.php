@@ -13,7 +13,10 @@
             $theme = $themes[$index % count($themes)];
         @endphp
 
-        <div class="bg-white group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer">
+        <a
+            href="{{ route('tools.show', ['slug' => 'doc-kinh', 'category' => $category->id]) }}#danh-sach-kinh"
+            class="bg-white group relative bg-[#f9f3e6] border border-[#e5dec9] rounded-3xl p-6 transition-all duration-300 hover:shadow-xl hover:-translate-y-2 cursor-pointer block no-underline text-inherit"
+        >
             <div class="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 transition-colors {{ $theme['iconWrap'] }}">
                 <i class="{{ $theme['icon'] }} text-2xl"></i>
             </div>
@@ -22,6 +25,6 @@
             <span class="text-xs font-bold uppercase tracking-widest {{ $theme['ctaColor'] }} flex items-center gap-2">
                 {{ $theme['cta'] }} <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </span>
-        </div>
+        </a>
     @endforeach
 </div>

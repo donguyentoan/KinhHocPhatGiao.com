@@ -5,6 +5,7 @@
     <link rel="icon" type="image/x-icon" href="/site.png">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Kinh Học Phật Giáo — Trang chủ' }}</title>
+    <x-seo-meta :canonical="route('home')" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -18,7 +19,6 @@
 <body class="bg-[#f9f3e6] text-[#4a2c11]" style="font-family: 'Plus Jakarta Sans', sans-serif;">
     <x-site-header />
     {{ $slot }}
-    <x-pwa-install-banner />
     @livewireScripts
 </body>
 </html>

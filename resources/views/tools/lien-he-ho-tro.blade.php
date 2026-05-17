@@ -42,8 +42,8 @@
 
         <div class="rounded-2xl border border-[#e8e0d4] bg-white p-5 sm:p-6 lg:p-8 shadow-sm max-w-2xl">
             <p class="text-sm font-semibold text-[#4a2c11] mb-2">Email</p>
-            <a href="mailto:contact@phungsunhansinh.vn" class="text-[#8b5e34] font-bold hover:underline break-all">contact@phungsunhansinh.vn</a>
-            <a href="mailto:contact@phungsunhansinh.vn?subject=Hỗ%20trợ%20Kinh%20Học%20Phật%20Giáo" class="mt-4 inline-flex w-full items-center justify-center rounded-full bg-[#8b5e34] py-3.5 text-sm font-bold text-white hover:bg-[#6f4a2b] transition-colors">Mở ứng dụng thư</a>
+            <a href="mailto:{{ config('site.contact_email') }}" class="text-[#8b5e34] font-bold hover:underline break-all">{{ config('site.contact_email') }}</a>
+            <a href="mailto:{{ config('site.contact_email') }}?subject=Hỗ%20trợ%20Kinh%20Học%20Phật%20Giáo" class="mt-4 inline-flex w-full items-center justify-center rounded-full bg-[#8b5e34] py-3.5 text-sm font-bold text-white hover:bg-[#6f4a2b] transition-colors">Mở ứng dụng thư</a>
         </div>
     </div>
 </x-layouts.tool>

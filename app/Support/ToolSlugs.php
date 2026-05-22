@@ -13,6 +13,7 @@ final class ToolSlugs
         'su-kien-trong-nam' => 'tools.su-kien-trong-nam',
         'lien-he-ho-tro' => 'tools.lien-he-ho-tro',
         'doc-kinh' => 'tools.doc-kinh',
+        'hai-loc-phap-cu' => 'tools.hai-loc-phap-cu',
     ];
 
     /** @return list<string> */

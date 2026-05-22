@@ -62,6 +62,7 @@ class SeoTest extends TestCase
         $this->assertStringContainsString('<loc>'.route('home').'</loc>', $xml);
         $this->assertStringContainsString('<loc>'.route('tools.show', 'doc-kinh').'</loc>', $xml);
         $this->assertStringContainsString('<loc>'.route('tools.show', 'may-niem-phat').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.route('tools.show', 'hai-loc-phap-cu').'</loc>', $xml);
     }
 
     public function test_sitemap_returns_not_found_when_indexing_disabled(): void

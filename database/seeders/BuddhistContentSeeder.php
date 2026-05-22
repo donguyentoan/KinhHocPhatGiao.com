@@ -102,6 +102,7 @@ class BuddhistContentSeeder extends Seeder
             ['name' => 'Nhạc thiền', 'link_url' => '/tien-ich/nhac-thien'],
             ['name' => 'Sự kiện trong năm', 'link_url' => '/tien-ich/su-kien-trong-nam'],
             ['name' => 'Liên hệ hỗ trợ', 'link_url' => '/tien-ich/lien-he-ho-tro'],
+            ['name' => 'Cây Bồ Đề Pháp Cú', 'link_url' => '/tien-ich/hai-loc-phap-cu'],
         ];
 
         foreach ($utilities as $index => $row) {

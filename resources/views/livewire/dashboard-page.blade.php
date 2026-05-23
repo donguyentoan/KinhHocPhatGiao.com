@@ -12,6 +12,7 @@
             <button wire:click="setSection('loai-kinh')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'loai-kinh'])><x-icon name="layers" class="w-5 h-5" />Loại Kinh</button>
             <button wire:click="setSection('bai-viet')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'bai-viet'])><x-icon name="pen-tool" class="w-5 h-5" />Bài viết</button>
             <button wire:click="setSection('tien-ich')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'tien-ich'])><x-icon name="component" class="w-5 h-5" />Tiện ích</button>
+            <button wire:click="setSection('truc-nghiem')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'truc-nghiem'])><x-icon name="pen-tool" class="w-5 h-5" />Trắc nghiệm</button>
             <button wire:click="setSection('loi-nguyen')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'loi-nguyen'])><x-icon name="flower-2" class="w-5 h-5" />Lời nguyện</button>
             <button wire:click="setSection('phat-tu')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'phat-tu'])><x-icon name="users" class="w-5 h-5" />Phật tử</button>
         </nav>
@@ -27,6 +28,7 @@
                         'loai-kinh' => 'Quản lý Loại Kinh',
                         'bai-viet' => 'Danh sách Bài viết',
                         'tien-ich' => 'Trung tâm Tiện ích',
+                        'truc-nghiem' => 'Trắc nghiệm Phật giáo',
                         'loi-nguyen' => 'Lời nguyện & quán chiếu (trang chủ)',
                         'phat-tu' => 'Phật tử đã lưu tài khoản tu học',
                     ];
@@ -259,6 +261,73 @@
                         @endforeach
                     </div>
                     <x-dashboard-pagination :paginator="$utilities" page-name="utilitiesPage" />
+                </div>
+            @endif
+
+            @if($activeSection === 'truc-nghiem')
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4 mb-8">
+                        <div>
+                            <h2 class="text-xl font-serif font-bold text-[#4a2c11]">Câu hỏi trắc nghiệm</h2>
+                            <p class="text-sm text-[#8b5e34]/80 mt-1">
+                                Quản lý nội dung hiển thị tại
+                                <a href="{{ route('tools.show', 'truc-nghiem-phat-giao') }}" target="_blank" rel="noopener" class="font-semibold underline hover:text-[#4a2c11]">/tien-ich/truc-nghiem-phat-giao</a>.
+                                Chỉ câu <strong>bật hiển thị</strong> mới xuất hiện trên trang công khai.
+                                Hiện có <strong>{{ $quizQuestionActiveCount }}</strong> / {{ $quizQuestionCount }} câu đang bật.
+                            </p>
+                        </div>
+                        <button type="button" wire:click="openQuizQuestionModal" class="bg-[#4a2c11] text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-[#8b5e34] transition-all shadow-lg w-fit shrink-0">+ Thêm câu hỏi</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left min-w-[880px]">
+                            <thead>
+                                <tr class="text-[#8b5e34]/50 text-xs uppercase tracking-widest border-b border-[#8b5e34]/10">
+                                    <th class="pb-4 pr-4">#</th>
+                                    <th class="pb-4 pr-4">Chủ đề</th>
+                                    <th class="pb-4 pr-4">Câu hỏi</th>
+                                    <th class="pb-4 pr-4">Đáp án</th>
+                                    <th class="pb-4 pr-4">Thứ tự</th>
+                                    <th class="pb-4 pr-4">Trạng thái</th>
+                                    <th class="pb-4 text-right">Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm">
+                                @forelse($quizQuestions as $quiz)
+                                    <tr class="border-b border-[#8b5e34]/5 hover:bg-[#8b5e34]/5 transition-all" wire:key="dash-quiz-{{ $quiz->id }}">
+                                        <td class="py-4 pr-4 tabular-nums text-[#8b5e34] font-bold">{{ $quiz->id }}</td>
+                                        <td class="py-4 pr-4 whitespace-nowrap">
+                                            <span class="inline-flex rounded-full bg-[#f7f2eb] border border-[#e8e0d4] px-2.5 py-1 text-xs font-bold text-[#6b5346]">{{ $quiz->topic }}</span>
+                                        </td>
+                                        <td class="py-4 pr-4 max-w-sm">
+                                            <p class="text-[#4a2c11] line-clamp-2">{{ $quiz->question }}</p>
+                                        </td>
+                                        <td class="py-4 pr-4">
+                                            <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-[#8b5e34] text-xs font-bold text-white">{{ $quiz->correct_answer }}</span>
+                                        </td>
+                                        <td class="py-4 pr-4 tabular-nums">{{ $quiz->sort_order }}</td>
+                                        <td class="py-4 pr-4">
+                                            <label class="relative inline-flex items-center cursor-pointer">
+                                                <input wire:change="toggleQuizQuestion({{ $quiz->id }})" type="checkbox" @checked($quiz->is_active) class="sr-only peer">
+                                                <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-[#8b5e34] peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all"></div>
+                                            </label>
+                                        </td>
+                                        <td class="py-4 text-right space-x-1">
+                                            <button type="button" wire:click="openQuizQuestionModal({{ $quiz->id }})" class="p-2 text-gray-400 hover:text-[#8b5e34]" title="Sửa"><x-icon name="edit-3" class="w-4 h-4" /></button>
+                                            <button type="button" wire:click="deleteQuizQuestion({{ $quiz->id }})" wire:confirm="Xóa câu hỏi này?" class="p-2 text-gray-400 hover:text-red-500" title="Xóa"><x-icon name="trash-2" class="w-4 h-4" /></button>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="7" class="py-10 text-center text-[#8b5e34]/70">
+                                            Chưa có câu hỏi. Chạy <code class="text-xs bg-black/5 px-2 py-0.5 rounded">php artisan migrate</code> để tạo bảng và nhập 10 câu mẫu,
+                                            hoặc bấm <strong>+ Thêm câu hỏi</strong>.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                    <x-dashboard-pagination :paginator="$quizQuestions" page-name="quizQuestionsPage" />
                 </div>
             @endif
 
@@ -633,6 +702,86 @@
                     @error('dailyWishForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
                     <div class="flex gap-3 pt-2">
                         <button type="button" wire:click="closeDailyWishModal" class="flex-1 py-3 rounded-full font-bold border border-[#8b5e34]/20 hover:bg-white transition-all text-sm">Hủy</button>
+                        <button type="submit" class="flex-1 py-3 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-lg transition-all text-sm">Lưu</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
+    @if($showQuizQuestionModal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+            <div class="glass w-full max-w-2xl rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif font-bold">{{ $editingQuizQuestionId ? 'Cập nhật câu hỏi' : 'Câu hỏi mới' }}</h2>
+                    <button type="button" wire:click="closeQuizQuestionModal" class="p-2 hover:bg-[#8b5e34]/10 rounded-full" aria-label="Đóng modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/>
+                        </svg>
+                    </button>
+                </div>
+                <form wire:submit="saveQuizQuestion" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Chủ đề</label>
+                            <input wire:model="quizQuestionForm.topic" type="text" list="quiz-topic-suggestions" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none" placeholder="VD: Tứ Diệu Đế">
+                            <datalist id="quiz-topic-suggestions">
+                                <option value="Tứ Diệu Đế">
+                                <option value="Bát Chánh Đạo">
+                                <option value="Nhân quả">
+                                <option value="Luân hồi">
+                                <option value="Ngũ giới">
+                                <option value="Lòng từ bi">
+                                <option value="Chánh niệm">
+                            </datalist>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Thứ tự hiển thị</label>
+                            <input wire:model="quizQuestionForm.sort_order" type="number" min="0" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 outline-none">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Câu hỏi</label>
+                        <textarea wire:model="quizQuestionForm.question" rows="3" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-y text-sm"></textarea>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Đáp án A</label>
+                            <input wire:model="quizQuestionForm.option_a" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Đáp án B</label>
+                            <input wire:model="quizQuestionForm.option_b" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Đáp án C</label>
+                            <input wire:model="quizQuestionForm.option_c" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Đáp án D</label>
+                            <input wire:model="quizQuestionForm.option_d" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none text-sm">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Đáp án đúng</label>
+                        <select wire:model="quizQuestionForm.correct_answer" class="w-full sm:w-48 px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 outline-none">
+                            <option value="A">A</option>
+                            <option value="B">B</option>
+                            <option value="C">C</option>
+                            <option value="D">D</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Giải thích ngắn</label>
+                        <textarea wire:model="quizQuestionForm.explanation" rows="3" class="w-full px-5 py-3 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-y text-sm"></textarea>
+                    </div>
+                    <label class="inline-flex items-center gap-3 cursor-pointer">
+                        <input wire:model="quizQuestionForm.is_active" type="checkbox" class="rounded border-[#8b5e34]/30 text-[#8b5e34] focus:ring-[#8b5e34]">
+                        <span class="text-sm font-semibold text-[#4a2c11]">Hiển thị trên trang trắc nghiệm</span>
+                    </label>
+                    @error('quizQuestionForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                    <div class="flex gap-3 pt-2">
+                        <button type="button" wire:click="closeQuizQuestionModal" class="flex-1 py-3 rounded-full font-bold border border-[#8b5e34]/20 hover:bg-white transition-all text-sm">Hủy</button>
                         <button type="submit" class="flex-1 py-3 rounded-full font-bold bg-[#4a2c11] text-white hover:bg-[#8b5e34] shadow-lg transition-all text-sm">Lưu</button>
                     </div>
                 </form>

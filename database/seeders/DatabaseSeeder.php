@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             ThemNhieuKinhSeeder::class,
             Them50KinhMoiSeeder::class,
             DailyWishSeeder::class,
+            QuizQuestionSeeder::class,
         ]);
     }
 }

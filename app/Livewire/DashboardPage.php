@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\DailyWish;
 use App\Models\Post;
 use App\Models\PracticeProfile;
+use App\Models\QuizQuestion;
 use App\Models\Scripture;
 use App\Models\ScriptureCategory;
 use App\Models\Utility;
@@ -30,6 +31,7 @@ class DashboardPage extends Component
     public bool $showPostModal = false;
     public bool $showUtilityModal = false;
     public bool $showDailyWishModal = false;
+    public bool $showQuizQuestionModal = false;
 
     public array $scriptureForm = [
         'title' => '',
@@ -71,6 +73,21 @@ class DashboardPage extends Component
     ];
 
     public ?int $editingDailyWishId = null;
+
+    public array $quizQuestionForm = [
+        'topic' => '',
+        'question' => '',
+        'option_a' => '',
+        'option_b' => '',
+        'option_c' => '',
+        'option_d' => '',
+        'correct_answer' => 'A',
+        'explanation' => '',
+        'sort_order' => 1,
+        'is_active' => true,
+    ];
+
+    public ?int $editingQuizQuestionId = null;
 
     public ?int $editingScriptureId = null;
     public ?int $editingPostId = null;
@@ -539,6 +556,98 @@ class DashboardPage extends Component
         ]);
     }
 
+    public function openQuizQuestionModal(?int $id = null): void
+    {
+        $this->resetErrorBag();
+        if ($id) {
+            $this->editQuizQuestion($id);
+        } else {
+            $this->resetQuizQuestionForm();
+        }
+        $this->showQuizQuestionModal = true;
+    }
+
+    public function closeQuizQuestionModal(): void
+    {
+        $this->showQuizQuestionModal = false;
+        $this->resetQuizQuestionForm();
+    }
+
+    public function saveQuizQuestion(): void
+    {
+        $validated = $this->validate([
+            'quizQuestionForm.topic' => ['required', 'string', 'max:120'],
+            'quizQuestionForm.question' => ['required', 'string', 'max:5000'],
+            'quizQuestionForm.option_a' => ['required', 'string', 'max:500'],
+            'quizQuestionForm.option_b' => ['required', 'string', 'max:500'],
+            'quizQuestionForm.option_c' => ['required', 'string', 'max:500'],
+            'quizQuestionForm.option_d' => ['required', 'string', 'max:500'],
+            'quizQuestionForm.correct_answer' => ['required', Rule::in(['A', 'B', 'C', 'D'])],
+            'quizQuestionForm.explanation' => ['required', 'string', 'max:5000'],
+            'quizQuestionForm.sort_order' => ['required', 'integer', 'min:0', 'max:65535'],
+            'quizQuestionForm.is_active' => ['required', 'boolean'],
+        ]);
+
+        if ($this->editingQuizQuestionId) {
+            QuizQuestion::query()->whereKey($this->editingQuizQuestionId)->update($validated['quizQuestionForm']);
+        } else {
+            QuizQuestion::query()->create($validated['quizQuestionForm']);
+        }
+
+        $this->closeQuizQuestionModal();
+    }
+
+    public function editQuizQuestion(int $id): void
+    {
+        $question = QuizQuestion::query()->findOrFail($id);
+        $this->editingQuizQuestionId = $id;
+        $this->quizQuestionForm = [
+            'topic' => $question->topic,
+            'question' => $question->question,
+            'option_a' => $question->option_a,
+            'option_b' => $question->option_b,
+            'option_c' => $question->option_c,
+            'option_d' => $question->option_d,
+            'correct_answer' => $question->correct_answer,
+            'explanation' => $question->explanation,
+            'sort_order' => $question->sort_order,
+            'is_active' => $question->is_active,
+        ];
+    }
+
+    public function deleteQuizQuestion(int $id): void
+    {
+        QuizQuestion::query()->whereKey($id)->delete();
+        if ($this->editingQuizQuestionId === $id) {
+            $this->resetQuizQuestionForm();
+        }
+    }
+
+    public function toggleQuizQuestion(int $id): void
+    {
+        $question = QuizQuestion::query()->findOrFail($id);
+        $question->update([
+            'is_active' => ! $question->is_active,
+        ]);
+    }
+
+    public function resetQuizQuestionForm(): void
+    {
+        $this->editingQuizQuestionId = null;
+        $this->quizQuestionForm = [
+            'topic' => '',
+            'question' => '',
+            'option_a' => '',
+            'option_b' => '',
+            'option_c' => '',
+            'option_d' => '',
+            'correct_answer' => 'A',
+            'explanation' => '',
+            'sort_order' => (int) (QuizQuestion::query()->max('sort_order') ?? 0) + 1,
+            'is_active' => true,
+        ];
+    }
+
     public function resetDailyWishForm(): void
     {
         $this->editingDailyWishId = null;
@@ -631,6 +740,9 @@ class DashboardPage extends Component
             'practiceProfiles' => $practiceProfileQuery->paginate(20, ['*'], 'practiceProfilesPage'),
             'practiceProfileCount' => PracticeProfile::query()->count(),
             'dailyWishes' => DailyWish::query()->ordered()->paginate(15, ['*'], 'dailyWishesPage'),
+            'quizQuestions' => QuizQuestion::query()->ordered()->paginate(15, ['*'], 'quizQuestionsPage'),
+            'quizQuestionCount' => QuizQuestion::query()->count(),
+            'quizQuestionActiveCount' => QuizQuestion::query()->where('is_active', true)->count(),
         ]);
     }
 }

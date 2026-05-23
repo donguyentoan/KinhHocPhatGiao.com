@@ -14,6 +14,7 @@ final class ToolSlugs
         'lien-he-ho-tro' => 'tools.lien-he-ho-tro',
         'doc-kinh' => 'tools.doc-kinh',
         'hai-loc-phap-cu' => 'tools.hai-loc-phap-cu',
+        'truc-nghiem-phat-giao' => 'tools.truc-nghiem-phat-giao',
     ];
 
     /** @return list<string> */

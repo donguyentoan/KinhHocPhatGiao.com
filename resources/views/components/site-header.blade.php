@@ -21,6 +21,7 @@
             <a href="{{ route('tools.show', 'may-niem-phat') }}" class="whitespace-nowrap text-sm {{ $navClass('may-niem-phat') }}" @if($slug === 'may-niem-phat') aria-current="page" @endif>Máy niệm Phật</a>
             <a href="{{ route('tools.show', 'doc-kinh') }}" class="whitespace-nowrap text-sm {{ $navClass('doc-kinh') }}" @if($slug === 'doc-kinh') aria-current="page" @endif>Đọc Kinh</a>
             <a href="{{ route('tools.show', 'hai-loc-phap-cu') }}" class="whitespace-nowrap text-sm {{ $navClass('hai-loc-phap-cu') }}" @if($slug === 'hai-loc-phap-cu') aria-current="page" @endif>Pháp Cú</a>
+            <a href="{{ route('tools.show', 'truc-nghiem-phat-giao') }}" class="whitespace-nowrap text-sm {{ $navClass('truc-nghiem-phat-giao') }}" @if($slug === 'truc-nghiem-phat-giao') aria-current="page" @endif>Trắc nghiệm</a>
             <a href="{{ route('tools.show', 'ngoi-thien') }}" class="whitespace-nowrap text-sm {{ $navClass('ngoi-thien') }}" @if($slug === 'ngoi-thien') aria-current="page" @endif>Ngồi Thiền</a>
             <a href="{{ route('tools.show', 'chuong-mo') }}" class="whitespace-nowrap text-sm {{ $navClass('chuong-mo') }}" @if($slug === 'chuong-mo') aria-current="page" @endif>Chuông Mõ</a>
             <a href="{{ route('tools.show', 'nhac-thien') }}" class="whitespace-nowrap text-sm {{ $navClass('nhac-thien') }}" @if($slug === 'nhac-thien') aria-current="page" @endif>Nhạc Thiền</a>

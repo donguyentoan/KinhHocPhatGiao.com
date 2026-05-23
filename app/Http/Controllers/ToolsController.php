@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\QuizQuestion;
 use App\Models\Scripture;
 use App\Models\ScriptureCategory;
 use App\Support\PracticeTracker;
@@ -53,6 +54,19 @@ class ToolsController extends Controller
                 'scriptures' => $scriptures,
                 'searchQuery' => $q,
                 'activeCategory' => $activeCategory,
+            ]);
+        }
+
+        if ($slug === 'truc-nghiem-phat-giao') {
+            $questions = QuizQuestion::query()
+                ->active()
+                ->ordered()
+                ->get()
+                ->map(fn (QuizQuestion $q) => $q->toQuizArray())
+                ->all();
+
+            return view(ToolSlugs::SLUG_TO_VIEW[$slug], [
+                'questions' => $questions,
             ]);
         }
 

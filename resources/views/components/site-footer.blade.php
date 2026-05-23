@@ -45,6 +45,7 @@
                                 <li><a href="{{ route('tools.show', 'may-niem-phat') }}" class="{{ $linkClass }}">Máy niệm Phật</a></li>
                                 <li><a href="{{ route('tools.show', 'doc-kinh') }}" class="{{ $linkClass }}">Đọc Kinh</a></li>
                                 <li><a href="{{ route('tools.show', 'hai-loc-phap-cu') }}" class="{{ $linkClass }}">Cây Bồ Đề Pháp Cú</a></li>
+                                <li><a href="{{ route('tools.show', 'truc-nghiem-phat-giao') }}" class="{{ $linkClass }}">Trắc nghiệm Phật giáo</a></li>
                                 <li><a href="{{ route('tools.show', 'ngoi-thien') }}" class="{{ $linkClass }}">Ngồi Thiền</a></li>
                                 <li><a href="{{ route('tools.show', 'chuong-mo') }}" class="{{ $linkClass }}">Chuông Mõ</a></li>
                                 <li><a href="{{ route('tools.show', 'lan-chuoi-hat') }}" class="{{ $linkClass }}">Lần chuỗi hạt</a></li>

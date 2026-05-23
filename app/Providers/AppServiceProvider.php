@@ -4,7 +4,7 @@ namespace App\Providers;
 
 use App\Models\Post;
 use App\Models\Scripture;
-use Illuminate\Support\Facades\Cache;
+use App\Services\SitemapBuilder;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $forgetSitemap = static fn () => Cache::forget('seo.sitemap.xml');
+        $forgetSitemap = static fn () => SitemapBuilder::forgetAllCaches();
 
         Post::saved($forgetSitemap);
         Post::deleted($forgetSitemap);

@@ -9,9 +9,10 @@ use Illuminate\Support\Facades\File;
 class GenerateSitemapCommand extends Command
 {
     protected $signature = 'sitemap:generate
-                            {--path=public/sitemap.xml : Relative path under the project root}';
+                            {--index-path=public/sitemap.xml : Relative path for the sitemap index}
+                            {--section-dir=public/sitemaps : Relative directory for section sitemaps}';
 
-    protected $description = 'Write sitemap.xml to disk (for static deploy or CDN upload)';
+    protected $description = 'Write sitemap index and section sitemaps to disk (for static deploy or CDN upload)';
 
     public function handle(SitemapBuilder $builder): int
     {
@@ -21,18 +22,27 @@ class GenerateSitemapCommand extends Command
             return self::FAILURE;
         }
 
-        $relativePath = (string) $this->option('path');
-        $absolutePath = base_path($relativePath);
-        $directory = dirname($absolutePath);
+        $indexPath = base_path((string) $this->option('index-path'));
+        $sectionDir = (string) $this->option('section-dir');
 
+        $this->ensureDirectory(dirname($indexPath));
+        File::put($indexPath, $builder->toIndexXml());
+        $this->info('Sitemap index written to '.$indexPath);
+
+        foreach ($builder->sectionFilesForDisk($sectionDir) as $relativePath => $xml) {
+            $absolutePath = base_path($relativePath);
+            $this->ensureDirectory(dirname($absolutePath));
+            File::put($absolutePath, $xml);
+            $this->line('  · '.$relativePath);
+        }
+
+        return self::SUCCESS;
+    }
+
+    private function ensureDirectory(string $directory): void
+    {
         if (! File::isDirectory($directory)) {
             File::makeDirectory($directory, 0755, true);
         }
-
-        File::put($absolutePath, $builder->toXml());
-
-        $this->info('Sitemap written to '.$absolutePath);
-
-        return self::SUCCESS;
     }
 }

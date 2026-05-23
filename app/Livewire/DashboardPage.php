@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\DailyWish;
+use App\Services\SitemapBuilder;
 use App\Models\Post;
 use App\Models\PracticeProfile;
 use App\Models\QuizQuestion;
@@ -104,6 +105,10 @@ class DashboardPage extends Component
 
     public ?string $migrateFlashType = null;
 
+    public ?string $sitemapFlash = null;
+
+    public ?string $sitemapFlashType = null;
+
     public function setSection(string $section): void
     {
         $this->activeSection = $section;
@@ -141,6 +146,44 @@ class DashboardPage extends Component
 
         $this->migrateFlash = $output !== '' ? $output : 'Đã chạy migrate thành công.';
         $this->migrateFlashType = 'success';
+    }
+
+    public function updateSitemap(): void
+    {
+        $this->sitemapFlash = null;
+        $this->sitemapFlashType = null;
+
+        if (! config('seo.indexing_enabled')) {
+            $this->sitemapFlash = 'SEO_INDEXING_ENABLED đang tắt — robots.txt chặn crawl và /sitemap.xml trả 404. Bật trong .env để cho phép index.';
+            $this->sitemapFlashType = 'error';
+
+            return;
+        }
+
+        SitemapBuilder::forgetAllCaches();
+
+        $exitCode = Artisan::call('sitemap:generate');
+        $output = trim(Artisan::output());
+
+        if ($exitCode !== 0) {
+            $this->sitemapFlash = $output !== '' ? $output : 'Cập nhật sitemap không thành công.';
+            $this->sitemapFlashType = 'error';
+
+            return;
+        }
+
+        $builder = app(SitemapBuilder::class);
+        $entryCount = count($builder->entries());
+        $sectionSummary = collect($builder->activeSections())
+            ->map(fn (string $section) => SitemapBuilder::sectionLabel($section).': '.count($builder->sectionEntries($section)).' URL')
+            ->implode("\n");
+
+        $message = $output !== '' ? $output : 'Đã cập nhật sitemap index và các file theo loại.';
+        $message .= "\n\n{$entryCount} URL tổng · ".route('seo.sitemap');
+        $message .= "\n{$sectionSummary}";
+
+        $this->sitemapFlash = $message;
+        $this->sitemapFlashType = 'success';
     }
 
     /**

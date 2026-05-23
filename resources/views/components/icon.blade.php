@@ -54,6 +54,9 @@
     @case('flower-2')
         <svg xmlns="http://www.w3.org/2000/svg" class="{{ $classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="2.5"/><path d="M12 3c2.5 0 3.5 2 3.5 4S14.5 11 12 11 8.5 9 8.5 7 9.5 3 12 3z"/><path d="M21 12c0 2.5-2 3.5-4 3.5S13 14.5 13 12s2-3.5 4-3.5S21 9.5 21 12z"/><path d="M12 21c-2.5 0-3.5-2-3.5-4s1-4 3.5-4 3.5 2 3.5 4-1 4-3.5 4z"/><path d="M3 12c0-2.5 2-3.5 4-3.5S11 9.5 11 12s-2 3.5-4 3.5S3 14.5 3 12z"/></svg>
         @break
+    @case('globe')
+        <svg xmlns="http://www.w3.org/2000/svg" class="{{ $classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+        @break
     @default
         <svg xmlns="http://www.w3.org/2000/svg" class="{{ $classes }}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
 @endswitch

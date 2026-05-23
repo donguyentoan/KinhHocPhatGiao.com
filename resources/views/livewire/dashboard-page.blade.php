@@ -52,6 +52,18 @@
                     <span class="min-w-[1.25rem] rounded-full bg-amber-500 px-1.5 text-center text-[11px] font-extrabold text-white">{{ count($pendingMigrations) }}</span>
                 @endif
             </button>
+            <button type="button"
+                wire:click="updateSitemap"
+                wire:loading.attr="disabled"
+                wire:target="updateSitemap"
+                class="inline-flex items-center gap-2 rounded-full border-2 border-[#8b5e34]/40 bg-white/70 px-4 py-2 text-sm font-bold text-[#4a2c11] shadow-sm transition hover:bg-[#8b5e34]/10 disabled:opacity-60 disabled:cursor-not-allowed">
+                <x-icon name="globe" class="w-4 h-4 text-[#8b5e34]" />
+                <span wire:loading.remove wire:target="updateSitemap">Sitemap</span>
+                <span wire:loading wire:target="updateSitemap" class="inline-flex items-center gap-1.5">
+                    <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
+                    Đang cập nhật…
+                </span>
+            </button>
             <div class="flex items-center gap-3 glass p-1.5 pl-2 pr-2 rounded-full shadow-sm">
                 <div class="w-10 h-10 rounded-full bg-[#d4a373] flex items-center justify-center text-white">
                    AD {{-- <x-icon name="user" class="w-5 h-5" /> --}}
@@ -74,6 +86,17 @@
                     'bg-amber-50 text-amber-950 border-amber-200' => $migrateFlashType === 'info',
                 ])>
                     <pre class="whitespace-pre-wrap font-sans text-[13px] leading-relaxed m-0">{{ $migrateFlash }}</pre>
+                </div>
+            @endif
+
+            @if(filled($sitemapFlash))
+                <div @class([
+                    'mb-6 p-5 rounded-[2rem] text-sm font-medium border',
+                    'bg-emerald-50 text-emerald-900 border-emerald-200' => $sitemapFlashType === 'success',
+                    'bg-red-50 text-red-900 border-red-200' => $sitemapFlashType === 'error',
+                    'bg-amber-50 text-amber-950 border-amber-200' => $sitemapFlashType === 'info',
+                ])>
+                    <pre class="whitespace-pre-wrap font-sans text-[13px] leading-relaxed m-0">{{ $sitemapFlash }}</pre>
                 </div>
             @endif
 

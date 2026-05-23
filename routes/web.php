@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/robots.txt', [SeoController::class, 'robots'])->name('seo.robots');
 Route::get('/sitemap.xml', [SeoController::class, 'sitemap'])->name('seo.sitemap');
+Route::get('/sitemaps/{type}.xml', [SeoController::class, 'sitemapSection'])
+    ->where('type', 'main|kinh|blog|tools')
+    ->name('seo.sitemap.section');
 
 Route::get('/', HomePage::class)->name('home');
 Route::get('/bai-viet/{post}', PostShowPage::class)->name('posts.show');

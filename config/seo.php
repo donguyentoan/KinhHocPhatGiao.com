@@ -45,6 +45,38 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Crawlers explicitly welcomed in robots.txt
+    |--------------------------------------------------------------------------
+    |
+    | Each entry gets Allow: / plus the disallowed admin paths above.
+    | Includes Google and common AI/search crawlers.
+    |
+    */
+
+    'robots_user_agents' => [
+        '*',
+        'Googlebot',
+        'Googlebot-Image',
+        'Google-Extended',
+        'GPTBot',
+        'ChatGPT-User',
+        'ClaudeBot',
+        'anthropic-ai',
+        'PerplexityBot',
+        'Bytespider',
+        'CCBot',
+        'Amazonbot',
+        'Applebot-Extended',
+        'cohere-ai',
+        'Meta-ExternalAgent',
+        'FacebookBot',
+        'Diffbot',
+        'Omgilibot',
+        'YouBot',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Sitemap URL priorities & change frequencies
     |--------------------------------------------------------------------------
     */

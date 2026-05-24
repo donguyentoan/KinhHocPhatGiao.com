@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Post;
 use App\Models\Scripture;
+use App\Models\VegetarianRecipe;
 use App\Services\SitemapBuilder;
 use Illuminate\Support\ServiceProvider;
 
@@ -26,6 +27,8 @@ class AppServiceProvider extends ServiceProvider
 
         Post::saved($forgetSitemap);
         Post::deleted($forgetSitemap);
+        VegetarianRecipe::saved($forgetSitemap);
+        VegetarianRecipe::deleted($forgetSitemap);
         Scripture::saved($forgetSitemap);
         Scripture::deleted($forgetSitemap);
     }

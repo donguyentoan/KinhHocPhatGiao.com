@@ -17,7 +17,7 @@
             </div>
             <div class="flex flex-col justify-center min-w-0">
                 <h4 class="font-bold leading-snug group-hover:text-[#8b5e34] transition-colors line-clamp-2 text-[#1a1512]">{{ $post->title }}</h4>
-                <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">{{ $post->excerpt }}</p>
+                <p class="text-xs text-[#8b5e34]/60 mt-2 line-clamp-2">{{ $post->teaser() }}</p>
                 <span class="mt-2 text-xs font-semibold text-[#8b5e34]">Đọc bài →</span>
             </div>
         </a>

@@ -10,6 +10,7 @@ use App\Models\QuizQuestion;
 use App\Models\Scripture;
 use App\Models\ScriptureCategory;
 use App\Models\Utility;
+use App\Models\VegetarianRecipe;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -33,6 +34,7 @@ class DashboardPage extends Component
     public bool $showUtilityModal = false;
     public bool $showDailyWishModal = false;
     public bool $showQuizQuestionModal = false;
+    public bool $showRecipeModal = false;
 
     public array $scriptureForm = [
         'title' => '',
@@ -47,8 +49,25 @@ class DashboardPage extends Component
     public array $postForm = [
         'title' => '',
         'excerpt' => '',
+        'content' => '',
         'image_url' => '',
         'published_at' => '',
+    ];
+
+    public array $recipeForm = [
+        'title' => '',
+        'slug' => '',
+        'excerpt' => '',
+        'ingredients' => '',
+        'content' => '',
+        'health_tips' => '',
+        'image_url' => '',
+        'prep_minutes' => '',
+        'servings' => '',
+        'difficulty' => 'de',
+        'published_at' => '',
+        'is_featured' => false,
+        'sort_order' => 0,
     ];
 
     public array $categoryForm = [
@@ -92,14 +111,17 @@ class DashboardPage extends Component
 
     public ?int $editingScriptureId = null;
     public ?int $editingPostId = null;
+    public ?int $editingRecipeId = null;
     public ?int $editingCategoryId = null;
     public ?int $editingUtilityId = null;
 
     public $scriptureImageFile = null;
     public $scriptureContentFile = null;
     public $postImageFile = null;
+    public $recipeImageFile = null;
     public ?string $scriptureImagePreview = null;
     public ?string $postImagePreview = null;
+    public ?string $recipeImagePreview = null;
 
     public ?string $migrateFlash = null;
 
@@ -375,7 +397,8 @@ class DashboardPage extends Component
     {
         $validated = $this->validate([
             'postForm.title' => ['required', 'string', 'max:255'],
-            'postForm.excerpt' => ['nullable', 'string'],
+            'postForm.excerpt' => ['nullable', 'string', 'max:500'],
+            'postForm.content' => ['nullable', 'string'],
             'postForm.image_url' => ['nullable', 'string', 'max:2048'],
             'postForm.published_at' => ['nullable', 'date'],
             'postImageFile' => ['nullable', 'image', 'max:4096'],
@@ -406,6 +429,7 @@ class DashboardPage extends Component
         $this->postForm = [
             'title' => $post->title,
             'excerpt' => $post->excerpt ?? '',
+            'content' => $post->content ?? '',
             'image_url' => $post->image_url ?? '',
             'published_at' => optional($post->published_at)->format('Y-m-d\TH:i'),
         ];
@@ -418,6 +442,116 @@ class DashboardPage extends Component
         if ($this->editingPostId === $id) {
             $this->resetPostForm();
         }
+    }
+
+    public function openRecipeModal(?int $id = null): void
+    {
+        $this->resetErrorBag();
+        if ($id) {
+            $this->editRecipe($id);
+        } else {
+            $this->resetRecipeForm();
+        }
+        $this->showRecipeModal = true;
+    }
+
+    public function closeRecipeModal(): void
+    {
+        $this->showRecipeModal = false;
+        $this->resetRecipeForm();
+    }
+
+    public function saveRecipe(): void
+    {
+        $validated = $this->validate([
+            'recipeForm.title' => ['required', 'string', 'max:255'],
+            'recipeForm.slug' => ['nullable', 'string', 'max:255', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/'],
+            'recipeForm.excerpt' => ['nullable', 'string', 'max:500'],
+            'recipeForm.ingredients' => ['nullable', 'string'],
+            'recipeForm.content' => ['nullable', 'string'],
+            'recipeForm.health_tips' => ['nullable', 'string'],
+            'recipeForm.image_url' => ['nullable', 'string', 'max:2048'],
+            'recipeForm.prep_minutes' => ['nullable', 'integer', 'min:1', 'max:600'],
+            'recipeForm.servings' => ['nullable', 'integer', 'min:1', 'max:50'],
+            'recipeForm.difficulty' => ['required', Rule::in([VegetarianRecipe::DIFFICULTY_DE, VegetarianRecipe::DIFFICULTY_TRUNG_BINH])],
+            'recipeForm.published_at' => ['nullable', 'date'],
+            'recipeForm.is_featured' => ['boolean'],
+            'recipeForm.sort_order' => ['nullable', 'integer', 'min:0'],
+            'recipeImageFile' => ['nullable', 'image', 'max:4096'],
+        ]);
+
+        $data = $validated['recipeForm'];
+        $data['slug'] = filled($data['slug'] ?? null)
+            ? $data['slug']
+            : VegetarianRecipe::slugFromTitle($data['title']);
+
+        if ($this->editingRecipeId) {
+            $conflict = VegetarianRecipe::query()
+                ->where('slug', $data['slug'])
+                ->whereKeyNot($this->editingRecipeId)
+                ->exists();
+            if ($conflict) {
+                $data['slug'] = $data['slug'].'-'.$this->editingRecipeId;
+            }
+        }
+
+        $data['published_at'] = filled($data['published_at'] ?? null)
+            ? Carbon::parse($data['published_at'])
+            : null;
+        $data['prep_minutes'] = filled($data['prep_minutes'] ?? null) ? (int) $data['prep_minutes'] : null;
+        $data['servings'] = filled($data['servings'] ?? null) ? (int) $data['servings'] : null;
+        $data['sort_order'] = (int) ($data['sort_order'] ?? 0);
+        $data['is_featured'] = (bool) ($data['is_featured'] ?? false);
+
+        if ($this->recipeImageFile) {
+            $path = $this->recipeImageFile->store('recipes', 'public');
+            $data['image_url'] = Storage::url($path);
+        }
+
+        VegetarianRecipe::query()->updateOrCreate(
+            ['id' => $this->editingRecipeId],
+            $data
+        );
+
+        $this->closeRecipeModal();
+    }
+
+    public function editRecipe(int $id): void
+    {
+        $recipe = VegetarianRecipe::query()->findOrFail($id);
+        $this->editingRecipeId = $id;
+        $this->recipeForm = [
+            'title' => $recipe->title,
+            'slug' => $recipe->slug,
+            'excerpt' => $recipe->excerpt ?? '',
+            'ingredients' => $recipe->ingredients ?? '',
+            'content' => $recipe->content ?? '',
+            'health_tips' => $recipe->health_tips ?? '',
+            'image_url' => $recipe->image_url ?? '',
+            'prep_minutes' => $recipe->prep_minutes !== null ? (string) $recipe->prep_minutes : '',
+            'servings' => $recipe->servings !== null ? (string) $recipe->servings : '',
+            'difficulty' => $recipe->difficulty,
+            'published_at' => optional($recipe->published_at)->format('Y-m-d\TH:i'),
+            'is_featured' => $recipe->is_featured,
+            'sort_order' => $recipe->sort_order,
+        ];
+        $this->recipeImagePreview = $recipe->image_url ?: null;
+    }
+
+    public function deleteRecipe(int $id): void
+    {
+        VegetarianRecipe::query()->whereKey($id)->delete();
+        if ($this->editingRecipeId === $id) {
+            $this->resetRecipeForm();
+        }
+    }
+
+    public function updatedRecipeFormTitle(string $value): void
+    {
+        if ($this->editingRecipeId || filled($this->recipeForm['slug'] ?? null)) {
+            return;
+        }
+        $this->recipeForm['slug'] = VegetarianRecipe::slugFromTitle($value);
     }
 
     public function openCategoryModal(?int $id = null): void
@@ -727,8 +861,31 @@ class DashboardPage extends Component
         $this->postForm = [
             'title' => '',
             'excerpt' => '',
+            'content' => '',
             'image_url' => '',
             'published_at' => '',
+        ];
+    }
+
+    public function resetRecipeForm(): void
+    {
+        $this->editingRecipeId = null;
+        $this->recipeImageFile = null;
+        $this->recipeImagePreview = null;
+        $this->recipeForm = [
+            'title' => '',
+            'slug' => '',
+            'excerpt' => '',
+            'ingredients' => '',
+            'content' => '',
+            'health_tips' => '',
+            'image_url' => '',
+            'prep_minutes' => '',
+            'servings' => '',
+            'difficulty' => VegetarianRecipe::DIFFICULTY_DE,
+            'published_at' => '',
+            'is_featured' => false,
+            'sort_order' => 0,
         ];
     }
 
@@ -757,6 +914,7 @@ class DashboardPage extends Component
     {
         $totalScriptures = Scripture::query()->count();
         $totalPosts = Post::query()->count();
+        $totalRecipes = VegetarianRecipe::query()->count();
 
         $practiceProfileQuery = PracticeProfile::query()
             ->withCount('activities')
@@ -772,11 +930,13 @@ class DashboardPage extends Component
             'stats' => [
                 ['label' => 'Tổng Kinh Văn', 'value' => number_format($totalScriptures), 'description' => 'Dữ liệu hiện có'],
                 ['label' => 'Bài Viết', 'value' => number_format($totalPosts), 'description' => 'Đã xuất bản'],
+                ['label' => 'Món Chay', 'value' => number_format($totalRecipes), 'description' => 'Công thức'],
                 ['label' => 'Loại Kinh', 'value' => number_format(ScriptureCategory::query()->count()), 'description' => 'Danh mục'],
                 ['label' => 'Tiện Ích', 'value' => number_format(Utility::query()->count()), 'description' => 'Đang hoạt động'],
             ],
             'scriptures' => Scripture::query()->with('category')->latest()->paginate(15, ['*'], 'scripturesPage'),
             'posts' => Post::query()->latest('published_at')->paginate(15, ['*'], 'postsPage'),
+            'recipes' => VegetarianRecipe::query()->orderBy('sort_order')->latest('published_at')->paginate(15, ['*'], 'recipesPage'),
             'categories' => ScriptureCategory::query()->withCount('scriptures')->orderBy('name')->paginate(12, ['*'], 'categoriesPage'),
             'allCategories' => ScriptureCategory::query()->orderBy('name')->get(),
             'utilities' => Utility::query()->orderBy('sort_order')->paginate(12, ['*'], 'utilitiesPage'),

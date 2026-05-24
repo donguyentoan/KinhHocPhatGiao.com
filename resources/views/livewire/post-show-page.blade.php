@@ -1,7 +1,7 @@
 @push('head')
     <x-seo-meta
         :canonical="route('posts.show', $post)"
-        :description="$post->excerpt ?: $post->title"
+        :description="$post->teaser() ?: $post->title"
     />
 @endpush
 
@@ -34,7 +34,7 @@
 
         <div class="prose prose-stone prose-lg max-w-none text-[#4a2c11]">
             <div class="whitespace-pre-wrap leading-relaxed text-base sm:text-[17px]">
-                {{ $post->excerpt }}
+                {{ $post->body() }}
             </div>
         </div>
     </article>

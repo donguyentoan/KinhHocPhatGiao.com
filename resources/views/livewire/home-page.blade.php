@@ -111,6 +111,33 @@
             @endif
         </section>
 
+        <section id="mon-chay" class="py-8 scroll-mt-24">
+            <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
+                <div class="flex items-center gap-4">
+                    <div class="w-2 h-8 bg-[#5a7a5a] rounded-full"></div>
+                    <div>
+                        <h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Món chay thanh đạm</h3>
+                        <p class="text-sm text-[#8b5e34]/70 mt-1">Ẩm thực nhẹ nhàng — nuôi dưỡng thân tâm an lạc</p>
+                    </div>
+                </div>
+                <a href="{{ route('recipes.index') }}" class="inline-flex items-center gap-2 text-sm font-bold text-[#5a7a5a] hover:text-[#3d5c3d] hover:underline shrink-0">
+                    Xem tất cả công thức <i class="fa-solid fa-arrow-right-long" aria-hidden="true"></i>
+                </a>
+            </div>
+            @if($featuredRecipes->isNotEmpty())
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    @foreach($featuredRecipes as $recipe)
+                        <x-recipe-card :recipe="$recipe" wire:key="home-recipe-{{ $recipe->id }}" />
+                    @endforeach
+                </div>
+            @else
+                <div class="rounded-3xl border border-dashed border-[#d4e8d4] bg-[#f4faf4]/50 p-10 text-center">
+                    <p class="text-[#4a2c11]/70 mb-4">Đang chuẩn bị công thức món chay mới.</p>
+                    <a href="{{ route('recipes.index') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[#5a7a5a] text-white font-bold text-sm hover:bg-[#4a6b4a] transition-colors">Khám phá món chay</a>
+                </div>
+            @endif
+        </section>
+
         <section id="bai-viet-noi-bat" class="py-8 scroll-mt-24">
             <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài viết đọc nhiều trong tuần</h3></div>
             <x-popular-posts :posts="$popularPosts" />

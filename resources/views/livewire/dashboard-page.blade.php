@@ -11,6 +11,7 @@
             <button wire:click="setSection('kinh-phat')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'kinh-phat'])><x-icon name="scroll" class="w-5 h-5" />Kinh Phật</button>
             <button wire:click="setSection('loai-kinh')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'loai-kinh'])><x-icon name="layers" class="w-5 h-5" />Loại Kinh</button>
             <button wire:click="setSection('bai-viet')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'bai-viet'])><x-icon name="pen-tool" class="w-5 h-5" />Bài viết</button>
+            <button wire:click="setSection('mon-chay')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'mon-chay'])><i class="fa-solid fa-leaf w-5 h-5 text-center" aria-hidden="true"></i>Món chay</button>
             <button wire:click="setSection('tien-ich')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'tien-ich'])><x-icon name="component" class="w-5 h-5" />Tiện ích</button>
             <button wire:click="setSection('truc-nghiem')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'truc-nghiem'])><x-icon name="pen-tool" class="w-5 h-5" />Trắc nghiệm</button>
             <button wire:click="setSection('loi-nguyen')" @class(['sidebar-link w-full flex items-center gap-3 px-4 py-3 rounded-2xl font-bold transition-all text-[#4a2c11]/60', 'active' => $activeSection === 'loi-nguyen'])><x-icon name="flower-2" class="w-5 h-5" />Lời nguyện</button>
@@ -27,6 +28,7 @@
                         'kinh-phat' => 'Danh sách Kinh Phật',
                         'loai-kinh' => 'Quản lý Loại Kinh',
                         'bai-viet' => 'Danh sách Bài viết',
+                        'mon-chay' => 'Món chay thanh đạm',
                         'tien-ich' => 'Trung tâm Tiện ích',
                         'truc-nghiem' => 'Trắc nghiệm Phật giáo',
                         'loi-nguyen' => 'Lời nguyện & quán chiếu (trang chủ)',
@@ -251,6 +253,50 @@
                         </tbody>
                     </table>
                     <x-dashboard-pagination :paginator="$posts" page-name="postsPage" />
+                </div>
+            @endif
+
+            @if($activeSection === 'mon-chay')
+                <div class="glass p-8 rounded-[2.5rem] shadow-sm">
+                    <div class="flex flex-col md:flex-row justify-between gap-4 mb-8">
+                        <p class="text-sm text-[#8b5e34]/70 max-w-xl">Quản lý công thức món chay — hiển thị tại <a href="{{ route('recipes.index') }}" target="_blank" class="font-bold underline">/mon-chay</a> và mục trên trang chủ.</p>
+                        <button wire:click="openRecipeModal" type="button" class="bg-[#5a7a5a] text-white px-6 py-3 rounded-full font-bold flex items-center gap-2 hover:bg-[#4a6b4a] transition-all shadow-lg shrink-0">
+                            <i class="fa-solid fa-plus" aria-hidden="true"></i> Thêm món mới
+                        </button>
+                    </div>
+                    <table class="w-full text-left">
+                        <thead>
+                            <tr class="text-[#8b5e34]/50 text-xs uppercase tracking-widest border-b border-[#8b5e34]/10">
+                                <th class="pb-4">Tên món</th>
+                                <th class="pb-4">Slug</th>
+                                <th class="pb-4">Nổi bật</th>
+                                <th class="pb-4">Ngày đăng</th>
+                                <th class="pb-4 text-right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm">
+                            @foreach($recipes as $recipe)
+                                <tr class="border-b border-[#8b5e34]/5 hover:bg-[#5a7a5a]/5 transition-all" wire:key="dash-recipe-{{ $recipe->id }}">
+                                    <td class="py-5 font-bold text-[#4a2c11]">{{ $recipe->title }}</td>
+                                    <td class="py-5 text-gray-500 font-mono text-xs">{{ $recipe->slug }}</td>
+                                    <td class="py-5">
+                                        @if($recipe->is_featured)
+                                            <span class="bg-[#e8f5e9] text-[#3d5c3d] px-3 py-1 rounded-full text-[10px] font-bold uppercase">Có</span>
+                                        @else
+                                            <span class="text-gray-400 text-xs">—</span>
+                                        @endif
+                                    </td>
+                                    <td class="py-5 text-gray-500">{{ optional($recipe->published_at)->format('d/m/Y') ?: 'Nháp' }}</td>
+                                    <td class="py-4 text-right space-x-2">
+                                        <a href="{{ route('recipes.show', $recipe) }}" target="_blank" class="p-2 text-gray-300 hover:text-[#5a7a5a] inline-block" title="Xem trang"><i class="fa-solid fa-arrow-up-right-from-square text-sm" aria-hidden="true"></i></a>
+                                        <button type="button" wire:click="openRecipeModal({{ $recipe->id }})" class="p-2 text-gray-300 hover:text-[#8b5e34]"><x-icon name="edit-3" class="w-4 h-4" /></button>
+                                        <button type="button" wire:click="deleteRecipe({{ $recipe->id }})" wire:confirm="Bạn chắc chắn muốn xóa món này?" class="p-2 text-gray-300 hover:text-red-500"><x-icon name="trash-2" class="w-4 h-4" /></button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <x-dashboard-pagination :paginator="$recipes" page-name="recipesPage" />
                 </div>
             @endif
 
@@ -619,6 +665,98 @@
         </div>
     @endif
 
+    @if($showRecipeModal)
+        <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
+            <div class="glass w-full max-w-5xl rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-serif font-bold">{{ $editingRecipeId ? 'Cập nhật món chay' : 'Thêm món chay mới' }}</h2>
+                    <button type="button" wire:click="closeRecipeModal" class="p-2 hover:bg-[#5a7a5a]/10 rounded-full" aria-label="Đóng modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6L6 18"/>
+                        </svg>
+                    </button>
+                </div>
+                <form wire:submit="saveRecipe" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2 space-y-5">
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2 px-1">Tên món</label>
+                            <input wire:model.live="recipeForm.title" type="text" class="w-full px-5 py-4 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 focus:ring-2 focus:ring-[#5a7a5a]/20 outline-none font-bold text-lg" placeholder="Ví dụ: Canh nấm hương...">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2 px-1">Đường dẫn (slug)</label>
+                            <input wire:model="recipeForm.slug" type="text" class="w-full px-5 py-3 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 font-mono text-sm outline-none" placeholder="canh-nam-huong">
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2 px-1">Mô tả ngắn</label>
+                            <textarea wire:model="recipeForm.excerpt" rows="2" class="w-full px-5 py-4 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none resize-none"></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2 px-1">Nguyên liệu</label>
+                            <textarea wire:model="recipeForm.ingredients" rows="6" class="w-full px-5 py-4 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none resize-none font-mono text-sm" placeholder="• Rau củ..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2 px-1">Cách làm</label>
+                            <textarea wire:model="recipeForm.content" rows="10" class="w-full px-5 py-4 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none resize-none" placeholder="1. Sơ chế..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2 px-1">Gợi ý ăn healthy</label>
+                            <textarea wire:model="recipeForm.health_tips" rows="3" class="w-full px-5 py-4 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none resize-none"></textarea>
+                        </div>
+                    </div>
+                    <div class="space-y-6">
+                        <div class="p-6 bg-[#5a7a5a]/5 rounded-[2rem] border border-[#5a7a5a]/15">
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-4">Ảnh món</label>
+                            <label class="w-full h-40 border-2 border-dashed border-[#5a7a5a]/25 rounded-2xl flex flex-col items-center justify-center gap-3 hover:bg-white/50 cursor-pointer overflow-hidden">
+                                <input wire:model.defer="recipeImageFile" type="file" accept="image/*" class="hidden" onchange="previewLocalImage(event, 'recipe-image-preview', 'recipe-image-placeholder', 'recipeImagePreview')">
+                                <img id="recipe-image-preview"
+                                     src="{{ $recipeImagePreview ?: (!empty($recipeForm['image_url']) ? $recipeForm['image_url'] : '') }}"
+                                     alt="Preview"
+                                     class="w-full h-full object-cover {{ ($recipeImagePreview || !empty($recipeForm['image_url'])) ? '' : 'hidden' }}">
+                                <div id="recipe-image-placeholder" class="{{ ($recipeImagePreview || !empty($recipeForm['image_url'])) ? 'hidden' : '' }} flex flex-col items-center gap-2 text-[#5a7a5a]/50">
+                                    <i class="fa-regular fa-image text-3xl" aria-hidden="true"></i>
+                                    <span class="text-[10px] font-bold">Upload ảnh</span>
+                                </div>
+                            </label>
+                            <input wire:model="recipeForm.image_url" type="url" class="w-full mt-4 px-4 py-2 rounded-xl border border-[#5a7a5a]/15 bg-white/80 text-sm" placeholder="Hoặc URL ảnh">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2">Phút nấu</label>
+                                <input wire:model="recipeForm.prep_minutes" type="number" min="1" class="w-full px-4 py-3 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2">Phần ăn</label>
+                                <input wire:model="recipeForm.servings" type="number" min="1" class="w-full px-4 py-3 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2">Độ khó</label>
+                            <select wire:model="recipeForm.difficulty" class="w-full px-5 py-3 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none">
+                                <option value="de">Dễ</option>
+                                <option value="trung-binh">Trung bình</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2">Ngày đăng</label>
+                            <input wire:model="recipeForm.published_at" type="datetime-local" class="w-full px-5 py-3 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none">
+                        </div>
+                        <label class="flex items-center gap-3 cursor-pointer">
+                            <input wire:model="recipeForm.is_featured" type="checkbox" class="rounded border-[#5a7a5a]/30 text-[#5a7a5a]">
+                            <span class="text-sm font-bold text-[#4a2c11]">Hiển thị nổi bật trang chủ</span>
+                        </label>
+                        <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#5a7a5a] mb-2">Thứ tự</label>
+                            <input wire:model="recipeForm.sort_order" type="number" min="0" class="w-full px-5 py-3 rounded-2xl border border-[#5a7a5a]/15 bg-white/50 outline-none">
+                        </div>
+                        @error('recipeForm.*') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                        @error('recipeImageFile') <p class="text-xs text-red-600">{{ $message }}</p> @enderror
+                        <button type="submit" class="w-full py-4 rounded-full font-bold bg-[#5a7a5a] text-white hover:bg-[#4a6b4a] shadow-xl transition-all">Lưu món chay</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    @endif
+
     @if($showPostModal)
         <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">
             <div class="glass w-full max-w-4xl rounded-[2.5rem] p-8 shadow-2xl overflow-y-auto max-h-[90vh]">
@@ -637,8 +775,12 @@
                             <input wire:model="postForm.title" type="text" class="w-full px-5 py-4 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none font-bold text-lg" placeholder="Nhập tiêu đề...">
                         </div>
                         <div>
+                            <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Mô tả ngắn (hiển thị trên trang chủ)</label>
+                            <textarea wire:model="postForm.excerpt" rows="3" class="w-full px-5 py-4 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-none" placeholder="2–3 câu tóm tắt bài viết..."></textarea>
+                        </div>
+                        <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Nội dung chi tiết</label>
-                            <textarea wire:model="postForm.excerpt" rows="12" class="w-full px-5 py-4 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-none" placeholder="Bắt đầu câu chuyện của bạn..."></textarea>
+                            <textarea wire:model="postForm.content" rows="14" class="w-full px-5 py-4 rounded-2xl border border-[#8b5e34]/10 bg-white/50 focus:ring-2 focus:ring-[#8b5e34]/20 outline-none resize-none" placeholder="Bắt đầu câu chuyện của bạn..."></textarea>
                         </div>
                     </div>
                     <div class="space-y-6">

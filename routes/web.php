@@ -4,6 +4,8 @@ use App\Livewire\AccountPage;
 use App\Livewire\DashboardPage;
 use App\Livewire\HomePage;
 use App\Livewire\PostShowPage;
+use App\Livewire\RecipeListPage;
+use App\Livewire\RecipeShowPage;
 use App\Livewire\LoginPage;
 use App\Livewire\RegisterPage;
 use App\Http\Controllers\ScriptureReaderController;
@@ -31,6 +33,8 @@ Route::get('/sitemaps/{type}.xml', [SeoController::class, 'sitemapSection'])
 
 Route::get('/', HomePage::class)->name('home');
 Route::get('/bai-viet/{post}', PostShowPage::class)->name('posts.show');
+Route::get('/mon-chay', RecipeListPage::class)->name('recipes.index');
+Route::get('/mon-chay/{recipe}', RecipeShowPage::class)->name('recipes.show');
 Route::redirect('/home', '/');
 Route::get('/tai-khoan', AccountPage::class)->name('account');
 

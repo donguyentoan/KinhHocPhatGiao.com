@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
 use App\Models\Post;
+use App\Models\VegetarianRecipe;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,13 @@ class RouteServiceProvider extends ServiceProvider
                 ->whereKey($value)
                 ->whereNotNull('published_at')
                 ->where('published_at', '<=', now())
+                ->firstOrFail();
+        });
+
+        Route::bind('recipe', function (string $value) {
+            return VegetarianRecipe::query()
+                ->where('slug', $value)
+                ->published()
                 ->firstOrFail();
         });
 

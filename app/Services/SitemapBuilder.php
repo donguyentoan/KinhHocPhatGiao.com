@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Post;
+use App\Models\VegetarianRecipe;
 use App\Models\Scripture;
 use App\Support\ToolSlugs;
 use Carbon\CarbonInterface;
@@ -238,7 +239,14 @@ class SitemapBuilder
     /** @return list<array{loc: string, lastmod: ?CarbonInterface, changefreq: string, priority: string}> */
     private function blogEntries(): array
     {
-        $entries = [];
+        $entries = [
+            $this->entry(
+                route('recipes.index'),
+                VegetarianRecipe::query()->published()->max('updated_at'),
+                config('seo.changefreq.posts'),
+                config('seo.priorities.posts'),
+            ),
+        ];
 
         Post::query()
             ->whereNotNull('published_at')
@@ -255,6 +263,26 @@ class SitemapBuilder
 
                 $entries[] = $this->entry(
                     route('posts.show', $post),
+                    $lastmod,
+                    config('seo.changefreq.posts'),
+                    config('seo.priorities.posts'),
+                );
+            });
+
+        VegetarianRecipe::query()
+            ->published()
+            ->orderByDesc('published_at')
+            ->orderBy('title')
+            ->orderBy('id')
+            ->get(['slug', 'title', 'updated_at', 'published_at'])
+            ->each(function (VegetarianRecipe $recipe) use (&$entries) {
+                $lastmod = $recipe->updated_at;
+                if ($recipe->published_at && ($lastmod === null || $recipe->published_at->gt($lastmod))) {
+                    $lastmod = $recipe->published_at;
+                }
+
+                $entries[] = $this->entry(
+                    route('recipes.show', $recipe),
                     $lastmod,
                     config('seo.changefreq.posts'),
                     config('seo.priorities.posts'),

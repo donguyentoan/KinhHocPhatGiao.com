@@ -7,6 +7,7 @@ use App\Models\Post;
 use App\Models\Scripture;
 use App\Models\ScriptureCategory;
 use App\Models\Utility;
+use App\Models\VegetarianRecipe;
 use App\Support\PracticeTracker;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
@@ -81,9 +82,10 @@ class HomePage extends Component
                 ->whereNotNull('published_at')
                 ->where('published_at', '<=', now())
                 ->latest('published_at')
-                ->take(4)
+                ->take(7)
                 ->get(),
             'dailyWishes' => $dailyWishes,
+            'featuredRecipes' => VegetarianRecipe::query()->published()->ordered()->take(3)->get(),
         ]);
     }
 

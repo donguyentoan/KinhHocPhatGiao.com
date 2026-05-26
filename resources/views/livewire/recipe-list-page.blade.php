@@ -44,7 +44,7 @@
         @if($featured->isNotEmpty())
             <section class="mb-14" aria-labelledby="featured-recipes-heading">
                 <div class="flex items-center gap-3 mb-8">
-                    <div class="w-2 h-8 bg-[#5a7a5a] rounded-full"></div>
+                    <div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div>
                     <h2 id="featured-recipes-heading" class="font-serif text-2xl font-bold text-[#4a2c11]">Gợi ý cho bạn hôm nay</h2>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">

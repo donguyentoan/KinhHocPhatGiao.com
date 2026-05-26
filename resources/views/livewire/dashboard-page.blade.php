@@ -717,7 +717,7 @@
                                     <span class="text-[10px] font-bold">Upload ảnh</span>
                                 </div>
                             </label>
-                            <input wire:model="recipeForm.image_url" type="url" class="w-full mt-4 px-4 py-2 rounded-xl border border-[#5a7a5a]/15 bg-white/80 text-sm" placeholder="Hoặc URL ảnh">
+                            <input wire:model="recipeForm.image_url" type="text" class="w-full mt-4 px-4 py-2 rounded-xl border border-[#5a7a5a]/15 bg-white/80 text-sm" placeholder="URL ảnh hoặc /storage/recipes/...">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
@@ -809,7 +809,7 @@
                             @elseif(!empty($postForm['image_url']))
                                 <p class="text-xs text-[#8b5e34]/70 mt-2">Ảnh hiện tại đã có sẵn.</p>
                             @endif
-                            <input wire:model="postForm.image_url" type="url" class="w-full mt-4 px-4 py-2 rounded-xl border border-[#8b5e34]/10 bg-white/80" placeholder="Hoặc nhập URL ảnh">
+                            <input wire:model="postForm.image_url" type="text" class="w-full mt-4 px-4 py-2 rounded-xl border border-[#8b5e34]/10 bg-white/80" placeholder="URL ảnh hoặc /storage/posts/...">
                         </div>
                         <div>
                             <label class="block text-[10px] font-bold uppercase tracking-widest text-[#8b5e34] mb-2 px-1">Ngày đăng</label>

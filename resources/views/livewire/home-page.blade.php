@@ -114,7 +114,7 @@
         <section id="mon-chay" class="py-8 scroll-mt-24">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
                 <div class="flex items-center gap-4">
-                    <div class="w-2 h-8 bg-[#5a7a5a] rounded-full"></div>
+                    <div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div>
                     <div>
                         <h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Món chay thanh đạm</h3>
                         <p class="text-sm text-[#8b5e34]/70 mt-1">Ẩm thực nhẹ nhàng — nuôi dưỡng thân tâm an lạc</p>

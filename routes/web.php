@@ -57,4 +57,5 @@ Route::get('/scriptures/{scripture}/pdf', [ScriptureReaderController::class, 'pd
 Route::get('/tien-ich/{slug}', [ToolsController::class, 'show'])->name('tools.show');
 Route::post('/tien-ich/ngoi-thien/start', [ToolsController::class, 'startMeditation'])->name('tools.meditation.start');
 Route::post('/tien-ich/ngoi-thien/complete', [ToolsController::class, 'completeMeditation'])->name('tools.meditation.complete');
+Route::post('/tien-ich/truc-nghiem-phat-giao/complete', [ToolsController::class, 'completeQuiz'])->name('tools.quiz.complete');
 

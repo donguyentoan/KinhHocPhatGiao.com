@@ -73,6 +73,25 @@ class AccountPage extends Component
             })
             ->sum();
 
+        $quizAttempts = PracticeActivity::query()
+            ->where('practice_profile_id', $profile->id)
+            ->where('activity_type', 'quiz_attempt')
+            ->orderByDesc('created_at')
+            ->limit(20)
+            ->get()
+            ->map(function (PracticeActivity $activity) {
+                $meta = $activity->meta ?? [];
+                $correct = (int) ($meta['correct_count'] ?? 0);
+                $total = max(1, (int) ($meta['total_questions'] ?? 1));
+
+                return [
+                    'date' => $activity->created_at->timezone(config('app.timezone'))->format('d/m/Y H:i'),
+                    'correct' => $correct,
+                    'total' => $total,
+                    'percent' => (int) ($meta['score_percent'] ?? round(($correct / $total) * 100)),
+                ];
+            });
+
         $practiceChart = collect(range(13, 0))
             ->map(function (int $daysAgo) use ($dailyMeditationMinutes, $dailyReadingCounts) {
                 $date = Carbon::today()->subDays($daysAgo);
@@ -94,6 +113,8 @@ class AccountPage extends Component
             'streak' => $tracker->currentStreak($profile),
             'readingCount' => (clone $baseQuery)->where('activity_type', 'scripture_read')->count(),
             'meditationCount' => (clone $baseQuery)->where('activity_type', 'meditation_session')->count(),
+            'quizCount' => (clone $baseQuery)->where('activity_type', 'quiz_attempt')->count(),
+            'quizAttempts' => $quizAttempts,
             'practiceChart' => $practiceChart,
             'chartMaxMinutes' => $chartMaxMinutes,
             'chartMaxReads' => $chartMaxReads,

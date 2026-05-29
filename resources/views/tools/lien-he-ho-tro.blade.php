@@ -26,7 +26,7 @@
                     <span class="text-lg flex-shrink-0" aria-hidden="true">🧘</span>
                     <div>
                         <strong class="text-[#1a1512]">Tiện ích tu tập</strong>
-                        <span class="text-[#6b5346]"> — máy niệm Phật, chuông mõ, lần chuỗi, nhạc thiền, bấm giờ ngồi thiền có lưu phiên.</span>
+                        <span class="text-[#6b5346]"> — máy niệm Phật, lần chuỗi, nhạc thiền, bấm giờ ngồi thiền có lưu phiên.</span>
                     </div>
                 </li>
                 <li class="flex gap-3">

@@ -16,10 +16,7 @@
                     {{-- Thương hiệu --}}
                     <div class="lg:col-span-4">
                         <div class="flex items-start gap-3">
-                            <span
-                                class="mt-1 w-1.5 min-h-[3rem] shrink-0 rounded-full bg-gradient-to-b from-[#e8b86a] to-[#b07d4f] shadow-[0_2px_14px_rgba(212,163,115,0.35)]"
-                                aria-hidden="true"
-                            ></span>
+                           
                             <div class="min-w-0">
                                 <a href="{{ route('home') }}" class="inline-block mb-3 transition-opacity hover:opacity-90" aria-label="Về trang chủ">
                                     <img src="/logoWeb.png" class="h-[4.5rem] w-auto object-contain sm:h-20" alt="">
@@ -47,22 +44,33 @@
                                 <li><a href="{{ route('tools.show', 'hai-loc-phap-cu') }}" class="{{ $linkClass }}">Cây Bồ Đề Pháp Cú</a></li>
                                 <li><a href="{{ route('tools.show', 'truc-nghiem-phat-giao') }}" class="{{ $linkClass }}">Trắc nghiệm Phật giáo</a></li>
                                 <li><a href="{{ route('tools.show', 'ngoi-thien') }}" class="{{ $linkClass }}">Ngồi Thiền</a></li>
-                                <li><a href="{{ route('tools.show', 'chuong-mo') }}" class="{{ $linkClass }}">Chuông Mõ</a></li>
-                                <li><a href="{{ route('tools.show', 'lan-chuoi-hat') }}" class="{{ $linkClass }}">Lần chuỗi hạt</a></li>
                                 <li><a href="{{ route('tools.show', 'nhac-thien') }}" class="{{ $linkClass }}">Nhạc Thiền</a></li>
-                                <li><a href="{{ route('tools.show', 'su-kien-trong-nam') }}" class="{{ $linkClass }}">Sự kiện trong năm</a></li>
                                 <li><a href="{{ route('tools.show', 'lien-he-ho-tro') }}" class="{{ $linkClass }}">Liên hệ hỗ trợ</a></li>
                             </ul>
                         </div>
                         <div>
                             <div class="{{ $colTitleClass }}">
                                 <span class="h-8 w-1 rounded-full bg-[#8b5e34] shadow-sm shrink-0" aria-hidden="true"></span>
-                                <h3 class="text-lg font-bold text-[#2c2118] tracking-tight" style="font-family: 'Noto Serif Display', Georgia, 'Times New Roman', serif;">Nội dung</h3>
+                                <h3 class="text-lg font-bold text-[#2c2118] tracking-tight" style="font-family: 'Noto Serif Display', Georgia, 'Times New Roman', serif;">Thư viện kinh điển</h3>
                             </div>
                             <ul class="space-y-2 pl-4 border-l border-[#d4a373]/35">
-                                <li><a href="{{ route('tools.show', 'doc-kinh') }}" class="{{ $linkClass }}">Kinh Phật</a></li>
-                                <li><a href="{{ route('tools.show', 'doc-kinh') }}" class="{{ $linkClass }}">Mật Chú</a></li>
-                                <li><a href="{{ route('home') }}" class="{{ $linkClass }}">Bài viết</a></li>
+                             
+                                @foreach ($footerCategories as $category)
+                                    <li>
+                                        <a
+                                            href="{{ route('tools.show', ['slug' => 'doc-kinh', 'category' => $category->id]) }}#danh-sach-kinh"
+                                            class="{{ $linkClass }}"
+                                        >
+                                            {{ $category->name }}
+                                            @if($category->scriptures_count > 0)
+                                                <span class="text-[#9a8b7d] font-normal">({{ $category->scriptures_count }})</span>
+                                            @endif
+                                        </a>
+                                    </li>
+                                @endforeach
+                                <li>
+                                    <a href="{{ route('home') }}#bai-viet-noi-bat" class="{{ $linkClass }}">Bài viết</a>
+                                </li>
                             </ul>
                         </div>
                     </div>

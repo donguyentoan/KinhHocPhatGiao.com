@@ -54,21 +54,21 @@
 
     <div class="py-4 container mx-auto font-sans p-3">
         <section class="w-full h-full flex md:flex-row flex-col bg-[#25282c] rounded-[20px] overflow-hidden">
-            <div class="relative md:w-7/12 w-full flex flex-col p-10 overflow-hidden group">
+            <div class="relative md:w-7/12 w-full flex flex-col p-5 sm:p-8 md:p-10 min-h-[220px] sm:min-h-[280px] overflow-hidden group">
                 <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110"
                     style="background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20241013/pngtree-a-serene-and-peaceful-background-of-nature-with-lush-greenery-a-image_16380757.jpg');"></div>
                 <div class="absolute inset-0 bg-gradient-to-tr from-black/80 via-black/40 to-transparent"></div>
-                <div class="relative z-10"><p id="txt-thu" class="text-white/80 font-medium text-xl italic">---</p></div>
+                <div class="relative z-10"><p id="txt-thu" class="text-white/80 font-medium text-base sm:text-xl italic">---</p></div>
                 <div class="relative z-10 mt-auto">
-                    <h1 id="txt-ngayduong" class="text-white text-[120px] font-extrabold leading-none tracking-tighter drop-shadow-2xl">--</h1>
-                    <p id="txt-thangnamduong" class="text-white/90 text-2xl font-light tracking-[0.3em] uppercase mt-2">-- ----</p>
+                    <h1 id="txt-ngayduong" class="text-white text-[clamp(3.25rem,22vw,7.5rem)] font-extrabold leading-none tracking-tighter drop-shadow-2xl">--</h1>
+                    <p id="txt-thangnamduong" class="text-white/90 text-base sm:text-2xl font-light tracking-[0.15em] sm:tracking-[0.3em] uppercase mt-2">-- ----</p>
                 </div>
             </div>
-            <div class="md:w-5/12 w-full bg-gradient-to-br from-[#e67e22] to-[#d35400] p-10 flex flex-col shadow-inner">
-                <div class="grid grid-cols-3 gap-4 text-center border-b border-white/10 pb-8 text-white">
-                    <div><span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Ngày</span><span id="txt-ngayam" class="block text-4xl font-extrabold">--</span><span id="txt-canchingay" class="text-[10px] mt-2 font-semibold bg-black/10 rounded-md py-1 px-1">---</span></div>
-                    <div><span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Tháng</span><span id="txt-thangam" class="block text-4xl font-extrabold">--</span><span id="txt-canchithang" class="text-[10px] mt-2 font-semibold bg-black/10 rounded-md py-1 px-1">---</span></div>
-                    <div><span class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Năm</span><span id="txt-namam" class="block text-4xl font-extrabold">----</span><span id="txt-canchinam" class="text-[10px] mt-2 font-semibold bg-black/10 rounded-md py-1 px-1">---</span></div>
+            <div class="md:w-5/12 w-full bg-gradient-to-br from-[#e67e22] to-[#d35400] p-5 sm:p-8 md:p-10 flex flex-col shadow-inner">
+                <div class="grid grid-cols-3 gap-2 sm:gap-4 text-center border-b border-white/10 pb-5 sm:pb-8 text-white">
+                    <div><span class="text-[9px] sm:text-[10px] uppercase tracking-widest opacity-60 mb-1">Ngày</span><span id="txt-ngayam" class="block text-3xl sm:text-4xl font-extrabold">--</span><span id="txt-canchingay" class="text-[9px] sm:text-[10px] mt-1 sm:mt-2 font-semibold bg-black/10 rounded-md py-0.5 px-0.5 sm:py-1 sm:px-1 leading-tight">---</span></div>
+                    <div><span class="text-[9px] sm:text-[10px] uppercase tracking-widest opacity-60 mb-1">Tháng</span><span id="txt-thangam" class="block text-3xl sm:text-4xl font-extrabold">--</span><span id="txt-canchithang" class="text-[9px] sm:text-[10px] mt-1 sm:mt-2 font-semibold bg-black/10 rounded-md py-0.5 px-0.5 sm:py-1 sm:px-1 leading-tight">---</span></div>
+                    <div><span class="text-[9px] sm:text-[10px] uppercase tracking-widest opacity-60 mb-1">Năm</span><span id="txt-namam" class="block text-3xl sm:text-4xl font-extrabold">----</span><span id="txt-canchinam" class="text-[9px] sm:text-[10px] mt-1 sm:mt-2 font-semibold bg-black/10 rounded-md py-0.5 px-0.5 sm:py-1 sm:px-1 leading-tight">---</span></div>
                 </div>
                 <div class="flex-grow flex items-center justify-center py-6">
                     <p class="text-center italic text-orange-50 leading-relaxed font-light text-sm opacity-90 px-4">
@@ -81,18 +81,18 @@
         <x-daily-wish-moment :wishes="$dailyWishes" />
 
         <section class="py-8">
-            <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full shadow-sm"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11] tracking-tight">Tiện ích</h3></div>
+            <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-10"><div class="w-2 h-7 sm:h-8 bg-[#8b5e34] rounded-full shadow-sm shrink-0"></div><h3 class="site-section-title font-bold text-[#4a2c11] tracking-tight">Tiện ích</h3></div>
             <x-utility-grid :utilities="$utilities" />
         </section>
 
         <section id="thu-vien-kinh-dien" class="py-8 scroll-mt-24">
-            <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Thư Viện Kinh Điển</h3></div>
+            <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-10"><div class="w-2 h-7 sm:h-8 bg-[#8b5e34] rounded-full shrink-0"></div><h3 class="site-section-title font-bold text-[#4a2c11]">Thư Viện Kinh Điển</h3></div>
             <x-scripture-library :categories="$categories" />
         </section>
 
         <section class="py-8">
             <div class="flex items-center justify-between mb-10">
-                <div class="flex items-center gap-3"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài tụng phổ biến</h3></div>
+                <div class="flex items-center gap-3"><div class="w-2 h-7 sm:h-8 bg-[#8b5e34] rounded-full shrink-0"></div><h3 class="site-section-title font-bold text-[#4a2c11]">Bài tụng phổ biến</h3></div>
             </div>
             <x-popular-scriptures :scriptures="$popularScriptures" />
             @if($hasMoreScriptures)
@@ -111,12 +111,19 @@
             @endif
         </section>
 
+ 
+
+        <section id="bai-viet-noi-bat" class="py-8 scroll-mt-24">
+            <div class="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-10"><div class="w-2 h-7 sm:h-8 bg-[#8b5e34] rounded-full shrink-0"></div><h3 class="site-section-title font-bold text-[#4a2c11]">Bài viết đọc nhiều trong tuần</h3></div>
+            <x-popular-posts :posts="$popularPosts" />
+        </section>
+
         <section id="mon-chay" class="py-8 scroll-mt-24">
             <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10">
                 <div class="flex items-center gap-4">
                     <div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div>
                     <div>
-                        <h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Món chay thanh đạm</h3>
+                        <h3 class="site-section-title font-bold text-[#4a2c11]">Món chay thanh đạm</h3>
                         <p class="text-sm text-[#8b5e34]/70 mt-1">Ẩm thực nhẹ nhàng — nuôi dưỡng thân tâm an lạc</p>
                     </div>
                 </div>
@@ -125,7 +132,7 @@
                 </a>
             </div>
             @if($featuredRecipes->isNotEmpty())
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     @foreach($featuredRecipes as $recipe)
                         <x-recipe-card :recipe="$recipe" wire:key="home-recipe-{{ $recipe->id }}" />
                     @endforeach
@@ -138,18 +145,13 @@
             @endif
         </section>
 
-        <section id="bai-viet-noi-bat" class="py-8 scroll-mt-24">
-            <div class="flex items-center gap-4 mb-10"><div class="w-2 h-8 bg-[#8b5e34] rounded-full"></div><h3 class="font-serif text-3xl font-bold text-[#4a2c11]">Bài viết đọc nhiều trong tuần</h3></div>
-            <x-popular-posts :posts="$popularPosts" />
-        </section>
-
 
         <section class="text-gray-600 body-font bg-[#fdfaf5] overflow-hidden rounded-xl shadow-2xl">
-  <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
+  <div class="container mx-auto flex px-4 sm:px-5 py-12 sm:py-16 md:py-24 md:flex-row flex-col items-center">
     
     <!-- Cột bên trái: Mockup Điện Thoại -->
-    <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0 flex justify-center">
-      <div class="relative mx-auto border-gray-800 bg-gray-800 border-[14px] rounded-[2.5rem] h-[600px] w-[300px] shadow-2xl scale-90 md:scale-100">
+    <div class="lg:max-w-lg lg:w-full md:w-1/2 w-full max-w-[300px] mb-8 md:mb-0 flex justify-center">
+      <div class="relative mx-auto border-gray-800 bg-gray-800 border-[10px] sm:border-[14px] rounded-[2rem] sm:rounded-[2.5rem] h-[min(480px,62vh)] sm:h-[540px] md:h-[600px] w-[min(260px,78vw)] sm:w-[300px] shadow-2xl">
         <!-- Các nút vật lý điện thoại -->
         <div class="h-[32px] w-[3px] bg-gray-800 absolute -left-[17px] top-[72px] rounded-l-lg"></div>
         <div class="h-[46px] w-[3px] bg-gray-800 absolute -left-[17px] top-[124px] rounded-l-lg"></div>
@@ -167,18 +169,18 @@
 
     <!-- Cột bên phải: Nội dung -->
     <div class="lg:flex-grow md:w-1/2 lg:pl-24 md:pl-16 flex flex-col md:items-start md:text-left items-center text-center">
-      <h1 class="title-font sm:text-5xl text-4xl mb-6 font-bold text-[#8d6e3e] leading-tight">
+      <h1 class="title-font text-3xl sm:text-4xl md:text-5xl mb-4 sm:mb-6 font-bold text-[#8d6e3e] leading-tight">
         Thiện Hoàng Bảo
       </h1>
-      <span class="text-2xl font-light text-gray-700 italic">Trải nghiệm tâm linh trên từng điểm chạm</span>
-      <p class="mb-8 leading-relaxed text-lg text-gray-700 max-w-lg">
+      <span class="text-lg sm:text-2xl font-light text-gray-700 italic">Trải nghiệm tâm linh trên từng điểm chạm</span>
+      <p class="mb-6 sm:mb-8 leading-relaxed text-base sm:text-lg text-gray-700 max-w-lg px-1 sm:px-0">
         Ứng dụng Thiện Hoàng Bảo mang cả không gian thư viện kinh điển, bài tụng phổ biến và những bài viết an lạc vào ngay lòng bàn tay bạn.
       </p>
 
       <button
         type="button"
         data-pwa-install-open
-        class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#8d6e3e] px-8 py-3.5 text-lg font-bold text-white shadow-md hover:bg-[#c5a059] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8d6e3e]/50"
+        class="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-[#8d6e3e] px-6 sm:px-8 py-3 sm:py-3.5 text-base sm:text-lg font-bold text-white shadow-md hover:bg-[#c5a059] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8d6e3e]/50"
       >
         <i class="fa-solid fa-mobile-screen-button" aria-hidden="true"></i>
         Tải ứng dụng
@@ -206,12 +208,11 @@
     }
   </style>
 </section>
+
         
     </div>
 
     <x-pwa-install-modal />
-
-    <x-site-footer />
 
     <script src="{{ asset('js/calendar-converter.js') }}"></script>
     <script>

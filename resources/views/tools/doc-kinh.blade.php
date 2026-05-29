@@ -26,19 +26,19 @@
                         Thư viện kinh điển
                     </p>
                     <div
-                        class="inline-flex items-center rounded-full border border-[#e5dec9]/90 bg-[#fffcf7]/95 p-1 shadow-[0_12px_40px_-8px_rgba(45,30,18,0.25)] backdrop-blur-md"
+                        class="inline-flex max-w-full flex-wrap items-center justify-center gap-0.5 rounded-full border border-[#e5dec9]/90 bg-[#fffcf7]/95 p-1 shadow-[0_12px_40px_-8px_rgba(45,30,18,0.25)] backdrop-blur-md"
                         role="tablist"
                         aria-label="Chế độ tu tập"
                     >
                         <span
-                            class="rounded-full bg-[#8b5e34] px-5 py-2.5 text-sm font-bold text-white shadow-md shadow-[#4a2c11]/20 md:px-8 md:py-3 md:text-base"
+                            class="rounded-full bg-[#8b5e34] px-4 py-2 text-sm font-bold text-white shadow-md shadow-[#4a2c11]/20 sm:px-5 sm:py-2.5 md:px-8 md:py-3 md:text-base"
                             aria-current="page"
                         >
                             Tụng kinh
                         </span>
                         <a
                             href="{{ route('tools.show', 'ngoi-thien') }}"
-                            class="rounded-full px-5 py-2.5 text-sm font-semibold text-[#4a2c11] transition-colors hover:bg-[#f5ebe0] md:px-8 md:py-3 md:text-base"
+                            class="rounded-full px-4 py-2 text-sm font-semibold text-[#4a2c11] transition-colors hover:bg-[#f5ebe0] sm:px-5 sm:py-2.5 md:px-8 md:py-3 md:text-base"
                         >
                             Ngồi thiền
                         </a>
@@ -87,7 +87,7 @@
                     } elseif (Str::contains(Str::lower($catName), 'kinh')) {
                         $badge = 'KINH';
                     }
-                    $thumb = filled($scripture->image_url) ? $scripture->image_url : 'https://images.unsplash.com/photo-1602615571099-86a1d2807bcd?w=200&h=200&fit=crop&q=80';
+                    $thumb = $scripture->resolvedImageUrl() ?: 'https://images.unsplash.com/photo-1602615571099-86a1d2807bcd?w=200&h=200&fit=crop&q=80';
                     $readUrl = route('scriptures.read', $scripture);
                     $hasPdf = filled($scripture->content_file_path) && Str::endsWith(Str::lower((string) $scripture->content_file_path), '.pdf');
                 @endphp
@@ -119,7 +119,7 @@
                     </div>
                 </article>
             @empty
-                <p class="px-4 py-10 text-center text-sm text-[#6b5346]">Chưa có bài kinh trong hệ thống. Vui lòng thêm từ Dashboard.</p>
+                <p class="px-4 py-10 text-center text-sm text-[#6b5346]">Chưa có bài kinh trong hệ thống.</p>
             @endforelse
         </div>
 

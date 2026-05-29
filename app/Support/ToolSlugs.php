@@ -7,7 +7,6 @@ final class ToolSlugs
     public const SLUG_TO_VIEW = [
         'may-niem-phat' => 'tools.may-niem-phat',
         'ngoi-thien' => 'tools.ngoi-thien',
-        'chuong-mo' => 'tools.chuong-mo',
         'lan-chuoi-hat' => 'tools.lan-chuoi-hat',
         'nhac-thien' => 'tools.nhac-thien',
         'su-kien-trong-nam' => 'tools.su-kien-trong-nam',

@@ -17,7 +17,6 @@ return new class extends Migration
             'Máy niệm phật' => '/tien-ich/may-niem-phat',
             'Đọc kinh' => '/#thu-vien-kinh-dien',
             'Ngồi thiền' => '/tien-ich/ngoi-thien',
-            'Chuông mõ' => '/tien-ich/chuong-mo',
             'Lần chuỗi hạt' => '/tien-ich/lan-chuoi-hat',
             'Nhạc thiền' => '/tien-ich/nhac-thien',
             'Sự kiện trong năm' => '/tien-ich/su-kien-trong-nam',

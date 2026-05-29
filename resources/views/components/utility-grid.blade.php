@@ -1,6 +1,6 @@
 @props(['utilities'])
 
-<div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-4 lg:gap-5">
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4 lg:gap-5">
     @foreach($utilities as $utility)
         @php
             $href = $utility->link_url;
@@ -8,7 +8,6 @@
                 'Máy niệm phật' => ['class' => 'fa-solid fa-volume-high', 'text' => 'text-amber-700', 'bg' => 'from-amber-50 to-orange-100'],
                 'Đọc kinh' => ['class' => 'fa-solid fa-book-open', 'text' => 'text-[#8b5e34]', 'bg' => 'from-[#fff8ec] to-[#f2e2c8]'],
                 'Ngồi thiền' => ['class' => 'fa-solid fa-spa', 'text' => 'text-emerald-700', 'bg' => 'from-emerald-50 to-green-100'],
-                'Chuông mõ' => ['class' => 'fa-solid fa-bell', 'text' => 'text-yellow-700', 'bg' => 'from-yellow-50 to-amber-100'],
                 'Lần chuỗi hạt' => ['class' => 'fa-solid fa-hands-praying', 'text' => 'text-purple-700', 'bg' => 'from-purple-50 to-violet-100'],
                 'Nhạc thiền' => ['class' => 'fa-solid fa-music', 'text' => 'text-sky-700', 'bg' => 'from-sky-50 to-blue-100'],
                 'Sự kiện trong năm' => ['class' => 'fa-solid fa-calendar-days', 'text' => 'text-rose-700', 'bg' => 'from-rose-50 to-pink-100'],

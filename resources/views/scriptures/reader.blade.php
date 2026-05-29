@@ -2,6 +2,7 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
+    <x-site-favicon />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ $scripture->title }} - Đọc kinh</title>
     <x-seo-meta
@@ -275,6 +276,7 @@
 </head>
 <body class="scripture-reader {{ $pdfUrl ? 'pdf-mode' : '' }}">
     <x-site-header class="shrink-0" active-slug="doc-kinh" />
+    <x-site-mobile-nav-drawer active-slug="doc-kinh" />
     <div class="container">
         <a class="back-link" href="{{ route('tools.show', 'doc-kinh') }}">← Quay lại Đọc kinh</a>
         <div class="header">
@@ -1043,6 +1045,5 @@
             bindMobileSwipe();
         });
     </script>
-    @include('components.pwa-install-banner')
 </body>
 </html>

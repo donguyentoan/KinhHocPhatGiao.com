@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\Post;
+use App\Support\PracticeTracker;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -16,6 +17,10 @@ class PostShowPage extends Component
         if (! $post->isPublished()) {
             abort(404);
         }
+
+        app(PracticeTracker::class)->logActivity('post_view', $post, [
+            'title' => $post->title,
+        ]);
     }
 
     public function render()

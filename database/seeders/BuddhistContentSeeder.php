@@ -97,7 +97,6 @@ class BuddhistContentSeeder extends Seeder
             ['name' => 'Máy niệm phật', 'link_url' => '/tien-ich/may-niem-phat'],
             ['name' => 'Đọc kinh', 'link_url' => '/tien-ich/doc-kinh'],
             ['name' => 'Ngồi thiền', 'link_url' => '/tien-ich/ngoi-thien'],
-            ['name' => 'Chuông mõ', 'link_url' => '/tien-ich/chuong-mo'],
             ['name' => 'Lần chuỗi hạt', 'link_url' => '/tien-ich/lan-chuoi-hat'],
             ['name' => 'Nhạc thiền', 'link_url' => '/tien-ich/nhac-thien'],
             ['name' => 'Sự kiện trong năm', 'link_url' => '/tien-ich/su-kien-trong-nam'],

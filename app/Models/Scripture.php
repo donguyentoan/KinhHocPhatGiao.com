@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageImageUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Scripture extends Model
 {
     use HasFactory;
+    use ResolvesStorageImageUrl;
 
     protected $fillable = [
         'title',
@@ -25,5 +27,10 @@ class Scripture extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(ScriptureCategory::class, 'category_id');
+    }
+
+    public function resolvedImageUrl(): string
+    {
+        return $this->resolveStorageImageUrl($this->image_url);
     }
 }

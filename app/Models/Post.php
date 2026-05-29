@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageImageUrl;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -9,6 +10,7 @@ use Illuminate\Support\Str;
 class Post extends Model
 {
     use HasFactory;
+    use ResolvesStorageImageUrl;
 
     protected $fillable = [
         'title',
@@ -49,30 +51,8 @@ class Post extends Model
         return Str::limit(preg_replace('/\s+/', ' ', $this->body()), 160);
     }
 
-    /** URL ảnh hiển thị (đồng bộ logic với trang chủ / storage). */
     public function resolvedImageUrl(): string
     {
-        $imageUrl = $this->image_url;
-        if (blank($imageUrl)) {
-            return '';
-        }
-
-        if (! Str::startsWith($imageUrl, '/storage/')) {
-            return $imageUrl;
-        }
-
-        $relativePath = ltrim(Str::after($imageUrl, '/storage/'), '/');
-        $publicPath = public_path('storage/'.$relativePath);
-        $storagePath = storage_path('app/public/'.$relativePath);
-
-        if (! file_exists($publicPath) && file_exists($storagePath)) {
-            $targetDirectory = dirname($publicPath);
-            if (! is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0755, true);
-            }
-            copy($storagePath, $publicPath);
-        }
-
-        return url('/storage/'.$relativePath);
+        return $this->resolveStorageImageUrl($this->image_url);
     }
 }

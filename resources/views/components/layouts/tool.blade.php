@@ -3,6 +3,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
+    <x-site-favicon />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }} — Kinh Học Phật Giáo</title>
@@ -13,10 +14,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=Noto+Serif+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <x-pwa-meta />
+    <x-mobile-site-base />
     @stack('head')
 </head>
-<body class="bg-[#f9f3e6] text-[#4a2c11] min-h-screen antialiased" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+<body class="site-mobile-safe bg-[#f9f3e6] text-[#4a2c11] min-h-screen antialiased" style="font-family: 'Plus Jakarta Sans', sans-serif;">
     <x-site-header />
+    <x-site-mobile-nav-drawer :active-slug="request()->route('slug')" />
 
     <main class="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 lg:py-10">
         <div class="mb-6 lg:mb-8">
@@ -32,6 +35,6 @@
     </main>
 
     <x-site-footer />
-    <x-pwa-install-banner />
+    @stack('body-end')
 </body>
 </html>

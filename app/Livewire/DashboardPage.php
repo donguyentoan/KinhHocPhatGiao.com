@@ -3,14 +3,16 @@
 namespace App\Livewire;
 
 use App\Models\DailyWish;
-use App\Services\SitemapBuilder;
 use App\Models\Post;
+use App\Models\PracticeActivity;
 use App\Models\PracticeProfile;
 use App\Models\QuizQuestion;
 use App\Models\Scripture;
 use App\Models\ScriptureCategory;
 use App\Models\Utility;
 use App\Models\VegetarianRecipe;
+use App\Services\SitemapBuilder;
+use App\Support\PracticeActivityPresenter;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Artisan;
@@ -85,6 +87,10 @@ class DashboardPage extends Component
 
     public string $practiceProfileSearch = '';
 
+    public ?int $practiceProfileHistoryId = null;
+
+    public string $practiceActivityFilter = 'all';
+
     public array $dailyWishForm = [
         'text' => '',
         'icon' => 'lotus',
@@ -140,6 +146,24 @@ class DashboardPage extends Component
     public function updatedPracticeProfileSearch(): void
     {
         $this->resetPage('practiceProfilesPage');
+    }
+
+    public function updatedPracticeActivityFilter(): void
+    {
+        $this->resetPage('practiceActivitiesPage');
+    }
+
+    public function openPracticeProfileHistory(int $id): void
+    {
+        $this->practiceProfileHistoryId = $id;
+        $this->practiceActivityFilter = 'all';
+        $this->resetPage('practiceActivitiesPage');
+    }
+
+    public function closePracticeProfileHistory(): void
+    {
+        $this->practiceProfileHistoryId = null;
+        $this->practiceActivityFilter = 'all';
     }
 
     public function runPendingMigrations(): void
@@ -664,7 +688,80 @@ class DashboardPage extends Component
 
     public function deletePracticeProfile(int $id): void
     {
+        if ($this->practiceProfileHistoryId === $id) {
+            $this->closePracticeProfileHistory();
+        }
+
         PracticeProfile::query()->whereKey($id)->delete();
+    }
+
+    /**
+     * @return array{profile: \App\Models\PracticeProfile, activities: \Illuminate\Contracts\Pagination\LengthAwarePaginator, scriptureTitles: array<int, string>, postTitles: array<int, string>, recipeTitles: array<int, string>}|null
+     */
+    private function practiceProfileHistoryPayload(): ?array
+    {
+        if ($this->practiceProfileHistoryId === null) {
+            return null;
+        }
+
+        $profile = PracticeProfile::query()->find($this->practiceProfileHistoryId);
+        if ($profile === null) {
+            $this->closePracticeProfileHistory();
+
+            return null;
+        }
+
+        $query = PracticeActivity::query()
+            ->where('practice_profile_id', $profile->id)
+            ->orderByDesc('created_at');
+
+        if ($this->practiceActivityFilter !== 'all') {
+            $query->where('activity_type', $this->practiceActivityFilter);
+        }
+
+        $activities = $query->paginate(25, ['*'], 'practiceActivitiesPage');
+
+        $scriptureIds = [];
+        $postIds = [];
+        $recipeIds = [];
+
+        foreach ($activities as $activity) {
+            if ($activity->reference_type === Scripture::class && $activity->reference_id) {
+                $scriptureIds[(int) $activity->reference_id] = true;
+            }
+            if ($activity->reference_type === Post::class && $activity->reference_id) {
+                $postIds[(int) $activity->reference_id] = true;
+            }
+            if ($activity->reference_type === VegetarianRecipe::class && $activity->reference_id) {
+                $recipeIds[(int) $activity->reference_id] = true;
+            }
+        }
+
+        $scriptureTitles = [];
+        $scriptureCategories = [];
+        if ($scriptureIds !== []) {
+            Scripture::query()
+                ->with('category')
+                ->whereIn('id', array_keys($scriptureIds))
+                ->get(['id', 'title', 'category_id'])
+                ->each(function (Scripture $scripture) use (&$scriptureTitles, &$scriptureCategories) {
+                    $scriptureTitles[$scripture->id] = $scripture->title;
+                    $scriptureCategories[$scripture->id] = $scripture->category?->name ?? '';
+                });
+        }
+
+        return [
+            'profile' => $profile,
+            'activities' => $activities,
+            'scriptureTitles' => $scriptureTitles,
+            'scriptureCategories' => $scriptureCategories,
+            'postTitles' => $postIds === []
+                ? []
+                : Post::query()->whereIn('id', array_keys($postIds))->pluck('title', 'id')->all(),
+            'recipeTitles' => $recipeIds === []
+                ? []
+                : VegetarianRecipe::query()->whereIn('id', array_keys($recipeIds))->pluck('title', 'id')->all(),
+        ];
     }
 
     public function toggleUtility(int $id): void
@@ -942,6 +1039,8 @@ class DashboardPage extends Component
             'utilities' => Utility::query()->orderBy('sort_order')->paginate(12, ['*'], 'utilitiesPage'),
             'practiceProfiles' => $practiceProfileQuery->paginate(20, ['*'], 'practiceProfilesPage'),
             'practiceProfileCount' => PracticeProfile::query()->count(),
+            'practiceProfileHistory' => $this->practiceProfileHistoryPayload(),
+            'practiceActivityFilterOptions' => PracticeActivityPresenter::filterOptions(),
             'dailyWishes' => DailyWish::query()->ordered()->paginate(15, ['*'], 'dailyWishesPage'),
             'quizQuestions' => QuizQuestion::query()->ordered()->paginate(15, ['*'], 'quizQuestionsPage'),
             'quizQuestionCount' => QuizQuestion::query()->count(),

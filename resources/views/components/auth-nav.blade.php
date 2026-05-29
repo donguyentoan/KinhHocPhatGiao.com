@@ -1,5 +1,5 @@
 <div {{ $attributes->merge(['class' => 'flex flex-wrap items-center justify-end gap-2 sm:gap-3']) }}>
-    <x-donate-link />
+    <x-donate-link class="hidden md:inline-flex" />
     @auth
         @if(auth()->user()->is_admin)
             <a href="{{ route('dashboard') }}" class="text-sm font-semibold text-[#8b5e34] hover:underline">Dashboard</a>

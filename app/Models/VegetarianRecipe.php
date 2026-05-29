@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Concerns\ResolvesStorageImageUrl;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,7 @@ use Illuminate\Support\Str;
 class VegetarianRecipe extends Model
 {
     use HasFactory;
+    use ResolvesStorageImageUrl;
 
     public const DIFFICULTY_DE = 'de';
 
@@ -68,28 +70,7 @@ class VegetarianRecipe extends Model
 
     public function resolvedImageUrl(): string
     {
-        $imageUrl = $this->image_url;
-        if (blank($imageUrl)) {
-            return '';
-        }
-
-        if (! Str::startsWith($imageUrl, '/storage/')) {
-            return $imageUrl;
-        }
-
-        $relativePath = ltrim(Str::after($imageUrl, '/storage/'), '/');
-        $publicPath = public_path('storage/'.$relativePath);
-        $storagePath = storage_path('app/public/'.$relativePath);
-
-        if (! file_exists($publicPath) && file_exists($storagePath)) {
-            $targetDirectory = dirname($publicPath);
-            if (! is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0755, true);
-            }
-            copy($storagePath, $publicPath);
-        }
-
-        return url('/storage/'.$relativePath);
+        return $this->resolveStorageImageUrl($this->image_url);
     }
 
     public static function slugFromTitle(string $title): string

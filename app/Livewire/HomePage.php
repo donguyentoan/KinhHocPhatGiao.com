@@ -9,7 +9,6 @@ use App\Models\ScriptureCategory;
 use App\Models\Utility;
 use App\Models\VegetarianRecipe;
 use App\Support\PracticeTracker;
-use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -67,10 +66,6 @@ class HomePage extends Component
 
         $hasMoreScriptures = Scripture::query()->count() > $popularScriptures->count();
 
-        foreach ($popularScriptures as $scripture) {
-            $scripture->image_url = $this->resolveImageUrl($scripture->image_url);
-        }
-
         $dailyWishes = DailyWish::query()->active()->ordered()->get();
 
         return view('livewire.home-page', [
@@ -85,32 +80,7 @@ class HomePage extends Component
                 ->take(7)
                 ->get(),
             'dailyWishes' => $dailyWishes,
-            'featuredRecipes' => VegetarianRecipe::query()->published()->ordered()->take(3)->get(),
+            'featuredRecipes' => VegetarianRecipe::query()->published()->ordered()->take(4)->get(),
         ]);
-    }
-
-    private function resolveImageUrl(?string $imageUrl): string
-    {
-        if (blank($imageUrl)) {
-            return '';
-        }
-
-        if (!Str::startsWith($imageUrl, '/storage/')) {
-            return $imageUrl;
-        }
-
-        $relativePath = ltrim(Str::after($imageUrl, '/storage/'), '/');
-        $publicPath = public_path('storage/' . $relativePath);
-        $storagePath = storage_path('app/public/' . $relativePath);
-
-        if (!file_exists($publicPath) && file_exists($storagePath)) {
-            $targetDirectory = dirname($publicPath);
-            if (!is_dir($targetDirectory)) {
-                mkdir($targetDirectory, 0755, true);
-            }
-            copy($storagePath, $publicPath);
-        }
-
-        return url('/storage/' . $relativePath);
     }
 }

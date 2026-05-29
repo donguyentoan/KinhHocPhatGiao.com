@@ -1,6 +1,7 @@
-<div class="text-[#4a2c11] flex h-full max-h-full overflow-hidden">
-    <aside class="w-72 border-r border-[#8b5e34]/10 flex flex-col p-6 glass">
-        <div class="flex items-center gap-3 mb-12 px-2">
+<div class="text-[#4a2c11] flex h-full max-h-full overflow-hidden relative" id="dash-shell">
+    <div id="dash-sidebar-backdrop" class="fixed inset-0 z-40 bg-black/45 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden" aria-hidden="true"></div>
+    <aside id="dash-sidebar" class="fixed inset-y-0 left-0 z-50 w-[min(18rem,90vw)] -translate-x-full transition-transform duration-300 ease-out lg:relative lg:translate-x-0 lg:w-72 shrink-0 border-r border-[#8b5e34]/10 flex flex-col p-4 sm:p-6 glass overflow-y-auto overscroll-contain" aria-label="Menu quản trị">
+        <div class="flex items-center gap-3 mb-8 lg:mb-12 px-2">
             <div class=" flex items-center justify-center text-white">
                 <img class="w-32 h-16 object-contain" src="/logoWeb.png" alt="">
             </div>
@@ -19,9 +20,20 @@
         </nav>
     </aside>
 
-    <main class="flex-1 overflow-y-auto">
-        <header class="p-4 flex flex-wrap justify-between items-center gap-3 sticky top-0 z-20 glass">
-            <h1 class="text-2xl font-serif font-bold">
+    <main class="flex-1 overflow-y-auto min-w-0 w-full">
+        <header class="p-3 sm:p-4 flex flex-wrap justify-between items-center gap-2 sm:gap-3 sticky top-0 z-20 glass">
+            <div class="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+                <button
+                    type="button"
+                    id="dash-menu-open"
+                    class="lg:hidden inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#8b5e34]/25 bg-white/80 text-[#4a2c11] shadow-sm hover:bg-[#faf6f0] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40"
+                    aria-controls="dash-sidebar"
+                    aria-expanded="false"
+                    aria-label="Mở menu quản trị"
+                >
+                    <i class="fa-solid fa-bars" aria-hidden="true"></i>
+                </button>
+            <h1 class="text-lg sm:text-2xl font-serif font-bold truncate min-w-0">
                 @php
                     $titles = [
                         'tong-quan' => 'Tổng quan hệ thống',
@@ -37,15 +49,16 @@
                 @endphp
                 {{ $titles[$activeSection] ?? 'Dashboard' }}
             </h1>
-            <div class="flex flex-wrap items-center gap-2">
+            </div>
+            <div class="flex flex-wrap items-center gap-1.5 sm:gap-2 w-full sm:w-auto justify-end">
             <button type="button"
                 wire:click="runPendingMigrations"
                 wire:confirm="Chạy migrate sẽ thay đổi cơ sở dữ liệu. Tiếp tục?"
                 wire:loading.attr="disabled"
                 wire:target="runPendingMigrations"
-                class="inline-flex items-center gap-2 rounded-full border-2 border-[#8b5e34]/40 bg-white/70 px-4 py-2 text-sm font-bold text-[#4a2c11] shadow-sm transition hover:bg-[#8b5e34]/10 disabled:opacity-60 disabled:cursor-not-allowed">
+                class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border-2 border-[#8b5e34]/40 bg-white/70 px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-bold text-[#4a2c11] shadow-sm transition hover:bg-[#8b5e34]/10 disabled:opacity-60 disabled:cursor-not-allowed">
                 <x-icon name="layers" class="w-4 h-4 text-[#8b5e34]" />
-                <span wire:loading.remove wire:target="runPendingMigrations">Migrate</span>
+                <span wire:loading.remove wire:target="runPendingMigrations" class="hidden sm:inline">Migrate</span>
                 <span wire:loading wire:target="runPendingMigrations" class="inline-flex items-center gap-1.5">
                     <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
                     Đang chạy…
@@ -58,9 +71,9 @@
                 wire:click="updateSitemap"
                 wire:loading.attr="disabled"
                 wire:target="updateSitemap"
-                class="inline-flex items-center gap-2 rounded-full border-2 border-[#8b5e34]/40 bg-white/70 px-4 py-2 text-sm font-bold text-[#4a2c11] shadow-sm transition hover:bg-[#8b5e34]/10 disabled:opacity-60 disabled:cursor-not-allowed">
+                class="inline-flex items-center gap-1.5 sm:gap-2 rounded-full border-2 border-[#8b5e34]/40 bg-white/70 px-2.5 sm:px-4 py-2 text-xs sm:text-sm font-bold text-[#4a2c11] shadow-sm transition hover:bg-[#8b5e34]/10 disabled:opacity-60 disabled:cursor-not-allowed">
                 <x-icon name="globe" class="w-4 h-4 text-[#8b5e34]" />
-                <span wire:loading.remove wire:target="updateSitemap">Sitemap</span>
+                <span wire:loading.remove wire:target="updateSitemap" class="hidden sm:inline">Sitemap</span>
                 <span wire:loading wire:target="updateSitemap" class="inline-flex items-center gap-1.5">
                     <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/></svg>
                     Đang cập nhật…
@@ -503,15 +516,25 @@
                                         <td class="py-4 pr-4 text-gray-600 whitespace-nowrap">{{ optional($practiceProfile->last_seen_at)->format('d/m/Y H:i') ?? '—' }}</td>
                                         <td class="py-4 pr-4 text-gray-600 whitespace-nowrap">{{ $practiceProfile->created_at->format('d/m/Y') }}</td>
                                         <td class="py-4 text-right">
-                                            <button
-                                                type="button"
-                                                wire:click="deletePracticeProfile({{ $practiceProfile->id }})"
-                                                wire:confirm="Xóa hồ sơ này và toàn bộ nhật ký tu học liên quan?"
-                                                class="p-2 text-gray-400 hover:text-red-500"
-                                                title="Xóa"
-                                            >
-                                                <x-icon name="trash-2" class="w-4 h-4" />
-                                            </button>
+                                            <div class="inline-flex items-center justify-end gap-1">
+                                                <button
+                                                    type="button"
+                                                    wire:click="openPracticeProfileHistory({{ $practiceProfile->id }})"
+                                                    class="p-2 text-[#8b5e34] hover:text-[#6f4a2b] hover:bg-[#8b5e34]/10 rounded-lg"
+                                                    title="Lịch sử hoạt động"
+                                                >
+                                                    <x-icon name="history" class="w-4 h-4" />
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    wire:click="deletePracticeProfile({{ $practiceProfile->id }})"
+                                                    wire:confirm="Xóa hồ sơ này và toàn bộ nhật ký tu học liên quan?"
+                                                    class="p-2 text-gray-400 hover:text-red-500 rounded-lg"
+                                                    title="Xóa"
+                                                >
+                                                    <x-icon name="trash-2" class="w-4 h-4" />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
@@ -527,6 +550,159 @@
             @endif
         </div>
     </main>
+
+    @if($practiceProfileHistory)
+        @php
+            $historyProfile = $practiceProfileHistory['profile'];
+            $historyActivities = $practiceProfileHistory['activities'];
+            $scriptureTitles = $practiceProfileHistory['scriptureTitles'];
+            $scriptureCategories = $practiceProfileHistory['scriptureCategories'];
+            $postTitles = $practiceProfileHistory['postTitles'];
+            $recipeTitles = $practiceProfileHistory['recipeTitles'];
+        @endphp
+        <div
+            class="fixed inset-0 z-[110] flex items-end sm:items-center justify-center bg-[#2c2118]/45 backdrop-blur-[2px] p-0 sm:p-6"
+            wire:click.self="closePracticeProfileHistory"
+        >
+            <div
+                class="w-full sm:max-w-2xl max-h-[min(94vh,880px)] flex flex-col overflow-hidden rounded-t-3xl sm:rounded-[2rem] bg-[#fffcf7] border border-[#e8e0d4] shadow-[0_24px_80px_rgba(44,33,24,0.18)]"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="practice-history-title"
+            >
+                {{-- Header --}}
+                <div class="relative shrink-0 overflow-hidden border-b border-[#e8e0d4] bg-gradient-to-br from-[#faf6f0] via-[#fffcf7] to-[#f5efe6] px-5 py-5 sm:px-7 sm:py-6">
+                    <div class="absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#c9a77c]/10" aria-hidden="true"></div>
+                    <div class="relative flex items-start gap-4">
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#8b5e34] text-white shadow-md shadow-[#8b5e34]/25">
+                            <i class="fa-solid fa-user text-xl" aria-hidden="true"></i>
+                        </div>
+                        <div class="min-w-0 flex-1 pt-0.5">
+                            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-[#8b5e34] mb-1">Nhật ký tu học</p>
+                            <h2 id="practice-history-title" class="font-serif text-2xl font-bold text-[#2c2118] truncate leading-tight">
+                                {{ $historyProfile->dharma_name }}
+                            </h2>
+                            <div class="mt-2 flex flex-wrap gap-2 text-xs">
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/90 border border-[#e8e0d4] px-2.5 py-1 font-semibold text-[#4a2c11] tabular-nums">
+                                    <i class="fa-solid fa-list-check text-[#8b5e34]" aria-hidden="true"></i>
+                                    {{ number_format($historyProfile->activities()->count()) }} hoạt động
+                                </span>
+                                <span class="inline-flex items-center gap-1.5 rounded-lg bg-white/90 border border-[#e8e0d4] px-2.5 py-1 text-[#6b5346]">
+                                    <i class="fa-regular fa-clock text-[#8b5e34]" aria-hidden="true"></i>
+                                    {{ optional($historyProfile->last_seen_at)->format('d/m/Y H:i') ?? '—' }}
+                                </span>
+                            </div>
+                        </div>
+                        <button
+                            type="button"
+                            wire:click="closePracticeProfileHistory"
+                            class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#e8e0d4] bg-white text-[#6b5346] hover:bg-[#faf6f0] hover:text-[#4a2c11] transition-colors"
+                            aria-label="Đóng"
+                        >
+                            <x-icon name="x" class="w-5 h-5" />
+                        </button>
+                    </div>
+                </div>
+
+                {{-- Bộ lọc --}}
+                <div class="shrink-0 px-5 sm:px-7 py-3.5 bg-[#faf8f5] border-b border-[#e8e0d4]">
+                    <label for="practice-activity-filter" class="mb-2 block text-xs font-bold text-[#8b5e34]">Lọc theo loại</label>
+                    <div class="relative">
+                        <i class="fa-solid fa-filter absolute left-4 top-1/2 -translate-y-1/2 text-[#c9a77c] text-sm pointer-events-none" aria-hidden="true"></i>
+                        <select
+                            id="practice-activity-filter"
+                            wire:model.live="practiceActivityFilter"
+                            class="w-full appearance-none rounded-xl border border-[#e8e0d4] bg-white pl-11 pr-10 py-3 text-sm font-semibold text-[#2c2118] shadow-sm focus:outline-none focus:ring-2 focus:ring-[#c9a77c]/50 focus:border-[#c9a77c]"
+                        >
+                            <option value="all">Tất cả loại hoạt động</option>
+                            @foreach($practiceActivityFilterOptions as $filterType)
+                                <option value="{{ $filterType }}">{{ \App\Support\PracticeActivityPresenter::typeLabel($filterType) }}</option>
+                            @endforeach
+                        </select>
+                        <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-[#8b5e34]/50 text-xs pointer-events-none" aria-hidden="true"></i>
+                    </div>
+                </div>
+
+                {{-- Danh sách --}}
+                <div class="flex-1 overflow-y-auto overscroll-contain bg-[#f8f5f2]/60 px-5 sm:px-7 py-4">
+                    @if($historyActivities->isEmpty())
+                        <div class="flex flex-col items-center justify-center py-16 text-center">
+                            <div class="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#efe7d5] text-[#8b5e34]">
+                                <i class="fa-solid fa-inbox text-2xl" aria-hidden="true"></i>
+                            </div>
+                            <p class="font-semibold text-[#4a2c11]">Chưa có hoạt động</p>
+                            <p class="mt-1 text-sm text-[#8b5e34]/80">Thử đổi bộ lọc hoặc chờ phật tử sử dụng site.</p>
+                        </div>
+                    @else
+                        <ul class="space-y-2.5">
+                            @foreach($historyActivities as $activity)
+                                @php
+                                    $type = $activity->activity_type;
+                                    $accent = \App\Support\PracticeActivityPresenter::accentClass($type);
+                                    $detailRows = \App\Support\PracticeActivityPresenter::detailRows(
+                                        $activity,
+                                        $scriptureTitles,
+                                        $scriptureCategories,
+                                        $postTitles,
+                                        $recipeTitles,
+                                    );
+                                    $headline = \App\Support\PracticeActivityPresenter::primarySummary(
+                                        $activity,
+                                        $scriptureTitles,
+                                        $scriptureCategories,
+                                        $postTitles,
+                                        $recipeTitles,
+                                    );
+                                    $extraRows = collect($detailRows)->reject(fn ($r) => in_array($r['label'], [
+                                        'Kinh đã đọc', 'Tiện ích đã mở', 'Bài viết đã xem', 'Món chay đã xem', 'Bài làm', 'Pháp danh',
+                                    ], true));
+                                @endphp
+                                <li
+                                    class="group flex gap-3 rounded-2xl border border-[#e8e0d4] bg-white p-3.5 sm:p-4 shadow-sm hover:shadow-md hover:border-[#c9a77c]/40 transition-all"
+                                    wire:key="practice-activity-{{ $activity->id }}"
+                                >
+                                    <div class="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-l-4 {{ $accent }}">
+                                        <i class="fa-solid {{ \App\Support\PracticeActivityPresenter::iconClass($type) }} text-base" aria-hidden="true"></i>
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex flex-wrap items-start justify-between gap-x-3 gap-y-1">
+                                            <div class="min-w-0">
+                                                <span class="text-[10px] font-bold uppercase tracking-wide text-[#8b5e34]">
+                                                    {{ \App\Support\PracticeActivityPresenter::typeLabel($type) }}
+                                                </span>
+                                                <p class="mt-0.5 text-base font-bold text-[#2c2118] leading-snug break-words">
+                                                    {{ $headline }}
+                                                </p>
+                                            </div>
+                                            <time class="shrink-0 text-[11px] font-medium text-[#9a8b7d] tabular-nums whitespace-nowrap" datetime="{{ $activity->created_at->toIso8601String() }}">
+                                                {{ $activity->created_at->timezone(config('app.timezone'))->format('d/m/Y · H:i') }}
+                                            </time>
+                                        </div>
+                                        @if($extraRows->isNotEmpty())
+                                            <ul class="mt-2.5 space-y-1 border-t border-[#f0ebe3] pt-2.5">
+                                                @foreach($extraRows as $row)
+                                                    <li class="flex gap-2 text-sm">
+                                                        <span class="shrink-0 text-[#9a8b7d]">{{ $row['label'] }}:</span>
+                                                        <span class="font-medium text-[#4a2c11]">{{ $row['value'] }}</span>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        @endif
+                                    </div>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+
+                @if($historyActivities->hasPages())
+                    <div class="shrink-0 border-t border-[#e8e0d4] bg-[#fffcf7] px-5 sm:px-7 pb-5 pt-2">
+                        <x-dashboard-pagination :paginator="$historyActivities" page-name="practiceActivitiesPage" />
+                    </div>
+                @endif
+            </div>
+        </div>
+    @endif
 
     @if($showScriptureModal)
         <div class="fixed inset-0 z-[100] flex items-center justify-center bg-black/30 backdrop-blur-sm p-4">

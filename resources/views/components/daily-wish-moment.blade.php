@@ -238,10 +238,11 @@
                 }
 
                 .khpg-daily-wish__features {
-                    display: flex;
-                    flex-wrap: wrap;
-                    gap: 1rem 1.35rem;
-                    max-width: 26rem;
+                    display: grid;
+                    grid-template-columns: repeat(3, minmax(0, 1fr));
+                    gap: 0.75rem 0.5rem;
+                    max-width: 21rem;
+                    width: 100%;
                 }
 
                 .khpg-daily-wish__feature {
@@ -249,7 +250,8 @@
                     flex-direction: column;
                     align-items: center;
                     gap: 0.5rem;
-                    width: 5.5rem;
+                    width: auto;
+                    min-width: 0;
                     text-align: center;
                 }
 
@@ -445,6 +447,76 @@
                 }
 
                 .khpg-daily-wish *, .khpg-daily-wish *::before, .khpg-daily-wish *::after { box-sizing: border-box; }
+
+                @media (max-width: 899px) {
+                    .khpg-daily-wish {
+                        padding: 0.75rem 0.5rem 1.25rem;
+                    }
+
+                    .khpg-daily-wish__shell {
+                        padding: 1.35rem 1rem 1.5rem;
+                        border-radius: 1.35rem;
+                    }
+
+                    .khpg-daily-wish__grid {
+                        gap: 1.35rem;
+                    }
+
+                    .khpg-daily-wish__intro {
+                        text-align: center;
+                    }
+
+                    .khpg-daily-wish__section-head {
+                        text-align: left;
+                    }
+
+                    .khpg-daily-wish__ornament {
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+                    .khpg-daily-wish__features {
+                        margin-left: auto;
+                        margin-right: auto;
+                    }
+
+                    .khpg-daily-wish__feature-label {
+                        font-size: 0.65rem;
+                        line-height: 1.25;
+                    }
+
+                    .khpg-daily-wish__card {
+                        padding: 1.5rem 1.15rem 1.35rem;
+                    }
+
+                    .khpg-daily-wish__card .khpg-daily-wish__quote {
+                        min-height: 4.75rem;
+                        font-size: 1.05rem;
+                        line-height: 1.7;
+                    }
+
+                    .khpg-daily-wish__actions {
+                        flex-direction: column;
+                        align-items: stretch;
+                    }
+
+                    .khpg-daily-wish__btn {
+                        width: 100%;
+                    }
+                }
+
+                @media (min-width: 900px) {
+                    .khpg-daily-wish__features {
+                        display: flex;
+                        flex-wrap: wrap;
+                        gap: 1rem 1.35rem;
+                        max-width: 26rem;
+                    }
+
+                    .khpg-daily-wish__feature {
+                        width: 5.5rem;
+                    }
+                }
 
                 @media (prefers-reduced-motion: reduce) {
                     .khpg-daily-wish__quote,

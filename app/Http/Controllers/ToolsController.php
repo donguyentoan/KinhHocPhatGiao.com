@@ -109,4 +109,33 @@ class ToolsController extends Controller
             'message' => 'Đã lưu phiên thiền.',
         ]);
     }
+
+    public function completeQuiz(Request $request, PracticeTracker $tracker): JsonResponse
+    {
+        $validated = $request->validate([
+            'correct_count' => ['required', 'integer', 'min:0', 'max:500'],
+            'total_questions' => ['required', 'integer', 'min:1', 'max:500'],
+        ]);
+
+        if ($validated['correct_count'] > $validated['total_questions']) {
+            return response()->json([
+                'message' => 'Số câu đúng không hợp lệ.',
+            ], 422);
+        }
+
+        $total = $validated['total_questions'];
+        $correct = $validated['correct_count'];
+
+        $tracker->logActivity('quiz_attempt', null, [
+            'slug' => 'truc-nghiem-phat-giao',
+            'correct_count' => $correct,
+            'total_questions' => $total,
+            'score_percent' => (int) round(($correct / $total) * 100),
+            'completed_at' => now()->toIso8601String(),
+        ]);
+
+        return response()->json([
+            'message' => 'Đã lưu kết quả trắc nghiệm.',
+        ]);
+    }
 }

@@ -10,8 +10,11 @@ class ScriptureReaderController extends Controller
 {
     public function show(Scripture $scripture, PracticeTracker $tracker)
     {
+        $scripture->loadMissing('category');
+
         $tracker->logActivity('scripture_read', $scripture, [
             'title' => $scripture->title,
+            'category_name' => $scripture->category?->name,
         ]);
 
         $readerMode = in_array($scripture->reader_mode, ['auto', 'pdf', 'content'], true)

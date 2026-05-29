@@ -25,7 +25,7 @@
             @endif
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div class="bg-white border border-[#e5dec9] rounded-2xl p-5">
                 <p class="text-sm text-[#8b5e34]">Streak tu học</p>
                 <p class="text-3xl font-bold text-[#4a2c11] mt-2">{{ $streak }} ngày</p>
@@ -38,6 +38,43 @@
                 <p class="text-sm text-[#8b5e34]">Lượt ngồi thiền</p>
                 <p class="text-3xl font-bold text-[#4a2c11] mt-2">{{ $meditationCount }}</p>
             </div>
+            <div class="bg-white border border-[#e5dec9] rounded-2xl p-5">
+                <p class="text-sm text-[#8b5e34]">Lượt trắc nghiệm</p>
+                <p class="text-3xl font-bold text-[#4a2c11] mt-2">{{ $quizCount }}</p>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-2xl shadow-sm border border-[#e5dec9] p-5 md:p-6">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+                <h2 class="text-xl font-semibold text-[#4a2c11]">Lịch sử trắc nghiệm Phật giáo</h2>
+                <a href="{{ route('tools.show', 'truc-nghiem-phat-giao') }}" class="text-sm font-semibold text-[#8b5e34] hover:text-[#6f4a2b] underline">
+                    Làm bài mới
+                </a>
+            </div>
+            @if($quizAttempts->isEmpty())
+                <p class="text-sm text-[#6b5346]">Chưa có lần làm bài nào. Hãy thử trắc nghiệm để lưu kết quả tại đây.</p>
+            @else
+                <ul class="divide-y divide-[#e5dec9]">
+                    @foreach($quizAttempts as $attempt)
+                        <li class="flex flex-wrap items-center justify-between gap-3 py-3 first:pt-0 last:pb-0">
+                            <div>
+                                <p class="font-semibold text-[#4a2c11] tabular-nums">
+                                    {{ $attempt['correct'] }}/{{ $attempt['total'] }} câu đúng
+                                </p>
+                                <p class="text-xs text-[#8b5e34] mt-0.5">{{ $attempt['date'] }}</p>
+                            </div>
+                            <span @class([
+                                'inline-flex items-center rounded-full px-3 py-1 text-sm font-bold tabular-nums',
+                                'bg-[#edf7f1] text-[#2d6a4f]' => $attempt['percent'] >= 70,
+                                'bg-[#fef3e7] text-[#b45309]' => $attempt['percent'] >= 40 && $attempt['percent'] < 70,
+                                'bg-[#f7f2eb] text-[#8b5e34]' => $attempt['percent'] < 40,
+                            ])>
+                                {{ $attempt['percent'] }}%
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
 
         <div class="bg-white rounded-2xl shadow-sm border border-[#e5dec9] p-5 md:p-6">

@@ -13,27 +13,26 @@
 
 <header {{ $attributes->merge(['class' => 'z-50 overflow-visible bg-[#f9f3e6] border-b border-[#e5dec9] px-4 sm:px-6 py-1 shadow-sm']) }}>
     <div class="max-w-7xl mx-auto flex items-center justify-between gap-3 overflow-visible lg:gap-6">
-        <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-3" aria-label="Về trang chủ">
-            <img src="/logoWeb.png" alt="" class="h-[72px] w-auto max-h-[77px] object-contain sm:h-[77px]">
+        <a href="{{ route('home') }}" class="flex shrink-0 items-center gap-2 sm:gap-3" aria-label="Về trang chủ">
+            <img src="/logoWeb.png" alt="" class="h-12 w-auto max-h-14 object-contain sm:h-14 md:h-[72px] md:max-h-[77px]">
         </a>
 
         <nav class="hidden min-w-0 flex-1 justify-start lg:flex lg:flex-wrap lg:items-center lg:gap-x-5 xl:gap-x-6" aria-label="Tiện ích">
-            <a href="{{ route('tools.show', 'may-niem-phat') }}" class="whitespace-nowrap text-sm {{ $navClass('may-niem-phat') }}" @if($slug === 'may-niem-phat') aria-current="page" @endif>Máy niệm Phật</a>
+            
             <a href="{{ route('tools.show', 'doc-kinh') }}" class="whitespace-nowrap text-sm {{ $navClass('doc-kinh') }}" @if($slug === 'doc-kinh') aria-current="page" @endif>Đọc Kinh</a>
             <a href="{{ route('tools.show', 'hai-loc-phap-cu') }}" class="whitespace-nowrap text-sm {{ $navClass('hai-loc-phap-cu') }}" @if($slug === 'hai-loc-phap-cu') aria-current="page" @endif>Pháp Cú</a>
             <a href="{{ route('tools.show', 'truc-nghiem-phat-giao') }}" class="whitespace-nowrap text-sm {{ $navClass('truc-nghiem-phat-giao') }}" @if($slug === 'truc-nghiem-phat-giao') aria-current="page" @endif>Trắc nghiệm</a>
             <a href="{{ route('tools.show', 'ngoi-thien') }}" class="whitespace-nowrap text-sm {{ $navClass('ngoi-thien') }}" @if($slug === 'ngoi-thien') aria-current="page" @endif>Ngồi Thiền</a>
-            <a href="{{ route('tools.show', 'chuong-mo') }}" class="whitespace-nowrap text-sm {{ $navClass('chuong-mo') }}" @if($slug === 'chuong-mo') aria-current="page" @endif>Chuông Mõ</a>
             <a href="{{ route('tools.show', 'nhac-thien') }}" class="whitespace-nowrap text-sm {{ $navClass('nhac-thien') }}" @if($slug === 'nhac-thien') aria-current="page" @endif>Nhạc Thiền</a>
-            {{-- <a href="{{ route('tools.show', 'su-kien-trong-nam') }}" class="whitespace-nowrap text-sm {{ $navClass('su-kien-trong-nam') }}" @if($slug === 'su-kien-trong-nam') aria-current="page" @endif>Sự kiện</a> --}}
+            <a href="{{ route('tools.show', 'may-niem-phat') }}" class="whitespace-nowrap text-sm {{ $navClass('may-niem-phat') }}" @if($slug === 'may-niem-phat') aria-current="page" @endif>Máy niệm Phật</a>
             <a href="{{ route('tools.show', 'lien-he-ho-tro') }}" class="whitespace-nowrap text-sm {{ $navClass('lien-he-ho-tro') }}" @if($slug === 'lien-he-ho-tro') aria-current="page" @endif>Liên hệ</a>
         </nav>
 
-        <div class="flex min-w-0 shrink items-center justify-end gap-1.5 overflow-visible sm:gap-3 lg:gap-4">
-            <x-auth-nav class="shrink-0 !justify-end !gap-1.5 sm:!gap-3" />
+        <div class="flex min-w-0 shrink items-center justify-end gap-1.5 overflow-visible sm:gap-2 lg:gap-4">
+            <x-auth-nav class="hidden sm:flex shrink-0 !justify-end !gap-1 sm:!gap-2 md:!gap-3" />
             <a
                 href="{{ route('account') }}"
-                class="group relative shrink-0 rounded-lg text-[#4a2c11] hover:bg-[#efe7d5] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40 transition-all sm:px-3 sm:py-2 lg:px-5"
+                class="group relative shrink-0 order-2 rounded-lg text-[#4a2c11] hover:bg-[#efe7d5] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40 transition-all sm:px-3 sm:py-2 lg:px-5"
                 aria-label="Tài khoản tu học — {{ $greetingName }}"
                 title="{{ $greetingName }}"
             >
@@ -50,6 +49,7 @@
                     Xin chào, {{ $greetingName }}!
                 </span>
             </a>
+            <x-site-mobile-nav :active-slug="$slug" />
         </div>
     </div>
 </header>

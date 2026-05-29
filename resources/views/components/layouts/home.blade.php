@@ -2,7 +2,7 @@
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 <head>
     <meta charset="utf-8">
-    <link rel="icon" type="image/x-icon" href="/site.png">
+    <x-site-favicon />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title ?? 'Kinh Học Phật Giáo — Trang chủ' }}</title>
     <x-seo-meta :canonical="route('home')" />
@@ -13,12 +13,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Noto+Serif+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
     <x-pwa-meta />
+    <x-mobile-site-base />
     @stack('head')
     @livewireStyles
 </head>
-<body class="bg-[#f9f3e6] text-[#4a2c11]" style="font-family: 'Plus Jakarta Sans', sans-serif;">
+<body class="site-mobile-safe bg-[#f9f3e6] text-[#4a2c11]" style="font-family: 'Plus Jakarta Sans', sans-serif;">
     <x-site-header />
+    <x-site-mobile-nav-drawer />
     {{ $slot }}
+    <x-site-footer />
+    @stack('body-end')
     @livewireScripts
 </body>
 </html>

@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\VegetarianRecipe;
+use App\Support\PracticeTracker;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -16,6 +17,12 @@ class RecipeShowPage extends Component
         if (! $recipe->isPublished()) {
             abort(404);
         }
+
+        app(PracticeTracker::class)->logActivity('recipe_view', $recipe, [
+            'title' => $recipe->title,
+            'slug' => $recipe->slug,
+            'prep_minutes' => $recipe->prep_minutes,
+        ]);
     }
 
     public function render()

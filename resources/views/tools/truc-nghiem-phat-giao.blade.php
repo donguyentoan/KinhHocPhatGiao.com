@@ -119,6 +119,10 @@
                 <p class="text-4xl font-bold text-[#8b5e34] tabular-nums mb-2" id="quiz-score">0/{{ $totalQuestions }}</p>
                 <p class="text-[#6b5346] text-base leading-relaxed max-w-md mx-auto" id="quiz-message"></p>
                 <p class="mt-4 text-sm text-[#8a7d72]">Cuộn lên từng câu để đọc đáp án đúng và lời giải thích ngắn.</p>
+                <p id="quiz-save-status" class="mt-3 text-sm text-[#2d6a4f] hidden" role="status"></p>
+                <p class="mt-2 text-sm">
+                    <a href="{{ route('account') }}" class="font-semibold text-[#8b5e34] hover:text-[#6f4a2b] underline">Xem lịch sử trong tài khoản tu học</a>
+                </p>
             </section>
         @endif
     </div>
@@ -134,7 +138,10 @@
                 const resultEl = document.getElementById('quiz-result');
                 const scoreEl = document.getElementById('quiz-score');
                 const messageEl = document.getElementById('quiz-message');
+                const saveStatusEl = document.getElementById('quiz-save-status');
                 const resetBtn = document.getElementById('quiz-reset');
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                const completeUrl = @json(route('tools.quiz.complete'));
 
                 function countAnswered() {
                     return cards.filter(function (card) {
@@ -150,8 +157,51 @@
                         : 'Đã trả lời đủ. Bạn có thể nộp bài.';
                 }
 
+                async function saveQuizResult(correctCount) {
+                    if (!completeUrl) {
+                        return;
+                    }
+
+                    try {
+                        const response = await fetch(completeUrl, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': csrfToken || '',
+                                'Accept': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                correct_count: correctCount,
+                                total_questions: total,
+                            }),
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('save_failed');
+                        }
+
+                        if (saveStatusEl) {
+                            saveStatusEl.textContent = 'Đã lưu kết quả vào tài khoản tu học của bạn.';
+                            saveStatusEl.classList.remove('hidden');
+                        }
+                    } catch (error) {
+                        if (saveStatusEl) {
+                            saveStatusEl.textContent = 'Không lưu được kết quả. Bạn vẫn xem được điểm trên trang này.';
+                            saveStatusEl.classList.remove('hidden');
+                            saveStatusEl.classList.remove('text-[#2d6a4f]');
+                            saveStatusEl.classList.add('text-[#b45309]');
+                        }
+                    }
+                }
+
                 function clearResults() {
                     resultEl.classList.add('hidden');
+                    if (saveStatusEl) {
+                        saveStatusEl.classList.add('hidden');
+                        saveStatusEl.textContent = '';
+                        saveStatusEl.classList.add('text-[#2d6a4f]');
+                        saveStatusEl.classList.remove('text-[#b45309]');
+                    }
                     cards.forEach(function (card) {
                         card.querySelector('.quiz-explain')?.classList.add('hidden');
                         card.querySelectorAll('.quiz-option').forEach(function (label) {
@@ -227,6 +277,7 @@
                     messageEl.textContent = msg;
                     resultEl.classList.remove('hidden');
                     resultEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    saveQuizResult(correct);
                 });
 
                 resetBtn.addEventListener('click', function () {

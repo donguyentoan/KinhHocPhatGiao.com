@@ -161,7 +161,7 @@
         <div class="rounded-[2rem] overflow-hidden w-full h-full bg-white">
           <div 
             class="w-full h-full bg-cover animate-scroll-mobile" 
-            style="background-image: url('/screen.png'); background-position: top center;">
+            style="background-image: url('/kinhhoc.png'); background-position: top center;">
           </div>
         </div>
       </div>

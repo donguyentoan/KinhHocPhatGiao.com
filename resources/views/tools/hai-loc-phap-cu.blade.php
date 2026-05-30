@@ -35,6 +35,20 @@
                 to { opacity: 1; transform: translateY(0); }
             }
             .phap-cu-toast-show { animation: phap-cu-toast-in 0.25s ease forwards; }
+
+            #phap-cu-modal-panel {
+                max-height: min(88dvh, calc(100svh - 2rem));
+                width: min(100%, 32rem);
+            }
+            #phap-cu-modal-body {
+                -webkit-overflow-scrolling: touch;
+            }
+            @media (max-width: 639px) {
+                .phap-cu-kinh-text {
+                    font-size: 0.95rem;
+                    line-height: 1.65;
+                }
+            }
         </style>
     @endpush
 
@@ -95,53 +109,80 @@
         </div>
     </div>
 
-    {{-- Modal lộc --}}
-    <div id="phap-cu-modal" class="hidden fixed inset-0 z-50 bg-[#1a1512]/40 backdrop-blur-[2px] flex items-end sm:items-center justify-center p-0 sm:p-4" role="dialog" aria-modal="true" aria-labelledby="phap-cu-modal-chapter">
-        <div id="phap-cu-modal-panel" class="bg-white border border-[#e8e0d4] w-full sm:max-w-lg rounded-t-3xl sm:rounded-2xl p-6 sm:p-8 shadow-2xl relative transform translate-y-4 sm:translate-y-0 opacity-0 transition-all duration-300 max-h-[92vh] overflow-y-auto" onclick="event.stopPropagation()">
-            <button type="button" id="phap-cu-modal-close" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center text-[#8b5e34] hover:text-[#4a2c11] hover:bg-[#faf6f0] rounded-full border border-[#e8e0d4] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40" aria-label="Đóng">
-                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
-            </button>
-
-            <div class="text-center pr-8 space-y-2">
-                <span class="text-[10px] uppercase tracking-[0.3em] text-[#8a7d72] font-bold block" id="phap-cu-modal-id">PHÁP CÚ</span>
-                <h3 id="phap-cu-modal-chapter" class="font-serif text-2xl sm:text-3xl font-bold text-[#5c4630] tracking-wide leading-tight"></h3>
+    {{-- Modal lộc — căn giữa màn hình (mobile & desktop) --}}
+    <div
+        id="phap-cu-modal"
+        class="hidden fixed inset-0 z-[220] flex items-center justify-center bg-[#2c2118]/50 backdrop-blur-[3px] p-4"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="phap-cu-modal-chapter"
+    >
+        <div
+            id="phap-cu-modal-panel"
+            class="flex flex-col overflow-hidden bg-[#fffcf7] border border-[#e8e0d4] rounded-2xl shadow-2xl transform scale-95 opacity-0 transition-all duration-300 ease-out"
+            onclick="event.stopPropagation()"
+        >
+            <div class="shrink-0 pt-5 pb-3 px-5 sm:px-7 border-b border-[#efe8dc] bg-gradient-to-b from-[#faf6f0] to-[#fffcf7]">
+                <div class="flex items-start gap-3">
+                    <div class="min-w-0 flex-1 text-center pr-2">
+                        <span class="text-[10px] uppercase tracking-[0.22em] text-[#8b5e34] font-bold block" id="phap-cu-modal-id">PHÁP CÚ</span>
+                        <h3 id="phap-cu-modal-chapter" class="font-serif text-xl sm:text-2xl font-bold text-[#2c2118] leading-snug mt-1"></h3>
+                    </div>
+                    <button
+                        type="button"
+                        id="phap-cu-modal-close"
+                        class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#e8e0d4] bg-white text-[#6b5346] hover:bg-[#faf6f0] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40"
+                        aria-label="Đóng"
+                    >
+                        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
 
-            <div class="w-10 h-px bg-[#e8e0d4] mx-auto my-5"></div>
+            <div id="phap-cu-modal-body" class="flex-1 min-h-0 overflow-y-auto overscroll-contain px-5 sm:px-7 py-4 sm:py-5 space-y-4">
+                <div class="phap-cu-kinh-ke">
+                    <i class="fa-solid fa-quote-left phap-cu-kinh-ke-quote" aria-hidden="true"></i>
+                    <p id="phap-cu-modal-content" class="phap-cu-kinh-text relative z-10 px-1 sm:px-2" aria-live="polite"></p>
+                </div>
 
-            <div class="phap-cu-kinh-ke">
-                <i class="fa-solid fa-quote-left phap-cu-kinh-ke-quote" aria-hidden="true"></i>
-                <p id="phap-cu-modal-content" class="phap-cu-kinh-text relative z-10 px-2" aria-live="polite"></p>
+                <div class="rounded-xl border border-[#e8e0d4] bg-[#f7f2eb] px-4 py-3.5 sm:py-4 text-left">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-[#8b5e34] mb-2 flex items-center gap-1.5">
+                        <i class="fa-solid fa-seedling text-[10px]" aria-hidden="true"></i>
+                        Lời khuyên tu tập
+                    </p>
+                    <p class="text-sm text-[#4a2c11] leading-relaxed" id="phap-cu-modal-advice"></p>
+                </div>
+
+                <div id="phap-cu-copy-fallback" class="hidden text-left rounded-xl border border-[#e8e0d4] bg-[#faf6f0] p-3">
+                    <p class="text-xs font-bold text-[#8b5e34] mb-2">Sao chép thủ công</p>
+                    <textarea id="phap-cu-copy-fallback-text" rows="5" class="w-full text-xs text-[#1a1512] rounded-lg border border-[#e8e0d4] p-2 font-serif leading-relaxed resize-y" readonly></textarea>
+                    <p class="text-[11px] text-[#8a7d72] mt-1.5">Chọn toàn bộ rồi sao chép (Ctrl+C hoặc Cmd+C).</p>
+                </div>
             </div>
 
-            <div class="mt-5 rounded-xl border border-[#e8e0d4] bg-[#f7f2eb] px-4 py-4 text-left">
-                <p class="text-xs font-bold uppercase tracking-wider text-[#8b5e34] mb-2 flex items-center gap-1.5">
-                    <i class="fa-solid fa-seedling text-[10px]" aria-hidden="true"></i>
-                    Lời khuyên tu tập hành trì
-                </p>
-                <p class="text-sm text-[#5c4a3d] leading-relaxed" id="phap-cu-modal-advice"></p>
-            </div>
-
-            <div class="flex items-center justify-center gap-4 sm:gap-6 pt-5 mt-2 border-t border-[#efe8dc]">
-                <button type="button" id="phap-cu-copy-btn" class="text-[#8b5e34] hover:text-[#4a2c11] transition text-xs flex items-center gap-2 font-semibold focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40 rounded-lg px-1 py-1">
-                    <i class="fa-regular fa-copy" aria-hidden="true"></i>
-                    <span>Lưu Lời Kinh</span>
-                </button>
-                <span class="text-[#e8e0d4]" aria-hidden="true">|</span>
-                <button type="button" id="phap-cu-modal-done" class="px-6 py-2.5 rounded-full bg-[#8b5e34] hover:bg-[#6f4a2b] text-white text-xs tracking-wider font-bold shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/50">
-                    Đóng lại
-                </button>
-            </div>
-
-            <div id="phap-cu-copy-fallback" class="hidden mt-4 text-left rounded-xl border border-[#e8e0d4] bg-[#faf6f0] p-3">
-                <p class="text-xs font-bold text-[#8b5e34] mb-2">Sao chép thủ công</p>
-                <textarea id="phap-cu-copy-fallback-text" rows="6" class="w-full text-xs text-[#1a1512] rounded-lg border border-[#e8e0d4] p-2 font-serif leading-relaxed resize-y" readonly></textarea>
-                <p class="text-[11px] text-[#8a7d72] mt-1.5">Chọn toàn bộ (Ctrl+A) rồi sao chép (Ctrl+C hoặc Cmd+C).</p>
+            <div class="phap-cu-modal-footer shrink-0 border-t border-[#efe8dc] bg-[#fffcf7] px-5 sm:px-7 py-3.5 sm:py-4">
+                <div class="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-center gap-2.5 sm:gap-4">
+                    <button
+                        type="button"
+                        id="phap-cu-copy-btn"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl border border-[#e8e0d4] bg-white px-4 py-3 text-sm font-semibold text-[#4a2c11] hover:bg-[#faf6f0] transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/40"
+                    >
+                        <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                        Lưu lời kinh
+                    </button>
+                    <button
+                        type="button"
+                        id="phap-cu-modal-done"
+                        class="inline-flex items-center justify-center rounded-xl bg-[#8b5e34] hover:bg-[#6f4a2b] px-6 py-3 text-sm font-bold text-white shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8b5e34]/50"
+                    >
+                        Đóng lại
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <div id="phap-cu-toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] px-4 py-2.5 rounded-full bg-[#1a1512] text-[#f9f3e6] text-sm font-semibold shadow-lg" role="status" aria-live="polite"></div>
+    <div id="phap-cu-toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[230] px-4 py-2.5 rounded-full bg-[#1a1512] text-[#f9f3e6] text-sm font-semibold shadow-lg max-w-[90vw] text-center" style="bottom: max(1.5rem, env(safe-area-inset-bottom));" role="status" aria-live="polite"></div>
 
     <script>
         (function () {
@@ -220,6 +261,7 @@
 
             const modal = document.getElementById('phap-cu-modal');
             const modalPanel = document.getElementById('phap-cu-modal-panel');
+            const modalBody = document.getElementById('phap-cu-modal-body');
             const leavesEl = document.getElementById('phap-cu-leaves');
 
             function layDuLieu(verseIndex) {
@@ -333,18 +375,20 @@
                 document.getElementById('phap-cu-modal-advice').textContent = v.advice || '';
                 document.getElementById('phap-cu-copy-fallback')?.classList.add('hidden');
 
+                if (modalBody) modalBody.scrollTop = 0;
+
                 modal.classList.remove('hidden');
                 document.body.style.overflow = 'hidden';
                 requestAnimationFrame(() => {
-                    modalPanel.classList.remove('opacity-0', 'translate-y-4', 'sm:translate-y-0');
-                    modalPanel.classList.add('opacity-100');
+                    modalPanel.classList.remove('opacity-0', 'scale-95');
+                    modalPanel.classList.add('opacity-100', 'scale-100');
                 });
                 playBowl();
             }
 
             function dongModal() {
-                modalPanel.classList.remove('opacity-100');
-                modalPanel.classList.add('opacity-0', 'translate-y-4', 'sm:translate-y-0');
+                modalPanel.classList.remove('opacity-100', 'scale-100');
+                modalPanel.classList.add('opacity-0', 'scale-95');
                 document.body.style.overflow = '';
                 setTimeout(() => modal.classList.add('hidden'), 280);
             }
